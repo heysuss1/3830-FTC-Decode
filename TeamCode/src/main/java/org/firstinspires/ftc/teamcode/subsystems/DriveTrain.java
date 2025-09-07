@@ -6,7 +6,9 @@ import com.qualcomm.robotcore.hardware.Gamepad;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.util.Range;
 
-public class DriveT {
+public class DriveTrain {
+
+    //Initialize motors
     public DcMotorEx lf;
     public DcMotorEx rf;
     public DcMotorEx lb;
@@ -14,6 +16,7 @@ public class DriveT {
     public DcMotorEx rb;
     private double speed;
 
+    //Get motors from the hardware map
     public void init(HardwareMap hwMap){
         lf = hwMap.get(DcMotorEx.class, "lf");
         lf.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
@@ -29,12 +32,17 @@ public class DriveT {
         rb.setPower(0);
     }
 
+    //Get the current max speed of the robot.
     public double getSpeed() {
         return speed;
     }
+    //Set the current max speed of the robot, has to be between -1 and 1.
     public void setSpeed(double speed){
         this.speed = Range.clip(speed, -1, 1);
     }
+
+
+    //Do math to move the robot!!!
     public void moveRobot(Gamepad gamepad1){
         double forward;
         double sideways;
@@ -55,6 +63,8 @@ public class DriveT {
 
         setPower((forward - sideways - turning)*scaleFactor, (forward + sideways - turning) * scaleFactor, (forward + sideways + turning) * scaleFactor, (forward + turning - sideways) * scaleFactor);
     }
+
+    //Set power to all of the motors at once.
     public void setPower(double fr, double br, double fl, double bl){
         rf.setPower(Range.clip(fr, -speed, speed));
         rb.setPower(Range.clip(br, -speed, speed));

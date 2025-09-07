@@ -4,8 +4,8 @@ import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.rowanmcalpin.nextftc.core.Subsystem;
 import com.rowanmcalpin.nextftc.ftc.OpModeData;
 
-public class DriveTrain extends Subsystem {
-    public static final DriveTrain INSTANCE = new DriveTrain();
+public class DriveTrainNFTC extends Subsystem {
+    public static final DriveTrainNFTC INSTANCE = new DriveTrainNFTC();
     public DcMotorEx lf;
     public DcMotorEx rf;
     public DcMotorEx lb;
@@ -14,7 +14,7 @@ public class DriveTrain extends Subsystem {
 
 
 
-    public DriveTrain(){
+    public DriveTrainNFTC(){
 
     }
     public void initialize(){

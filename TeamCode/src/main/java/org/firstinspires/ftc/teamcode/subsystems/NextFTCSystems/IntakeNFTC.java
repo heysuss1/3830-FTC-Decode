@@ -5,8 +5,8 @@ import com.rowanmcalpin.nextftc.core.Subsystem;
 import com.rowanmcalpin.nextftc.core.command.utility.LambdaCommand;
 import com.rowanmcalpin.nextftc.ftc.OpModeData;
 
-public class Intake extends Subsystem {
-    public static final Intake INSTANCE = new Intake();
+public class IntakeNFTC extends Subsystem {
+    public static final IntakeNFTC INSTANCE = new IntakeNFTC();
 
     public DcMotorEx motor;
 
