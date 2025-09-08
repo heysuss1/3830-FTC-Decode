@@ -6,5 +6,5 @@ public class Vision {
 
     Limelight3A limelight;
 
-    
+
 }
