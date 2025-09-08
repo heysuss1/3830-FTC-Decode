@@ -19,19 +19,21 @@ public class DriveTrain {
     //Get motors from the hardware map
     public void init(HardwareMap hwMap){
         lf = hwMap.get(DcMotorEx.class, "lf");
-        lf.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         lf.setPower(0);
         rf = hwMap.get(DcMotorEx.class, "rf");
-        rf.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         rf.setPower(0);
         lb = hwMap.get(DcMotorEx.class, "lb");
-        lb.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         lb.setPower(0);
         rb = hwMap.get(DcMotorEx.class, "rb");
-        rb.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         rb.setPower(0);
     }
 
+    public void setBrakeMode(){
+        lf.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        rf.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        lb.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        rb.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+    }
     //Get the current max speed of the robot.
     public double getSpeed() {
         return speed;
