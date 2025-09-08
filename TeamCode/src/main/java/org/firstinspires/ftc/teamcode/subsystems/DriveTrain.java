@@ -1,26 +1,74 @@
 package org.firstinspires.ftc.teamcode.subsystems;
 
+import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
-import com.rowanmcalpin.nextftc.core.Subsystem;
-import com.rowanmcalpin.nextftc.ftc.OpModeData;
+import com.qualcomm.robotcore.hardware.Gamepad;
+import com.qualcomm.robotcore.hardware.HardwareMap;
+import com.qualcomm.robotcore.util.Range;
 
-public class DriveTrain extends Subsystem {
-    public static final DriveTrain INSTANCE = new DriveTrain();
+public class DriveTrain {
+
+    //Initialize motors
     public DcMotorEx lf;
     public DcMotorEx rf;
     public DcMotorEx lb;
 
     public DcMotorEx rb;
+    private double speed;
 
-
-
-    public DriveTrain(){
-
+    //Get motors from the hardware map
+    public void init(HardwareMap hwMap){
+        lf = hwMap.get(DcMotorEx.class, "lf");
+        lf.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        lf.setPower(0);
+        rf = hwMap.get(DcMotorEx.class, "rf");
+        rf.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        rf.setPower(0);
+        lb = hwMap.get(DcMotorEx.class, "lb");
+        lb.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        lb.setPower(0);
+        rb = hwMap.get(DcMotorEx.class, "rb");
+        rb.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        rb.setPower(0);
     }
-    public void initialize(){
-        lf = OpModeData.INSTANCE.getHardwareMap().get(DcMotorEx.class, "lf");
-        rf = OpModeData.INSTANCE.getHardwareMap().get(DcMotorEx.class, "rf");
-        lb = OpModeData.INSTANCE.getHardwareMap().get(DcMotorEx.class, "lb");
-        rb = OpModeData.INSTANCE.getHardwareMap().get(DcMotorEx.class, "rb");
+
+    //Get the current max speed of the robot.
+    public double getSpeed() {
+        return speed;
+    }
+    //Set the current max speed of the robot, has to be between -1 and 1.
+    public void setSpeed(double speed){
+        this.speed = Range.clip(speed, -1, 1);
+    }
+
+
+    //Do math to move the robot!!!
+    public void moveRobot(Gamepad gamepad1){
+        double forward;
+        double sideways;
+        double turning;
+        double max;
+        double scaleFactor;
+
+        forward = -(Math.atan(5 * gamepad1.left_stick_y) / Math.atan(5));
+        sideways = (Math.atan(5 * gamepad1.left_stick_x) / Math.atan(5));
+        turning = (Math.atan(5 * gamepad1.right_stick_x) / Math.atan(5));
+        max = Math.max(Math.abs(forward - sideways - turning), Math.max(Math.abs(forward + sideways - turning), Math.max(Math.abs(forward + sideways + turning), Math.abs(forward + turning - sideways))));
+        if (max > speed) {
+            scaleFactor = speed/max;
+        } else {
+            scaleFactor = speed;
+        }
+        scaleFactor *= Math.max(Math.abs(1), 0.2);
+
+        setPower((forward - sideways - turning)*scaleFactor, (forward + sideways - turning) * scaleFactor, (forward + sideways + turning) * scaleFactor, (forward + turning - sideways) * scaleFactor);
+    }
+
+    //Set power to all of the motors at once.
+    public void setPower(double fr, double br, double fl, double bl){
+        rf.setPower(Range.clip(fr, -speed, speed));
+        rb.setPower(Range.clip(br, -speed, speed));
+        lf.setPower(Range.clip(fl, -speed, speed));
+        lb.setPower(Range.clip(bl, -speed, speed));
     }
 }

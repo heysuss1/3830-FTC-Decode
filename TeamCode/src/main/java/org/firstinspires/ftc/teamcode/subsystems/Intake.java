@@ -1,33 +1,20 @@
 package org.firstinspires.ftc.teamcode.subsystems;
 
 import com.qualcomm.robotcore.hardware.DcMotorEx;
-import com.qualcomm.robotcore.robocol.Command;
-import com.rowanmcalpin.nextftc.core.Subsystem;
-import com.rowanmcalpin.nextftc.core.command.utility.LambdaCommand;
-import com.rowanmcalpin.nextftc.ftc.OpModeData;
-import com.rowanmcalpin.nextftc.ftc.hardware.controllables.MotorEx;
+import com.qualcomm.robotcore.hardware.HardwareMap;
 
-public class Intake extends Subsystem {
-    public static final Intake INSTANCE = new Intake();
+public class Intake {
+    public DcMotorEx intakeMotor;
 
-    public DcMotorEx motor;
-
-
-
-//    private Intake(){}
-
-    public void initialize(){
-        motor = OpModeData.INSTANCE.getHardwareMap().get(DcMotorEx.class, "intakeMotor");
+    public void init(HardwareMap hwMap){
+        intakeMotor = hwMap.get(DcMotorEx.class, "intakeMotor");
     }
-    LambdaCommand startIntake = new LambdaCommand()
-            .setStart(() -> {
-                // Runs on start
-            motor.setPower(0.4);
-            });
-    LambdaCommand stopIntake = new LambdaCommand()
-            .setStart(() -> {
-                // Runs on start
-                motor.setPower(0);
-            });
 
+
+    public void startIntake(){
+        intakeMotor.setPower(0.67);
+    }
+    public void stopIntake(){
+        intakeMotor.setPower(0);
+    }
 }
