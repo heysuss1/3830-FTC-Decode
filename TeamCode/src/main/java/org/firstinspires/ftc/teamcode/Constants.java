@@ -1,10 +1,14 @@
 package org.firstinspires.ftc.teamcode;
 
 public class Constants {
-    enum Team{
+    public enum Team{
         RED,
         BLUE
     }
-    Team TEAM;
+    static Team TEAM;
     static double Y_GOAL = 140;
+
+    public static void setTeam(Team team){
+        TEAM = team;
+    }
 }
