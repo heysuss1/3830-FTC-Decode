@@ -24,8 +24,14 @@ public class kinematics {
     double x_ball; // get x-pos and y-pos from pp + difference btwn pedro bot center and ball position
     double y_ball; // X AND Y POS OF THE BALL
 
-    public double getDistance(double x_ball, double y_ball, double x_goal){
+    public double getDistance(double x_ball, double y_ball, Constants.Team team){
+        double x_goal = team == Constants.Team.BLUE ? 132: 12;
         return Math.sqrt(Math.pow(y_ball-Y_GOAL,2)+Math.pow(x_ball-x_goal,2));
+    }
+
+    public double getYaw(double x_ball, double y_ball, Constants.Team team){
+        double x_goal = team == Constants.Team.BLUE ? 132: 12;
+        return atan2(y_ball-Y_GOAL, x_ball-x_goal);
     }
 
 //    double distance = Math.sqrt(Math.pow(y_ball-y_goal,2)+Math.pow(x_ball-x_goal,2));
