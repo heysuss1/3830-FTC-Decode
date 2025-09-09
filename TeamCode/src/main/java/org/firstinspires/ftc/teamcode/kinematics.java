@@ -31,7 +31,7 @@ public class kinematics {
 
     public double getYaw(double x_ball, double y_ball, Constants.Team team){
         double x_goal = team == Constants.Team.BLUE ? 132: 12;
-        return atan2(y_ball-Y_GOAL, x_ball-x_goal);
+        return Math.atan2(y_ball-Y_GOAL, x_ball-x_goal);
     }
 
 //    double distance = Math.sqrt(Math.pow(y_ball-y_goal,2)+Math.pow(x_ball-x_goal,2));
@@ -51,7 +51,7 @@ public class kinematics {
 
         //Calculates the time it takes for ball to reach the depot from the cannon
         double timepoly_b = 2*g*height - Math.pow(v0,2);
-        double timepoly_c = Math.pow(getDistance(x_ball, y_ball, x_goal),2) + Math.pow(height,2);
+        double timepoly_c = Math.pow(getDistance(x_ball, y_ball, team),2) + Math.pow(height,2);
 
         //TODO: figure out which ones better through testing
         double time1 = Math.sqrt(quadratic_formula(timepoly_a, timepoly_b, timepoly_c, 1));
@@ -59,7 +59,7 @@ public class kinematics {
         double time = Math.min(time1, time2);
 
         // returns the pitch!!!
-        return Math.atan2(height + g*Math.pow(time,2)*.5, getDistance(x_ball, y_ball, x_goal));
+        return Math.atan2(height + g*Math.pow(time,2)*.5, getDistance(x_ball, y_ball, team));
 
     }
 

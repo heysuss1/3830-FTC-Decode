@@ -12,7 +12,6 @@ public class DriveTrain {
     public DcMotorEx lf;
     public DcMotorEx rf;
     public DcMotorEx lb;
-
     public DcMotorEx rb;
     private double speed;
 
