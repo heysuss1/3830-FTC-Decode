@@ -3,10 +3,11 @@ package org.firstinspires.ftc.teamcode;
 public class Constants {
     public enum Team{
         RED,
-        BLUE
+        BLUE,
     }
 
     public enum Motif{
+        NULL,
         GPP,
         PGP,
         PPG

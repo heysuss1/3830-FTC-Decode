@@ -17,6 +17,7 @@ public class BlueSideAuto extends OpMode {
 
     Follower follower;
     Hardware robot = Hardware.getInstance();
+    boolean startAuto = false;
 
     //TODO: find actual headings.
 
@@ -28,10 +29,8 @@ public class BlueSideAuto extends OpMode {
     Pose parkPose = new Pose(39, 33, 0);
     Pose gatePose = new Pose(18, 69);
 
-
     //Scan for the motif and dont move until the motif has been verified.
     PathChain toDepot, toBall1, toDepotFromBall1, toBall2, toDepotFromBall2, toBall3, toDepotfromBall3, toParking;
-
 
 //    public void
 
@@ -68,7 +67,7 @@ public class BlueSideAuto extends OpMode {
                 .addPath( new BezierLine(shootingPosition, parkPose))
                 .setLinearHeadingInterpolation(shootingPosition.getHeading(), parkPose.getHeading())
                 .build();
-        
+
 
 
     }
@@ -92,8 +91,24 @@ public class BlueSideAuto extends OpMode {
         telemetry.update();
     }
 
-    public void loop(){
+    public void pathUpdate(){
 
+    }
+    public void actionUpdate(){
+
+    }
+    public void loop(){
+        if (robot.vision.getMotif() != Constants.Motif.NULL){
+            Constants.setMotif(robot.vision.getMotif());
+            startAuto = true;
+        }
+
+        if (startAuto){
+            pathUpdate();
+            actionUpdate();
+        }
+        follower.update();
+        telemetry.update();
     }
 
 }

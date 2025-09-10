@@ -5,6 +5,8 @@ import com.qualcomm.hardware.limelightvision.LLResultTypes;
 import com.qualcomm.hardware.limelightvision.Limelight3A;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
+import org.firstinspires.ftc.teamcode.Constants;
+
 import java.io.IOException;
 import java.net.HttpURLConnection;
 import java.net.URL;
@@ -22,10 +24,12 @@ public class Vision {
 
 
 
-    public String getMotif(){
+    public Constants.Motif getMotif(){
         LLResult result = limelight.getLatestResult();
+
+
         int id;
-        String motif = "";
+        Constants.Motif motif = Constants.Motif.NULL;
         if (result != null && result.isValid() && !result.getFiducialResults().isEmpty()){
             id = result.getFiducialResults().get(0).getFiducialId();
         } else {
@@ -33,13 +37,13 @@ public class Vision {
         }
         switch (id){
             case 21:
-                motif = "GPP";
+                motif = Constants.Motif.GPP;
                 break;
             case 22:
-                motif = "PGP";
+                motif = Constants.Motif.PGP;
                 break;
             case 23:
-                motif = "PPG";
+                motif = Constants.Motif.PPG;
                 break;
         }
         return motif;
