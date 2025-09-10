@@ -41,7 +41,6 @@ public class Vision {
             case 23:
                 motif = "PPG";
                 break;
-
         }
         return motif;
 
