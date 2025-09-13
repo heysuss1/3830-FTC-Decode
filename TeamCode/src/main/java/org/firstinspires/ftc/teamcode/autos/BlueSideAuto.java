@@ -67,9 +67,6 @@ public class BlueSideAuto extends OpMode {
                 .addPath( new BezierLine(shootingPosition, parkPose))
                 .setLinearHeadingInterpolation(shootingPosition.getHeading(), parkPose.getHeading())
                 .build();
-
-
-
     }
 
 
@@ -107,6 +104,7 @@ public class BlueSideAuto extends OpMode {
             pathUpdate();
             actionUpdate();
         }
+
         follower.update();
         telemetry.update();
     }

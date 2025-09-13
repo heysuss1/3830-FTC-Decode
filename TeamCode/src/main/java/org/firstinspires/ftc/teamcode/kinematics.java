@@ -6,7 +6,7 @@ Outputs: theta, psi, v0,
  */
 public class kinematics {
     //Asher says make a chart of distance needed to cover vs. v0, psi, probably smart
-
+    
     public static double quadratic_formula(double a, double b, double c, int sign) {
         // literally the quadratic formula because i need it for the projectile motion calculation lol
         return (-b + sign * Math.sqrt(b*b-4*a*c)) / (2*a);
