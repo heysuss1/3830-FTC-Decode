@@ -6,10 +6,19 @@ Outputs: theta, psi, v0,
  */
 public class kinematics {
     //Asher says make a chart of distance needed to cover vs. v0, psi, probably smart
-    
+
     public static double quadratic_formula(double a, double b, double c, int sign) {
         // literally the quadratic formula because i need it for the projectile motion calculation lol
         return (-b + sign * Math.sqrt(b*b-4*a*c)) / (2*a);
+    }
+
+
+    //tan(h2-h1) = (a2-a1)/d
+    public double getDistanceLimelight(double targetHeight, double angleToObject){
+        double deltaDistance = targetHeight - Constants.cameraHeight;
+        double deltaAngle = angleToObject - Constants.cameraAngle;
+
+        return deltaDistance/(Math.tan(deltaAngle));
     }
 
     static double RED_X_goal = 12; // figure out where the goal is; whichever goal is the correct one to shoot to
@@ -36,9 +45,7 @@ public class kinematics {
 
 //    double distance = Math.sqrt(Math.pow(y_ball-y_goal,2)+Math.pow(x_ball-x_goal,2));
 
-    public double getCannonVelocity(){
-        return 6.7; //TODO
-    }
+
 
     //TODO: come back later
     //Spin of the cannon relative to the ground

@@ -70,10 +70,11 @@ public class BlueSideAuto extends OpMode {
     }
 
 
+
     public void init(){
 //        follower = new Follower(hardwareMap);
         follower.setStartingPose(startingPose);
-        robot.init(hardwareMap);
+        robot.init(hardwareMap, telemetry);
         buildPaths();
     }
     public void init_loop() {

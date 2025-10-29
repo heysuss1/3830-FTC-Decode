@@ -19,7 +19,8 @@ public class Constants {
     public static Team getTEAM() {
         return TEAM;
     }
-
+    static double cameraHeight = 6.7; //Inches
+    static double cameraAngle = 35; //degrees
     public static void setMotif(Motif motif) {
         Constants.MOTIF = motif;
     }

@@ -6,17 +6,21 @@ import com.qualcomm.robotcore.hardware.Gamepad;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.util.Range;
 
+import org.firstinspires.ftc.robotcore.external.Telemetry;
+
 public class DriveTrain {
 
     //Initialize motors
     public DcMotorEx lf;
     public DcMotorEx rf;
+    public Telemetry telemetry;
     public DcMotorEx lb;
     public DcMotorEx rb;
     private double speed;
 
     //Get motors from the hardware map
-    public void init(HardwareMap hwMap){
+    public void init(HardwareMap hwMap, Telemetry telemetry){
+        this.telemetry = telemetry;
         lf = hwMap.get(DcMotorEx.class, "lf");
         lf.setPower(0);
         rf = hwMap.get(DcMotorEx.class, "rf");

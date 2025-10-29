@@ -2,16 +2,15 @@ package org.firstinspires.ftc.teamcode.subsystems;
 
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.HardwareMap;
+import com.qualcomm.robotcore.hardware.Servo;
 
 public class Turret {
-    DcMotorEx leftMotor;
-    DcMotorEx rightMotor;
+    Servo turretRotation;
 
     // hooray
 
     public void init(HardwareMap hwMap){
-        leftMotor = hwMap.get(DcMotorEx.class, "leftTurretMotor");
-        rightMotor = hwMap.get(DcMotorEx.class, "rightTurretMotor");
+        turretRotation = hwMap.get(Servo.class, "turretRotation");
     }
 
 }

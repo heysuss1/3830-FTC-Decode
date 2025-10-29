@@ -16,7 +16,7 @@ public class TeleOp extends LinearOpMode {
      */
     Hardware robot = Hardware.getInstance();
     public void runOpMode() {
-        robot.init(hardwareMap);
+        robot.init(hardwareMap, telemetry);
         robot.driveTrain.setBrakeMode();
         robot.driveTrain.setSpeed(1);
         boolean intakeOn = false;
