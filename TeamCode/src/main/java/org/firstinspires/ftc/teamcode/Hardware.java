@@ -7,6 +7,7 @@ import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.teamcode.subsystems.DriveTrain;
 import org.firstinspires.ftc.teamcode.subsystems.Intake;
 import org.firstinspires.ftc.teamcode.subsystems.Shooter;
+import org.firstinspires.ftc.teamcode.subsystems.Turret;
 import org.firstinspires.ftc.teamcode.subsystems.Vision;
 
 public class Hardware {
@@ -16,6 +17,7 @@ public class Hardware {
 
     public Shooter shooter = new Shooter();
     public Intake intake = new Intake();
+    public Turret turret = new Turret();
     public Vision vision = new Vision();
     public double maxSpeed;
 
@@ -34,6 +36,7 @@ public class Hardware {
         driveTrain.init(hwMap, telemetry);
         intake.init(hwMap); //TODO: add telemetry
         shooter.init(hwMap);
+        turret.init(hwMap);
     }
 
 }

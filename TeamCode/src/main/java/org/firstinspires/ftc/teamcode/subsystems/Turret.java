@@ -5,12 +5,18 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
 
 public class Turret {
-    Servo turretRotation;
+    public Servo pitchServo;
 
+    public DcMotorEx turretRotation;
     // hooray
 
     public void init(HardwareMap hwMap){
-        turretRotation = hwMap.get(Servo.class, "turretRotation");
+        pitchServo = hwMap.get(Servo.class, "pitchServo");
+        turretRotation = hwMap.get(DcMotorEx.class,"turretRotation");
+    }
+    public double ticksToDegrees(int ticks){
+        double turretConversion = 6.7; //Change!!!
+        return ticks * turretConversion;
     }
 
 }
