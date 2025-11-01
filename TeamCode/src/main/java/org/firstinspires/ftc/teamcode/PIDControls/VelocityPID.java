@@ -12,7 +12,7 @@ import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.teamcode.Hardware;
 
 @Config
-@TeleOp(name = "Velocity PID")
+@TeleOp(name = "Velocity PID tuner")
 public class VelocityPID extends OpMode {
     Hardware robot = Hardware.getInstance();
         private Telemetry telemetryA;
@@ -26,6 +26,7 @@ public class VelocityPID extends OpMode {
         //    private double gravityComp;
 //    double output;
         public static int setpoint;
+        double currentVel;
         FtcDashboard dashboard = FtcDashboard.getInstance();
         com.rowanmcalpin.nextftc.core.control.controllers.PIDFController pidf;
 
@@ -35,10 +36,11 @@ public class VelocityPID extends OpMode {
             robot.init(hardwareMap, telemetryA);
         }
         public void loop(){
-            velError = setpoint - robot.shooter.getCannonVelocity();
+            currentVel = robot.shooter.getCannonVelocity();
+            velError = setpoint - currentVel;
             pidf.calculate(0, velError);
-            telemetryA.addData("Current Velocity: ", velError);
-            telemetryA.addData("Current Velocity", robot.shooter.shootingMotor.getVelocity());
+            telemetryA.addData("Current Error: ", velError);
+            telemetryA.addData("Current Velocity", currentVel);
             telemetryA.update();
 
         }

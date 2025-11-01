@@ -25,5 +25,10 @@ public class Shooter {
        return shootingMotor.getVelocity();
     }
 
+
+    public void setPower(double power){
+        shootingMotor.setPower(power);
+    }
+
 }
 

@@ -1,22 +1,21 @@
 package org.firstinspires.ftc.teamcode.subsystems;
 
+import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
 public class Intake {
 
-    public DcMotorEx intakeMotor;
+    public CRServo intakeServo;
 
     public void init(HardwareMap hwMap){
-        intakeMotor = hwMap.get(DcMotorEx.class, "intakeMotor");
+        intakeServo = hwMap.get(CRServo.class, "intakeServo");
     }
-
-
 
     public void startIntake(){
-        intakeMotor.setPower(0.67);
+        intakeServo.setPower(1);
     }
     public void stopIntake(){
-        intakeMotor.setPower(0);
+        intakeServo.setPower(0);
     }
 }

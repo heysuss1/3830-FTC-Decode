@@ -14,6 +14,7 @@ public class Turret {
         pitchServo = hwMap.get(Servo.class, "pitchServo");
         turretRotation = hwMap.get(DcMotorEx.class,"turretRotation");
     }
+
     public double ticksToDegrees(int ticks){
         double turretConversion = 6.7; //Change!!!
         return ticks * turretConversion;
