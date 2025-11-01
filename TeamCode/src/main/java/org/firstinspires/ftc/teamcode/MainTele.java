@@ -1,11 +1,11 @@
 package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
+import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.Gamepad;
 
-import org.firstinspires.ftc.teamcode.subsystems.NextFTCSystems.IntakeNFTC;
-
-public class TeleOp extends LinearOpMode {
+@TeleOp (name = "TeleOp")
+public class MainTele extends LinearOpMode {
 
     /*
     TODO: right trigger - shoot
@@ -32,12 +32,12 @@ public class TeleOp extends LinearOpMode {
             robot.driveTrain.moveRobot(currentGamepad1);
             /*
             When the right bumper is clicked, if the intake is not on start the intake. If it is on, stop the intake.
-             */
-            if (currentGamepad1.left_trigger > 0.1){
-                robot.intake.startIntake();
-            } else{
-                robot.intake.stopIntake();
-            }
+//             */
+//            if (currentGamepad1.left_trigger > 0.1){
+//                robot.intake.startIntake();
+//            } else{
+//                robot.intake.stopIntake();
+//            }
 
             if (currentGamepad1.x && !previousGamepad1.x){
                 if (!slowMode){
