@@ -2,6 +2,7 @@ package org.firstinspires.ftc.teamcode.subsystems;
 
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
+import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.Gamepad;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.util.Range;
@@ -23,11 +24,17 @@ public class DriveTrain {
         this.telemetry = telemetry;
         lf = hwMap.get(DcMotorEx.class, "lf");
         lf.setPower(0);
+
         rf = hwMap.get(DcMotorEx.class, "rf");
         rf.setPower(0);
+        lf.setDirection(DcMotorSimple.Direction.REVERSE);
+
         lb = hwMap.get(DcMotorEx.class, "lb");
         lb.setPower(0);
+
         rb = hwMap.get(DcMotorEx.class, "rb");
+        lb.setDirection(DcMotorSimple.Direction.REVERSE);
+        rb.setDirection(DcMotorSimple.Direction.REVERSE);
         rb.setPower(0);
     }
 
