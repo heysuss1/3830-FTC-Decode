@@ -37,7 +37,7 @@ public class Hardware {
 //        vision.init(hwMap);//TODO: add telemetry;
         driveTrain.init(hwMap, telemetry);
         ramp.init((hwMap));
-//        intake.init(hwMap); //TODO: add telemetry
+        intake.init(hwMap); //TODO: add telemetry
 //        shooter.init(hwMap);
 //        turret.init(hwMap);
     }

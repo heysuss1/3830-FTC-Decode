@@ -20,8 +20,8 @@ public class DegreesToTicksTester extends LinearOpMode {
         robot.init(hardwareMap, telemetry);
         waitForStart();
         while(opModeIsActive()){
-            robot.turret.turretRotation.getCurrentPosition();
-            telemetry.addData("turret ticks",robot.turret.turretRotation.getCurrentPosition());
+            robot.turret.turretMotor.getCurrentPosition();
+            telemetry.addData("turret ticks",robot.turret.turretMotor.getCurrentPosition());
             telemetry.update();
         }
     }

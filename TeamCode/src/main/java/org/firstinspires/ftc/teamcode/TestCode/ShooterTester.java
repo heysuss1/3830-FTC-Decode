@@ -14,7 +14,7 @@ import org.firstinspires.ftc.teamcode.Hardware;
 @TeleOp (name = "Shooter Class")
 public class ShooterTester extends LinearOpMode {
 
-    static double power;
+    public static double power;
 
     FtcDashboard dashboard = FtcDashboard.getInstance();
     Telemetry dashboardTelemetry = dashboard.getTelemetry();
@@ -28,10 +28,11 @@ public class ShooterTester extends LinearOpMode {
 
             if (gamepad1.right_trigger > 0.3){
                 robot.shooter.setPower(power);
+            } else {
+                robot.shooter.setPower(0);
             }
-            robot.shooter.setPower(power);
 
-
+            dashboardTelemetry.addData("Current Vel", robot.shooter.getCannonVelocity());
             dashboardTelemetry.update();
 
         }
