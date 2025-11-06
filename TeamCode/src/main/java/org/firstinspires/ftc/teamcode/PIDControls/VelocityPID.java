@@ -36,7 +36,7 @@ public class VelocityPID extends OpMode {
             robot.init(hardwareMap, telemetryA);
         }
         public void loop(){
-            currentVel = robot.shooter.getCannonVelocity();
+            currentVel = robot.shooter.getVelocity();
             velError = setpoint - currentVel;
             pidf.calculate(0, velError);
             telemetryA.addData("Current Error: ", velError);
