@@ -6,6 +6,9 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 
 public class Intake {
 
+
+    // 0 to 3.3 volts crservo
+
     public CRServo intakeServo;
 
     public void init(HardwareMap hwMap){

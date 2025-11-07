@@ -13,7 +13,7 @@ import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import org.firstinspires.ftc.teamcode.pedroPathing.Constants;
 
 
-@Autonomous (name = "Funny Test TeleOp")
+@Autonomous (name = "Red Side Auto")
 public class TestTele extends OpMode {
     Follower follower;
     Timer pathTimer;
@@ -62,12 +62,12 @@ public class TestTele extends OpMode {
                 .addPath(new BezierLine(balls3, launchPose))
                 .setLinearHeadingInterpolation(balls3.getHeading(), launchPose.getHeading())
                 .build();
+
     }
 
     public void setPathState(int state){
         pathState = state;
         pathTimer.resetTimer();
-
     }
 
     public void autonomousUpdate(){
