@@ -32,4 +32,6 @@ public class Constants {
     public static void setTeam(Team team){
         TEAM = team;
     }
+
+    public static double ballXOffset = 0, ballYOffset = 0;
 }

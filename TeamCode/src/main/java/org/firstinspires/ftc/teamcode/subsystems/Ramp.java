@@ -17,6 +17,13 @@ public class Ramp {
         rampMotor = hwMap.get(DcMotorEx.class, "rampMotor");
     }
 
+    public void startRamp(){
+        rampMotor.setPower(.67);
+    }
+    public void stopRamp(){
+        rampMotor.setPower(0);
+    }
+
 
 
 
