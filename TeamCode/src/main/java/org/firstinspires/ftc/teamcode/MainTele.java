@@ -115,7 +115,7 @@ public class MainTele extends LinearOpMode {
                 break;
             case 15:
                 robot.transfer.moveBackwards();
-                if (uptakeTimer.getElapsedTimeSeconds() > 0.6){
+                if (uptakeTimer.getElapsedTimeSeconds() > 1){
                     setShooterState(1);
                 }
                break;
