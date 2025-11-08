@@ -1,10 +1,15 @@
 package org.firstinspires.ftc.teamcode;
 
+import com.acmerobotics.dashboard.config.Config;
 import com.pedropathing.util.Timer;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.Gamepad;
+import com.qualcomm.robotcore.hardware.VoltageSensor;
 
+import org.firstinspires.ftc.teamcode.subsystems.Shooter;
+
+@Config
 @TeleOp (name = "TeleOp")
 public class MainTele extends LinearOpMode {
 
@@ -23,6 +28,7 @@ public class MainTele extends LinearOpMode {
         robot.init(hardwareMap, telemetry);
         robot.driveTrain.setBrakeMode();
         robot.driveTrain.setSpeed(1);
+        double batteryVoltage = 0;
         boolean intakeOn = false;
         boolean rightBumper = false;
         shooterState = -1;
@@ -47,13 +53,15 @@ public class MainTele extends LinearOpMode {
 //                robot.ramp.stopRamp();
 //            }
 
-            if (currentGamepad1.x && !previousGamepad1.x){
+            if (currentGamepad1.right_bumper && !previousGamepad1.right_bumper){
                 if (!intakeOn){
                     robot.transfer.setIntakeMode();
                     intakeOn = true;
                 }
                 else{
                     robot.transfer.stopIntake();
+                    robot.transfer.stopRamp();
+                    robot.transfer.stopFeed();
                     intakeOn = false;
                 }
             }
@@ -65,10 +73,25 @@ public class MainTele extends LinearOpMode {
             }
 
             if (currentGamepad1.x) {
+                shooterState = 0;
+            }
+            if (currentGamepad1.b){
+                shooterState = 3;
             }
 
-
+            for (VoltageSensor sensor: hardwareMap.voltageSensor){
+                double voltage = sensor.getVoltage();;
+                if (voltage > 0){
+                    batteryVoltage = voltage;
+                    break;
+                }
+            }
             shooterUpdate();
+            telemetry.addData("Shooter vel: ", robot.shooter.getVelocity());
+            telemetry.addData("Shooter vel (raw): ", robot.shooter.shootingMotor.getVelocity());
+            telemetry.addData("Shooting state: ", shooterState);
+            telemetry.addData("Shooter is ready to shoot: ", robot.shooter.isReady(3500, 40));
+            telemetry.addData("Battery Voltage: ", batteryVoltage);
             telemetry.update();
 
 
@@ -76,25 +99,38 @@ public class MainTele extends LinearOpMode {
     }
 
     public void shooterUpdate(){
+        int tolerance;
+        double batteryVoltage;
         switch (shooterState){
+//            case -1:
+//
+//                break;
             case 0:
                 //Set power to needed velocity.
-                if (uptakeTimer.getElapsedTimeSeconds() > 2){ //TODO: make better time!!!!!
-                    setShooterState(1);
+                robot.transfer.stopRamp();
+                robot.shooter.setVelocity(3500);
+                if (robot.shooter.isReady(3300, 350)){
+                    setShooterState(15);
                 }
                 break;
-            //                robot.shooter.startUptake();
-                if (uptakeTimer.getElapsedTimeSeconds() > 1.2){
-                    robot.shooter.stopUptake();
+            case 15:
+                robot.transfer.moveBackwards();
+                if (uptakeTimer.getElapsedTimeSeconds() > 0.6){
                     setShooterState(1);
                 }
-                break;
+               break;
             case 1:
-                robot.shooter.startUptake();
-                if (uptakeTimer.getElapsedTimeSeconds() > 0.5){
-                    robot.shooter.stopUptake();
-
+                robot.transfer.setFeedMode();
+                robot.transfer.startRamp();
+                if (uptakeTimer.getElapsedTimeSeconds() > 4){
+                    setShooterState(2);
                 }
+                break;
+            case 2:
+                robot.shooter.stopShooter();
+                break;
+            case 3:
+                robot.shooter.prepShooter();
                 break;
 
         }

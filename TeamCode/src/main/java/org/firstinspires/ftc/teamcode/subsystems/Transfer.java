@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.subsystems.NextFTCSystems;
+package org.firstinspires.ftc.teamcode.subsystems;
 
 import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.DcMotor;
@@ -6,14 +6,12 @@ import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
-import org.firstinspires.ftc.teamcode.Hardware;
-
 public class Transfer{
 
     public static final double INTAKE_POWER = 1.0;
-    public static final double FEED_POWER = 0.7;
+    public static final double FEED_POWER = 1;
     public static final double RAMP_POWER = 1;
-    public static final double RAMP_INTAKE_POWER = -0.2;
+    public static final double RAMP_INTAKE_POWER = 0.65;
 
 
 
@@ -25,15 +23,14 @@ public class Transfer{
     public Transfer(HardwareMap hwMap){
         intakeServo = hwMap.get(CRServo.class, "intakeServo");
 
-
         rampMotor = hwMap.get(DcMotorEx.class, "rampMotor");
-        rampMotor.setDirection(DcMotorSimple.Direction.FORWARD);
+        rampMotor.setDirection(DcMotorSimple.Direction.REVERSE);
         rampMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         rampMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         rampMotor.setPower(0);
 
         feedMotor = hwMap.get(DcMotorEx.class, "feedMotor");
-        feedMotor.setDirection(DcMotorSimple.Direction.FORWARD);
+        feedMotor.setDirection(DcMotorSimple.Direction.REVERSE);
         feedMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         feedMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         feedMotor.setPower(0);
@@ -55,9 +52,20 @@ public class Transfer{
     public void startRamp(){
         rampMotor.setPower(RAMP_POWER);
     }
+    public void stopFeed(){
+        feedMotor.setPower(0);
+    }
+    public void setFeedIntakeMode(){feedMotor.setPower(-0.67);}
     public void setIntakeMode(){
         startIntake();
+//        setFeedIntakeMode();
         setRampIntakeMode();
+
+    }
+
+    public void moveBackwards(){
+        rampMotor.setPower(-0.3);
+        feedMotor.setPower(-0.3);
     }
     public void startFeed(){
         feedMotor.setPower(FEED_POWER);

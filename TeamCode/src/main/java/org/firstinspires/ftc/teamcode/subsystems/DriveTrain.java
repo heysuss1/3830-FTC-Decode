@@ -23,15 +23,17 @@ public class DriveTrain {
     public void init(HardwareMap hwMap, Telemetry telemetry){
         this.telemetry = telemetry;
         lf = hwMap.get(DcMotorEx.class, "lf");
+        lf.setDirection(DcMotorSimple.Direction.REVERSE);
         lf.setPower(0);
 
         rf = hwMap.get(DcMotorEx.class, "rf");
         rf.setPower(0);
+
         lb = hwMap.get(DcMotorEx.class, "lb");
+        lb.setDirection(DcMotorSimple.Direction.REVERSE);
         lb.setPower(0);
 
         rb = hwMap.get(DcMotorEx.class, "rb");
-        lb.setDirection(DcMotorSimple.Direction.REVERSE);
         rb.setPower(0);
     }
 

@@ -20,17 +20,20 @@ public class Shooter {
     //1 shooter motor, 1 servo for pitch, 1 motor to pan/turret
     public kinematics kinematics = new kinematics();
     public DcMotorEx shootingMotor;
-    public static final double TICKS_PER_REVOLUTION = 28;
+    public static final int TICKS_PER_REVOLUTION = 28;
+    public static final int SHOT_POS_VEL = 3500;
     public Servo pitchServo;
     public double pitchRaw;
 
     // hooray
 
     public Shooter(HardwareMap hwMap){
+
+//        pitchServo = hwMap.get(Servo.class, "pitchServo");
         shootingMotor = hwMap.get(DcMotorEx.class, "shootingMotor");
         shootingMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         shootingMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        shootingMotor.setDirection(DcMotorSimple.Direction.FORWARD);
+        shootingMotor.setDirection(DcMotorSimple.Direction.REVERSE);
         shootingMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
         shootingMotor.setPower(0);
     }
@@ -40,8 +43,8 @@ public class Shooter {
     }
 
     public void stopShooter(){
-        shootingMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        shootingMotor.setPower(0);
+        shootingMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        setPower(0);
     }
 
 
@@ -49,11 +52,12 @@ public class Shooter {
     Takes in rpm, converts it to ticks per second, and passes it into the function.
      */
     public void setVelocity(int velocity){
+        shootingMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         shootingMotor.setVelocity(RPMtoTPS(velocity));
     }
 
     public double RPMtoTPS(int rpm){
-        return (rpm*TICKS_PER_REVOLUTION)/60;
+        return (double)(rpm*TICKS_PER_REVOLUTION)/60;
     }
 
     public void setPitchServo(Follower follower) {
@@ -73,6 +77,9 @@ public class Shooter {
 
     public void setPower(double power){
         shootingMotor.setPower(power);
+    }
+    public void prepShooter(){
+        setVelocity(SHOT_POS_VEL);
     }
 
 }

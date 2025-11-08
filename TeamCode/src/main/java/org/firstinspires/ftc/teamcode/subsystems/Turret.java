@@ -35,7 +35,6 @@ public class Turret {
                 follower.getPose().getY(),
                 Constants.getTEAM()
         );
-
         yaw = 67; //(calculation)
 
         turretMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
