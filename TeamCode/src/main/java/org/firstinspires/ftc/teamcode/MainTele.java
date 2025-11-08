@@ -39,12 +39,23 @@ public class MainTele extends LinearOpMode {
             /*
             When the right bumper is clicked, if the intake is not on start the intake. If it is on, stop the intake.
 //             */
-            if (currentGamepad1.left_trigger > 0.1){
-                robot.intake.startIntake();
-                robot.ramp.startRamp();//wouldnt that start the intake over and over?
-            } else{
-                robot.intake.stopIntake();
-                robot.ramp.stopRamp();
+//            if (currentGamepad1.left_trigger > 0.1){
+//                robot.intake.startIntake();
+//                robot.ramp.startRamp();//wouldnt that start the intake over and over?
+//            } else{
+//                robot.intake.stopIntake();
+//                robot.ramp.stopRamp();
+//            }
+
+            if (currentGamepad1.x && !previousGamepad1.x){
+                if (!intakeOn){
+                    robot.transfer.setIntakeMode();
+                    intakeOn = true;
+                }
+                else{
+                    robot.transfer.stopIntake();
+                    intakeOn = false;
+                }
             }
 
             if (currentGamepad1.right_trigger > 0.1)
@@ -53,11 +64,7 @@ public class MainTele extends LinearOpMode {
                 robot.driveTrain.setSpeed(1);
             }
 
-            if (currentGamepad1.right_bumper && !previousGamepad1.right_bumper) {
-//                resetTimer(robot.shooter.uptakeTimer);
-//                robot.shooter.startUptake(1);
-//                //TODO: add Shoot Method
-                setShooterState(0);
+            if (currentGamepad1.x) {
             }
 
 

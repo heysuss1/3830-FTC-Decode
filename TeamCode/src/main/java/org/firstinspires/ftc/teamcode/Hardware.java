@@ -1,12 +1,10 @@
 package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.robotcore.hardware.HardwareMap;
-import com.qualcomm.robotcore.util.Range;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.teamcode.subsystems.DriveTrain;
-import org.firstinspires.ftc.teamcode.subsystems.Intake;
-import org.firstinspires.ftc.teamcode.subsystems.Ramp;
+import org.firstinspires.ftc.teamcode.subsystems.NextFTCSystems.Transfer;
 import org.firstinspires.ftc.teamcode.subsystems.Shooter;
 import org.firstinspires.ftc.teamcode.subsystems.Turret;
 import org.firstinspires.ftc.teamcode.subsystems.Vision;
@@ -16,10 +14,9 @@ public class Hardware {
     public static Hardware INSTANCE = null;
     public DriveTrain driveTrain = new DriveTrain();
 
-    public Shooter shooter = new Shooter();
-    public Ramp ramp  = new Ramp();
-    public Intake intake = new Intake();
+    public Shooter shooter;
     public Turret turret = new Turret();
+    public Transfer transfer;
     public Vision vision = new Vision();
     public double maxSpeed;
 
@@ -36,8 +33,8 @@ public class Hardware {
     public void init(HardwareMap hwMap, Telemetry telemetry){
 //        vision.init(hwMap);//TODO: add telemetry;
         driveTrain.init(hwMap, telemetry);
-        ramp.init((hwMap));
-        intake.init(hwMap); //TODO: add telemetry
+        transfer = new Transfer(hwMap);
+        shooter = new Shooter(hwMap);
 //        shooter.init(hwMap);
 //        turret.init(hwMap);
     }

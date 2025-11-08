@@ -31,7 +31,6 @@ public class ShooterTester extends LinearOpMode {
             } else {
                 robot.shooter.setPower(0);
             }
-
             dashboardTelemetry.addData("Current Vel", robot.shooter.getVelocity());
             dashboardTelemetry.update();
 

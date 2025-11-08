@@ -5,7 +5,9 @@ import static org.firstinspires.ftc.teamcode.pedroPathing.Tuning.follower;
 import com.pedropathing.follower.Follower;
 import com.pedropathing.util.Timer;
 import com.qualcomm.robotcore.hardware.CRServo;
+import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
+import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
 
@@ -18,20 +20,40 @@ public class Shooter {
     //1 shooter motor, 1 servo for pitch, 1 motor to pan/turret
     public kinematics kinematics = new kinematics();
     public DcMotorEx shootingMotor;
-    public CRServo uptakeServo;
-    public Timer uptakeTimer;
+    public static final double TICKS_PER_REVOLUTION = 28;
     public Servo pitchServo;
-    public DcMotorEx turretRotation;
     public double pitchRaw;
 
     // hooray
 
-    public void init(HardwareMap hwMap){
-//        pitchServo = hwMap.get(Servo.class, "pitchServo");
+    public Shooter(HardwareMap hwMap){
         shootingMotor = hwMap.get(DcMotorEx.class, "shootingMotor");
-        uptakeServo = hwMap.get(CRServo.class, "uptakeServo");
-         uptakeTimer = new Timer();
+        shootingMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        shootingMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        shootingMotor.setDirection(DcMotorSimple.Direction.FORWARD);
+        shootingMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
+        shootingMotor.setPower(0);
+    }
 
+    public boolean isReady(int velTarget, int tolerance){
+        return Math.abs(velTarget - getVelocity()) <= tolerance;
+    }
+
+    public void stopShooter(){
+        shootingMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        shootingMotor.setPower(0);
+    }
+
+
+    /*
+    Takes in rpm, converts it to ticks per second, and passes it into the function.
+     */
+    public void setVelocity(int velocity){
+        shootingMotor.setVelocity(RPMtoTPS(velocity));
+    }
+
+    public double RPMtoTPS(int rpm){
+        return (rpm*TICKS_PER_REVOLUTION)/60;
     }
 
     public void setPitchServo(Follower follower) {
@@ -45,17 +67,9 @@ public class Shooter {
     }
 
 
-    public void startUptake(){
-        uptakeServo.setPower(1);
-    }
 
-    public void stopUptake(){
-        uptakeServo.setPower(0);
-    }
-
-    public double getVelocity() { return shootingMotor.getVelocity(); }
-
-
+    //IN RPM
+    public double getVelocity() { return (shootingMotor.getVelocity() * 60)/28; }
 
     public void setPower(double power){
         shootingMotor.setPower(power);
