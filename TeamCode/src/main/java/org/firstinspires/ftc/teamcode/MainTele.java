@@ -1,12 +1,15 @@
 package org.firstinspires.ftc.teamcode;
 
 import com.acmerobotics.dashboard.config.Config;
+import com.pedropathing.follower.Follower;
+import com.pedropathing.geometry.Pose;
 import com.pedropathing.util.Timer;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.Gamepad;
 import com.qualcomm.robotcore.hardware.VoltageSensor;
 
+import org.firstinspires.ftc.teamcode.pedroPathing.Constants;
 import org.firstinspires.ftc.teamcode.subsystems.Shooter;
 
 @Config
@@ -21,15 +24,25 @@ public class MainTele extends LinearOpMode {
 
      */
     Hardware robot = Hardware.getInstance();
+    Follower follower;
     int shooterState;
     Timer uptakeTimer;
 
     public void runOpMode() {
         robot.init(hardwareMap, telemetry);
+        follower = Constants.createFollower(hardwareMap);
+        follower.setStartingPose(new Pose(0,0,0));
         robot.driveTrain.setBrakeMode();
-        robot.driveTrain.setSpeed(1);
+        robot.driveTrain.setSpeed(0.8);
         double batteryVoltage = 0;
         boolean intakeOn = false;
+        String team = "RED";
+        int startingState = 0;
+        String[] startingStateList = {"Red Back", "Red Goal", "Blue Back", "Blue Goal"};
+        double[] startXposes = {60, 120, 85, 24};
+        double[] startYposes = {8, 128, 8, 128};
+        double[] startHeadings = {0, 36, 0, -36};
+        boolean orienting = false;
         boolean rightBumper = false;
         shooterState = -1;
         waitForStart();
@@ -41,7 +54,7 @@ public class MainTele extends LinearOpMode {
             previousGamepad1.copy(currentGamepad1);
             currentGamepad1.copy(gamepad1);
 
-            robot.driveTrain.moveRobot(currentGamepad1);
+            robot.driveTrain.moveRobot(currentGamepad1, follower, orienting);
             /*
             When the right bumper is clicked, if the intake is not on start the intake. If it is on, stop the intake.
 //             */
@@ -66,6 +79,26 @@ public class MainTele extends LinearOpMode {
                 }
             }
 
+            if (currentGamepad1.y) {
+                robot.transfer.setFeedIntakeMode();
+            }
+
+            if (currentGamepad1.dpad_up) {
+                team = "RED";
+            }
+
+            if (currentGamepad1.dpad_down) {
+                team = "BLUE";
+            }
+
+//            if (currentGamepad1.dpad_left && !previousGamepad1.dpad_left) {
+//                startingState ++;
+//                if (startingState > 4) {startingState = 0;}
+//                follower.setPose(new Pose(startXposes[startingState], startYposes[startingState], startHeadings[startingState]));
+//            }
+
+            orienting = currentGamepad1.b;
+
             if (currentGamepad1.right_trigger > 0.1)
                 robot.driveTrain.setSpeed(0.3);
             else {
@@ -87,11 +120,13 @@ public class MainTele extends LinearOpMode {
                 }
             }
             shooterUpdate();
+            telemetry.addData("Starting position", startingStateList[startingState]);
             telemetry.addData("Shooter vel: ", robot.shooter.getVelocity());
             telemetry.addData("Shooter vel (raw): ", robot.shooter.shootingMotor.getVelocity());
             telemetry.addData("Shooting state: ", shooterState);
             telemetry.addData("Shooter is ready to shoot: ", robot.shooter.isReady(3500, 40));
             telemetry.addData("Battery Voltage: ", batteryVoltage);
+            telemetry.addData("Team", team);
             telemetry.update();
 
 
@@ -102,15 +137,12 @@ public class MainTele extends LinearOpMode {
         int tolerance;
         double batteryVoltage;
         switch (shooterState){
-//            case -1:
-//
-//                break;
             case 0:
                 //Set power to needed velocity.
                 robot.transfer.stopRamp();
                 robot.shooter.setVelocity(3500);
-                if (robot.shooter.isReady(3300, 350)){
-                    setShooterState(15);
+                if (robot.shooter.isReady(3350, 400)){
+                    setShooterState(1);
                 }
                 break;
             case 15:
@@ -128,6 +160,12 @@ public class MainTele extends LinearOpMode {
                 break;
             case 2:
                 robot.shooter.stopShooter();
+                setShooterState(25);
+                break;
+            case 25:
+                robot.transfer.stopFeed();
+                robot.transfer.stopRamp();
+                setShooterState(27);
                 break;
             case 3:
                 robot.shooter.prepShooter();

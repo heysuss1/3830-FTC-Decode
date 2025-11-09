@@ -55,7 +55,7 @@ public class Transfer{
     public void stopFeed(){
         feedMotor.setPower(0);
     }
-    public void setFeedIntakeMode(){feedMotor.setPower(-0.7);}
+    public void setFeedIntakeMode(){feedMotor.setPower(-0.2);}
     public void setIntakeMode(){
         startIntake();
         setFeedIntakeMode();

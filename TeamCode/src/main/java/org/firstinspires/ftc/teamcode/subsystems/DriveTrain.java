@@ -1,5 +1,6 @@
 package org.firstinspires.ftc.teamcode.subsystems;
 
+import com.pedropathing.follower.Follower;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
@@ -54,7 +55,7 @@ public class DriveTrain {
 
 
     //Do math to move the robot!!!
-    public void moveRobot(Gamepad gamepad1){
+    public void moveRobot(Gamepad gamepad1, Follower follower, boolean orienting){
         double forward;
         double sideways;
         double turning;
@@ -72,14 +73,28 @@ public class DriveTrain {
         }
         scaleFactor *= Math.max(Math.abs(1), 0.2);
 
-        setPower((forward - sideways - turning)*scaleFactor, (forward + sideways - turning) * scaleFactor, (forward + sideways + turning) * scaleFactor, (forward + turning - sideways) * scaleFactor);
+        if (!orienting) {
+            setPower(
+                    (forward - sideways - turning) * scaleFactor,
+                    (forward + sideways - turning) * scaleFactor,
+                    (forward + sideways + turning) * scaleFactor,
+                    (forward + turning - sideways) * scaleFactor);
+        } else {
+            setPower(
+                    1,
+                    1,
+                    1,
+                    1
+            );
+        }
     }
 
     //Set power to all of the motors at once.
-    public void setPower(double fr, double br, double fl, double bl){
+    public void setPower(double fr, double br, double fl, double bl) {
         rf.setPower(Range.clip(fr, -speed, speed));
         rb.setPower(Range.clip(br, -speed, speed));
         lf.setPower(Range.clip(fl, -speed, speed));
         lb.setPower(Range.clip(bl, -speed, speed));
     }
+
 }
