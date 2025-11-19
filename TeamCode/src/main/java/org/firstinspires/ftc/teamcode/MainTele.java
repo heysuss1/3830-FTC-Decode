@@ -72,7 +72,9 @@ public class MainTele extends LinearOpMode {
                     intakeOn = true;
                 }
                 else{
-                    robot.transfer.stopIntake();
+                    robot.transfer.
+
+                            stopIntake();
                     robot.transfer.stopRamp();
                     robot.transfer.stopFeed();
                     intakeOn = false;

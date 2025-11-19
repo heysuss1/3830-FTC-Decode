@@ -57,13 +57,16 @@ public class Shooter {
     }
 
     public double RPMtoTPS(int rpm){
-        return (double)(rpm*TICKS_PER_REVOLUTION)/60;
+        return (double)(rpm*TICKS_PER_REVOLUTION/60);
     }
+    public double TPStoRPM(double tps) {return (int)(60*tps/TICKS_PER_REVOLUTION);}
 
     public void setPitchServo(Follower follower) {
         pitchRaw = kinematics.getPitch(
                 follower.getPose().getX() + Constants.ballXOffset,
                 follower.getPose().getY() + Constants.ballYOffset,
+                536,
+                false,
                 Constants.getTEAM()
         );
         //TODO: add calculation for converting pitchRaw to servo position, prob linear
