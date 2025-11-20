@@ -13,7 +13,14 @@ public class Transfer{
     public static final double RAMP_POWER = 1;
     public static final double RAMP_INTAKE_POWER = 0.65;
 
+    public enum Transfer_state {
+        OFF,
+        MOVING_FORWARD,
+        MOVING_BACKWARD,
+        WAITING_TO_SHOOT,
+        SHOOTING,
 
+    }
 
     public DcMotorEx rampMotor;
     public CRServo intakeServo;

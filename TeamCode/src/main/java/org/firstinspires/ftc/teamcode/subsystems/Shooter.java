@@ -25,6 +25,13 @@ public class Shooter {
     public Servo pitchServo;
     public double pitchRaw;
 
+    public enum Shooter_state{
+        OFF,
+        SPEEDING_UP,
+        WAITING_FULL_SPEED,
+        SLOWING_DOWN,
+    }
+
     // hooray
 
     public Shooter(HardwareMap hwMap){
