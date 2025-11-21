@@ -28,7 +28,6 @@ public class Shooter {
     // hooray
 
     public Shooter(HardwareMap hwMap){
-
 //        pitchServo = hwMap.get(Servo.class, "pitchServo");
         shootingMotor = hwMap.get(DcMotorEx.class, "shootingMotor");
         shootingMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
@@ -37,7 +36,6 @@ public class Shooter {
         shootingMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
         shootingMotor.setPower(0);
     }
-
     public boolean isReady(int velTarget, int tolerance){
         return Math.abs(velTarget - getVelocity()) <= tolerance;
     }
@@ -60,6 +58,8 @@ public class Shooter {
         return (double)(rpm*TICKS_PER_REVOLUTION)/60;
     }
 
+
+
     public void setPitchServo(Follower follower) {
         pitchRaw = kinematics.getPitch(
                 follower.getPose().getX() + Constants.ballXOffset,
@@ -69,7 +69,6 @@ public class Shooter {
         //TODO: add calculation for converting pitchRaw to servo position, prob linear
         pitchServo.setPosition(pitchRaw); //+ calculation
     }
-
 
 
     //IN RPM
