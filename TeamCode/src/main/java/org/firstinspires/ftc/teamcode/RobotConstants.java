@@ -1,11 +1,20 @@
 package org.firstinspires.ftc.teamcode;
 
-public class Constants {
+public class RobotConstants {
     public enum Team{
         RED,
         BLUE,
     }
 
+    public enum SystemState{
+        OFF,
+        INTAKING,
+        OUTTAKING,
+        WAITING,
+        SPEEDING_UP,
+        SHOOTING,
+        SLOWING_DOWN,
+    }
     public enum Motif{
         NULL,
         GPP,
@@ -22,7 +31,7 @@ public class Constants {
     static double cameraHeight = 6.7; //Inches
     static double cameraAngle = 35; //degrees
     public static void setMotif(Motif motif) {
-        Constants.MOTIF = motif;
+        RobotConstants.MOTIF = motif;
     }
 
     public static Motif getMotif() {

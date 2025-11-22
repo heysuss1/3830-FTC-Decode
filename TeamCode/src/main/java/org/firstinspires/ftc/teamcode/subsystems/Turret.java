@@ -6,7 +6,7 @@ import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
 
-import org.firstinspires.ftc.teamcode.Constants;
+import org.firstinspires.ftc.teamcode.RobotConstants;
 import org.firstinspires.ftc.teamcode.kinematics;
 
 public class Turret {
@@ -21,7 +21,7 @@ public class Turret {
 
     public void init(HardwareMap hwMap){
         pitchServo = hwMap.get(Servo.class, "pitchServo");
-        turretMotor = hwMap.get(DcMotorEx.class,"turretRotation");
+        turretMotor = hwMap.get(DcMotorEx.class,"turretMotor");
     }
 
     public double ticksToDegrees(int ticks){
@@ -33,7 +33,7 @@ public class Turret {
         yawRaw = kinematics.getYaw(
                 follower.getPose().getX(),
                 follower.getPose().getY(),
-                Constants.getTEAM()
+                RobotConstants.getTEAM()
         );
         yaw = 67; //(calculation)
 

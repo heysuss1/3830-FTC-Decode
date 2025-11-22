@@ -29,20 +29,11 @@ public class MainTele extends LinearOpMode {
     Hardware robot = Hardware.getInstance();
     Follower follower;
     Timer shooterTimer;
-    public enum System_state {
-        OFF,
-        INTAKING,
-        OUTTAKING,
-        WAITING,
-        SPEEDING_UP,
-        SHOOTING,
-        SLOWING_DOWN,
 
-    }
-
+    RobotConstants constants = new RobotConstants();
     Shooter.Shooter_state shooterState;
     Transfer.Transfer_state transferState;
-    System_state systemState;
+    RobotConstants.SystemState systemState;
 
 
     public void runOpMode() {
@@ -62,7 +53,7 @@ public class MainTele extends LinearOpMode {
         boolean orienting = false;
         boolean rightBumper = false;
 
-        systemState = System_state.OFF;
+        systemState = RobotConstants.SystemState.OFF;
         shooterState = Shooter.Shooter_state.OFF;
         transferState = Transfer.Transfer_state.OFF;
 
@@ -79,10 +70,10 @@ public class MainTele extends LinearOpMode {
 
             if (currentGamepad1.right_bumper && !previousGamepad1.right_bumper){
                 if (!intakeOn){
-                    setRobotState(System_state.INTAKING);
+                    setRobotState(RobotConstants.SystemState.INTAKING);
                     intakeOn = true;
                 } else {
-                    setRobotState(System_state.OFF);
+                    setRobotState(RobotConstants.SystemState.OFF);
                     intakeOn = false;
                 }
             }
@@ -113,10 +104,10 @@ public class MainTele extends LinearOpMode {
             }
 
             if (currentGamepad1.x) {
-                systemState = System_state.SPEEDING_UP;
+                systemState = RobotConstants.SystemState.SPEEDING_UP;
             }
             if (currentGamepad1.b){
-                systemState = System_state.SLOWING_DOWN;
+                systemState = RobotConstants.SystemState.SLOWING_DOWN;
             }
 
             for (VoltageSensor sensor: hardwareMap.voltageSensor){
@@ -156,7 +147,7 @@ public class MainTele extends LinearOpMode {
                 //Set power to needed velocity.
                 robot.shooter.setVelocity(3500);
                 if (robot.shooter.isReady(3350, 400)){
-                    setRobotState(System_state.SHOOTING);
+                    setRobotState(RobotConstants.SystemState.SHOOTING);
                 }
                 break;
             case INTAKING:
@@ -170,7 +161,7 @@ public class MainTele extends LinearOpMode {
                 robot.transfer.setFeedMode();
                 robot.transfer.startRamp();
                 if (shooterTimer.getElapsedTimeSeconds() > 4){
-                    setRobotState(System_state.OFF);
+                    setRobotState(RobotConstants.SystemState.OFF);
                 }
                 break;
         }
@@ -179,7 +170,7 @@ public class MainTele extends LinearOpMode {
 //    public void transferUpdate(){
 //
 //    }
-    public void setRobotState(System_state state){
+    public void setRobotState(RobotConstants.SystemState state){
         systemState = state;
         shooterTimer.resetTimer();
     }

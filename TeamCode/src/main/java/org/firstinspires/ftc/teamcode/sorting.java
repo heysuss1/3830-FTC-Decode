@@ -10,7 +10,7 @@ public class sorting {
     public int[] getInstructions(String storageMotif, String targetMotif) {
         // switch on the concatenation of storageMotif and targetMotif
         int[] instruction = new int[5];
-        // default wait time
+        // default wait time (in MS)
         int D = 500;
         switch (storageMotif + " " + targetMotif) {
             case "GPP GPP": case "PGP PGP": case "PPG PPG":

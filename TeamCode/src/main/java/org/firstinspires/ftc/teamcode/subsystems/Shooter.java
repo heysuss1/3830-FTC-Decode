@@ -1,17 +1,13 @@
 package org.firstinspires.ftc.teamcode.subsystems;
 
-import static org.firstinspires.ftc.teamcode.pedroPathing.Tuning.follower;
-
 import com.pedropathing.follower.Follower;
-import com.pedropathing.util.Timer;
-import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
 
-import org.firstinspires.ftc.teamcode.Constants;
+import org.firstinspires.ftc.teamcode.RobotConstants;
 import org.firstinspires.ftc.teamcode.kinematics;
 
 public class Shooter {
@@ -70,11 +66,11 @@ public class Shooter {
 
     public void setPitchServo(Follower follower) {
         pitchRaw = kinematics.getPitch(
-                follower.getPose().getX() + Constants.ballXOffset,
-                follower.getPose().getY() + Constants.ballYOffset,
+                follower.getPose().getX() + RobotConstants.ballXOffset,
+                follower.getPose().getY() + RobotConstants.ballYOffset,
                 536,
                 false,
-                Constants.getTEAM()
+                RobotConstants.getTEAM()
         );
         //TODO: add calculation for converting pitchRaw to servo position, prob linear
         pitchServo.setPosition(pitchRaw); //+ calculation

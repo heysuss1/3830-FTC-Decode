@@ -3,12 +3,10 @@ package org.firstinspires.ftc.teamcode.autos;
 import com.pedropathing.follower.Follower;
 import com.pedropathing.geometry.BezierLine;
 import com.pedropathing.geometry.Pose;
-import com.pedropathing.paths.PathBuilder;
 import com.pedropathing.paths.PathChain;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 
-import org.firstinspires.ftc.robotcore.external.Const;
-import org.firstinspires.ftc.teamcode.Constants;
+import org.firstinspires.ftc.teamcode.RobotConstants;
 import org.firstinspires.ftc.teamcode.Hardware;
 
 public class BlueSideAuto extends OpMode {
@@ -79,13 +77,13 @@ public class BlueSideAuto extends OpMode {
     }
     public void init_loop() {
         if (gamepad1.dpad_left) {
-            Constants.setTeam(Constants.Team.BLUE);
+            RobotConstants.setTeam(RobotConstants.Team.BLUE);
         }
         if (gamepad1.dpad_right) {
-            Constants.setTeam(Constants.Team.RED);
+            RobotConstants.setTeam(RobotConstants.Team.RED);
         }
 
-        telemetry.addData("Team Color: ", Constants.getTEAM());
+        telemetry.addData("Team Color: ", RobotConstants.getTEAM());
         telemetry.update();
     }
 
@@ -96,8 +94,8 @@ public class BlueSideAuto extends OpMode {
 
     }
     public void loop(){
-        if (robot.vision.getMotif() != Constants.Motif.NULL){
-            Constants.setMotif(robot.vision.getMotif());
+        if (robot.vision.getMotif() != RobotConstants.Motif.NULL){
+            RobotConstants.setMotif(robot.vision.getMotif());
             startAuto = true;
         }
 
