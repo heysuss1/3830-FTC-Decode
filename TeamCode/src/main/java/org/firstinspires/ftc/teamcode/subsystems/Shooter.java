@@ -32,7 +32,7 @@ public class Shooter {
 
     public Shooter(HardwareMap hwMap){
 
-//        pitchServo = hwMap.get(Servo.class, "pitchServo");
+        pitchServo = hwMap.get(Servo.class, "pitchServo");
         shootingMotor = hwMap.get(DcMotorEx.class, "shootingMotor");
         shootingMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         shootingMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);

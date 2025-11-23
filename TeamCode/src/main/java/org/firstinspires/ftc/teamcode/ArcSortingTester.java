@@ -21,7 +21,6 @@ public class ArcSortingTester extends LinearOpMode {
         switch (arcShooterUpdate){
             case 0:
 
-
         }
     }
 

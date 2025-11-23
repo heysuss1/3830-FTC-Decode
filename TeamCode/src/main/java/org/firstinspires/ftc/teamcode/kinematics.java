@@ -40,9 +40,9 @@ public class kinematics {
         return Math.sqrt(Math.pow(y_ball-Y_GOAL,2)+Math.pow(x_ball-x_goal,2));
     }
 
-    public double getYaw(double x_ball, double y_ball, RobotConstants.Team team){
-        double x_goal = team == RobotConstants.Team.BLUE ? 132: 12;
-        return Math.atan2(y_ball-Y_GOAL, x_ball-x_goal);
+    public static double getYaw(double x_ball, double y_ball, RobotConstants.Team team){
+        double x_goal = team == RobotConstants.Team.BLUE ? 12: 132;
+        return Math.toDegrees(Math.atan2(y_ball-Y_GOAL, x_ball-x_goal));
     }
 
 //    double distance = Math.sqrt(Math.pow(y_ball-y_goal,2)+Math.pow(x_ball-x_goal,2));
