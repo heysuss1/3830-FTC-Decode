@@ -29,8 +29,6 @@ public class Turret {
         turretMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         turretMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         turretMotor.setPower(0);
-
-
     }
 
     public int degreesToTicks(double degrees){
@@ -38,17 +36,15 @@ public class Turret {
         return ticks;
     }
 
-    public void setYaw(Follower follower) {
+    public double setYaw(Follower follower) {
         yawRaw = kinematics.getYaw(
                 follower.getPose().getX(),
                 follower.getPose().getY(),
                 RobotConstants.getTEAM()
         );
-        yaw = 67; //(calculation)
+        return yawRaw;
 
-        turretMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        //TODO: calculate yawRaw to target position
-        turretMotor.setTargetPosition(yaw);// + calculation
+
     }
 
 }
