@@ -23,12 +23,12 @@ public class Transfer{
     }
 
     public DcMotorEx rampMotor;
-    public CRServo intakeServo;
+    public DcMotorEx intakeMotor;
     public DcMotorEx feedMotor;
 
 
     public Transfer(HardwareMap hwMap){
-        intakeServo = hwMap.get(CRServo.class, "intakeServo");
+        intakeMotor = hwMap.get(DcMotorEx.class, "intakeMotor");
 
         rampMotor = hwMap.get(DcMotorEx.class, "rampMotor");
         rampMotor.setDirection(DcMotorSimple.Direction.REVERSE);
@@ -44,10 +44,10 @@ public class Transfer{
     }
 
     public void startIntake(){
-        intakeServo.setPower(INTAKE_POWER);
+        intakeMotor.setPower(INTAKE_POWER);
     }
     public void stopIntake(){
-        intakeServo.setPower(0);
+        intakeMotor.setPower(0);
     }
     public void stopRamp(){
         rampMotor.setPower(0);
