@@ -42,7 +42,8 @@ public class kinematics {
 
     public static double getYaw(double x_ball, double y_ball, RobotConstants.Team team){
         double x_goal = team == RobotConstants.Team.BLUE ? 12: 132;
-        return Math.toDegrees(Math.atan2(Math.abs(x_ball-x_goal), Math.abs(y_ball-140.8))) * -1;
+        return Math.toDegrees(Math.atan2((y_ball-140.8), (x_ball-x_goal)))+180;
+       
     }
 
 //    double distance = Math.sqrt(Math.pow(y_ball-y_goal,2)+Math.pow(x_ball-x_goal,2));
