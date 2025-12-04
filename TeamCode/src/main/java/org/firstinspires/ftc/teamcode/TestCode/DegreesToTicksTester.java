@@ -37,6 +37,10 @@ public class DegreesToTicksTester extends LinearOpMode {
             robot.turret.turretMotor.setPower(0.1);
             ticks = robot.turret.turretMotor.getCurrentPosition();
             degrees = (ticks/TICKS_PER_REV * gearRatio) * 360;
+
+
+
+            
             dashboardTelemetry.addData("turret ticks",robot.turret.turretMotor.getCurrentPosition());
             dashboardTelemetry.addData("Degrees", degrees);
             dashboardTelemetry.addData("Degrees in Ticks", robot.turret.degreesToTicks(targetDegree));

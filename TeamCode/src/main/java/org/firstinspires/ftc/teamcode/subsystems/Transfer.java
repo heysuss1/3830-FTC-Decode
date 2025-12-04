@@ -70,6 +70,13 @@ public class Transfer{
 
     }
 
+    public void setIntakeOff(){
+        stopFeed();
+        stopIntake();
+        stopRamp();
+    }
+
+
     public void moveBackwards(){
         rampMotor.setPower(-0.4);
         feedMotor.setPower(-0.6);

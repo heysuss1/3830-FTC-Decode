@@ -24,8 +24,6 @@ public class MainTele extends LinearOpMode {
     TODO: square - open gate
 
     */
-
-
     Hardware robot = Hardware.getInstance();
     Follower follower;
     Timer shooterTimer;
