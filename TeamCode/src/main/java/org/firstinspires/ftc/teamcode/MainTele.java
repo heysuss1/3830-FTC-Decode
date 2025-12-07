@@ -48,6 +48,8 @@ public class MainTele extends LinearOpMode {
         double[] startXposes = {60, 120, 85, 24};
         double[] startYposes = {8, 128, 8, 128};
         double[] startHeadings = {0, 36, 0, -36};
+        double prevV;
+        double currentV = 0;
         boolean orienting = false;
         boolean rightBumper = false;
 
@@ -61,6 +63,8 @@ public class MainTele extends LinearOpMode {
         Gamepad previousGamepad1 = new Gamepad();
 
         while (opModeIsActive()){
+            prevV = currentV;
+            currentV = robot.turret.getDegrees();
             previousGamepad1.copy(currentGamepad1);
             currentGamepad1.copy(gamepad1);
 
@@ -125,6 +129,7 @@ public class MainTele extends LinearOpMode {
             telemetry.addData("Shooter is ready to shoot: ", robot.shooter.isReady(3500, 40));
             telemetry.addData("Battery Voltage: ", batteryVoltage);
             telemetry.addData("Team", team);
+            telemetry.addData("Rotations", robot.turret.servoRotations);
             telemetry.update();
 
 

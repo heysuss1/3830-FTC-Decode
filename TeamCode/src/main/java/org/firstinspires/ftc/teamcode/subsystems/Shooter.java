@@ -40,7 +40,6 @@ public class Shooter {
         shootingMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
         shootingMotor.setPower(0);
     }
-
     public boolean isReady(int velTarget, int tolerance){
         return Math.abs(velTarget - getVelocity()) <= tolerance;
     }
@@ -64,6 +63,8 @@ public class Shooter {
     }
     public double TPStoRPM(double tps) {return (int)(60*tps/TICKS_PER_REVOLUTION);}
 
+
+
     public void setPitchServo(Follower follower) {
         pitchRaw = kinematics.getPitch(
                 follower.getPose().getX() + RobotConstants.ballXOffset,
@@ -75,7 +76,6 @@ public class Shooter {
         //TODO: add calculation for converting pitchRaw to servo position, prob linear
         pitchServo.setPosition(pitchRaw); //+ calculation
     }
-
 
 
     //IN RPM
