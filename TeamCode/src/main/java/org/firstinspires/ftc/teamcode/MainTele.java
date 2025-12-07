@@ -141,19 +141,15 @@ public class MainTele extends LinearOpMode {
                 robot.transfer.stopIntake();
                 robot.transfer.stopFeed();
                 break;
+            case INTAKING:
+                robot.transfer.setIntakeMode();
+                break;
             case SPEEDING_UP:
                 //Set power to needed velocity.
                 robot.shooter.setVelocity(3500);
                 if (robot.shooter.isReady(3350, 400)){
                     setRobotState(RobotConstants.SystemState.SHOOTING);
                 }
-                break;
-            case INTAKING:
-                robot.transfer.setFeedMode();
-                break;
-            case OUTTAKING:
-                break;
-            case WAITING:
                 break;
             case SHOOTING:
                 robot.transfer.setFeedMode();
@@ -162,6 +158,11 @@ public class MainTele extends LinearOpMode {
                     setRobotState(RobotConstants.SystemState.OFF);
                 }
                 break;
+            case OUTTAKING:
+                break;
+            case WAITING:
+                break;
+
         }
     }
 

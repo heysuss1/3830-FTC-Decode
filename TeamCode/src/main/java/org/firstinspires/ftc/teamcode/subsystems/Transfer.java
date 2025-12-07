@@ -6,6 +6,8 @@ import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
+import org.firstinspires.ftc.teamcode.Hardware;
+
 public class Transfer{
 
     public static final double INTAKE_POWER = 1.0;
@@ -25,6 +27,7 @@ public class Transfer{
     public DcMotorEx rampMotor;
     public DcMotorEx intakeMotor;
     public DcMotorEx feedMotor;
+
 
 
     public Transfer(HardwareMap hwMap){
@@ -70,7 +73,7 @@ public class Transfer{
 
     }
 
-    public void setIntakeOff(){
+    public void stopTransfer(){
         stopFeed();
         stopIntake();
         stopRamp();
