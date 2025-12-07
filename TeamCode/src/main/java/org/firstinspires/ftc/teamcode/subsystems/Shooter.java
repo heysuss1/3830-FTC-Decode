@@ -1,17 +1,13 @@
 package org.firstinspires.ftc.teamcode.subsystems;
 
-import static org.firstinspires.ftc.teamcode.pedroPathing.Tuning.follower;
-
 import com.pedropathing.follower.Follower;
-import com.pedropathing.util.Timer;
-import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
 
-import org.firstinspires.ftc.teamcode.Constants;
+import org.firstinspires.ftc.teamcode.RobotConstants;
 import org.firstinspires.ftc.teamcode.kinematics;
 
 public class Shooter {
@@ -25,10 +21,18 @@ public class Shooter {
     public Servo pitchServo;
     public double pitchRaw;
 
+    public enum Shooter_state{
+        OFF,
+        SPEEDING_UP,
+        WAITING_FULL_SPEED,
+        SLOWING_DOWN,
+    }
+
     // hooray
 
     public Shooter(HardwareMap hwMap){
-//        pitchServo = hwMap.get(Servo.class, "pitchServo");
+
+        pitchServo = hwMap.get(Servo.class, "pitchServo");
         shootingMotor = hwMap.get(DcMotorEx.class, "shootingMotor");
         shootingMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         shootingMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
@@ -55,16 +59,19 @@ public class Shooter {
     }
 
     public double RPMtoTPS(int rpm){
-        return (double)(rpm*TICKS_PER_REVOLUTION)/60;
+        return (double)(rpm*TICKS_PER_REVOLUTION/60);
     }
+    public double TPStoRPM(double tps) {return (int)(60*tps/TICKS_PER_REVOLUTION);}
 
 
 
     public void setPitchServo(Follower follower) {
         pitchRaw = kinematics.getPitch(
-                follower.getPose().getX() + Constants.ballXOffset,
-                follower.getPose().getY() + Constants.ballYOffset,
-                Constants.getTEAM()
+                follower.getPose().getX() + RobotConstants.ballXOffset,
+                follower.getPose().getY() + RobotConstants.ballYOffset,
+                536,
+                false,
+                RobotConstants.getTEAM()
         );
         //TODO: add calculation for converting pitchRaw to servo position, prob linear
         pitchServo.setPosition(pitchRaw); //+ calculation

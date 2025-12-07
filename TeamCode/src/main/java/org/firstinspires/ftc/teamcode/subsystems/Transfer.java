@@ -6,6 +6,8 @@ import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
+import org.firstinspires.ftc.teamcode.Hardware;
+
 public class Transfer{
 
     public static final double INTAKE_POWER = 1.0;
@@ -13,15 +15,23 @@ public class Transfer{
     public static final double RAMP_POWER = 1;
     public static final double RAMP_INTAKE_POWER = 0.65;
 
+    public enum Transfer_state {
+        OFF,
+        MOVING_FORWARD,
+        MOVING_BACKWARD,
+        WAITING_TO_SHOOT,
+        SHOOTING,
 
+    }
 
     public DcMotorEx rampMotor;
-    public CRServo intakeServo;
+    public DcMotorEx intakeMotor;
     public DcMotorEx feedMotor;
 
 
+
     public Transfer(HardwareMap hwMap){
-        intakeServo = hwMap.get(CRServo.class, "intakeServo");
+        intakeMotor = hwMap.get(DcMotorEx.class, "intakeMotor");
 
         rampMotor = hwMap.get(DcMotorEx.class, "rampMotor");
         rampMotor.setDirection(DcMotorSimple.Direction.REVERSE);
@@ -37,10 +47,10 @@ public class Transfer{
     }
 
     public void startIntake(){
-        intakeServo.setPower(INTAKE_POWER);
+        intakeMotor.setPower(INTAKE_POWER);
     }
     public void stopIntake(){
-        intakeServo.setPower(0);
+        intakeMotor.setPower(0);
     }
     public void stopRamp(){
         rampMotor.setPower(0);
@@ -62,6 +72,13 @@ public class Transfer{
         setRampIntakeMode();
 
     }
+
+    public void stopTransfer(){
+        stopFeed();
+        stopIntake();
+        stopRamp();
+    }
+
 
     public void moveBackwards(){
         rampMotor.setPower(-0.4);

@@ -7,7 +7,7 @@ import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
 
-import org.firstinspires.ftc.teamcode.Constants;
+import org.firstinspires.ftc.teamcode.RobotConstants;
 import org.firstinspires.ftc.teamcode.kinematics;
 
 public class Turret {
@@ -15,6 +15,10 @@ public class Turret {
 
     public DcMotorEx turretMotor;
     public double servoRotations = 0;
+
+    public double gearRatio = 0.3819;
+
+    public final double TICKS_PER_REV = 142.8;
 
     public kinematics kinematics = new kinematics();
 
@@ -38,26 +42,26 @@ public class Turret {
 
     public void init(HardwareMap hwMap){
         pitchServo = hwMap.get(Servo.class, "pitchServo");
-        turretMotor = hwMap.get(DcMotorEx.class,"turretRotation");
-        analogInput = hwMap.get(AnalogInput.class, "analogInput");
+        turretMotor = hwMap.get(DcMotorEx.class,"turretMotor");
+        turretMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        turretMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        turretMotor.setPower(0);
     }
 
-    public double ticksToDegrees(int ticks){
-        double turretConversion = 6.7; //Change!!!
-        return ticks * turretConversion;
+    public int degreesToTicks(double degrees){
+        int ticks = (int)Math.round((degrees/(360.0 * gearRatio)) * TICKS_PER_REV); //Change!!!
+        return ticks;
     }
 
-    public void setYaw(Follower follower) {
+    public double setYaw(Follower follower) {
         yawRaw = kinematics.getYaw(
                 follower.getPose().getX(),
                 follower.getPose().getY(),
-                Constants.getTEAM()
+                RobotConstants.getTEAM()
         );
-        yaw = 67; //(calculation)
+        return yawRaw;
 
-        turretMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        //TODO: calculate yawRaw to target position
-        turretMotor.setTargetPosition(yaw);// + calculation
+
     }
 
 }

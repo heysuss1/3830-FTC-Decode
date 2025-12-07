@@ -1,15 +1,10 @@
 package org.firstinspires.ftc.teamcode.subsystems;
 
 import com.qualcomm.hardware.limelightvision.LLResult;
-import com.qualcomm.hardware.limelightvision.LLResultTypes;
 import com.qualcomm.hardware.limelightvision.Limelight3A;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
-import org.firstinspires.ftc.teamcode.Constants;
-
-import java.io.IOException;
-import java.net.HttpURLConnection;
-import java.net.URL;
+import org.firstinspires.ftc.teamcode.RobotConstants;
 
 public class Vision {
 
@@ -24,12 +19,12 @@ public class Vision {
 
 
 
-    public Constants.Motif getMotif(){
+    public RobotConstants.Motif getMotif(){
         LLResult result = limelight.getLatestResult();
 
 
         int id;
-        Constants.Motif motif = Constants.Motif.NULL;
+        RobotConstants.Motif motif = RobotConstants.Motif.NULL;
         if (result != null && result.isValid() && !result.getFiducialResults().isEmpty()){
             id = result.getFiducialResults().get(0).getFiducialId();
         } else {
@@ -37,13 +32,13 @@ public class Vision {
         }
         switch (id){
             case 21:
-                motif = Constants.Motif.GPP;
+                motif = RobotConstants.Motif.GPP;
                 break;
             case 22:
-                motif = Constants.Motif.PGP;
+                motif = RobotConstants.Motif.PGP;
                 break;
             case 23:
-                motif = Constants.Motif.PPG;
+                motif = RobotConstants.Motif.PPG;
                 break;
         }
         return motif;

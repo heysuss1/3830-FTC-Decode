@@ -23,6 +23,8 @@ public class Hardware {
 
 
 
+
+
     public static Hardware getInstance(){
         if (INSTANCE == null){
             INSTANCE = new Hardware();
@@ -38,5 +40,4 @@ public class Hardware {
 //        shooter.init(hwMap);
 //        turret.init(hwMap);
     }
-
 }
