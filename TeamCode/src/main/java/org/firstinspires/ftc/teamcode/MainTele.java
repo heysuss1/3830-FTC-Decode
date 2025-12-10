@@ -63,8 +63,8 @@ public class MainTele extends LinearOpMode {
         Gamepad previousGamepad1 = new Gamepad();
 
         while (opModeIsActive()){
-            prevV = currentV;
-            currentV = robot.turret.getDegrees();
+//            prevV = currentV;
+//            currentV = robot.turret.getDegrees();
             previousGamepad1.copy(currentGamepad1);
             currentGamepad1.copy(gamepad1);
 
@@ -80,9 +80,12 @@ public class MainTele extends LinearOpMode {
                 }
             }
             if (currentGamepad1.y) {
-                robot.transfer.setFeedIntakeMode();
+                robot.transfer.startFeed();
             }
 
+            if (currentGamepad1.circle){
+                robot.transfer.moveBackwards();
+            }
             if (currentGamepad1.dpad_up) {
                 team = "RED";
             }
@@ -112,24 +115,22 @@ public class MainTele extends LinearOpMode {
                 systemState = RobotConstants.SystemState.SLOWING_DOWN;
             }
 
-            for (VoltageSensor sensor: hardwareMap.voltageSensor){
-                double voltage = sensor.getVoltage();;
-                if (voltage > 0){
-                    batteryVoltage = voltage;
-                    break;
-                }
-            }
+//            for (VoltageSensor sensor: hardwareMap.voltageSensor){
+//                double voltage = sensor.getVoltage();;
+//                if (voltage > 0){
+//                    batteryVoltage = voltage;
+//                    break;
+//                }
+//            }
             updateRobotState();
             telemetry.addData("Starting position", startingStateList[startingState]);
-            telemetry.addData("Shooter vel: ", robot.shooter.getVelocity());
-            telemetry.addData("Shooter vel (raw): ", robot.shooter.shootingMotor.getVelocity());
+//            telemetry.addData("Shooter vel: ", robot.shooter.getVelocity());
+//            telemetry.addData("Shooter vel (raw): ", robot.shooter.shootingMotor.getVelocity());
             telemetry.addData("System state: ", systemState);
             telemetry.addData("Shooting state: ", shooterState);
             telemetry.addData("Transfer state: ", transferState);
-            telemetry.addData("Shooter is ready to shoot: ", robot.shooter.isReady(3500, 40));
-            telemetry.addData("Battery Voltage: ", batteryVoltage);
+//            telemetry.addData("Shooter is ready to shoot: ", robot.shooter.isReady(3500, 40));
             telemetry.addData("Team", team);
-            telemetry.addData("Rotations", robot.turret.servoRotations);
             telemetry.update();
 
 
@@ -141,8 +142,7 @@ public class MainTele extends LinearOpMode {
         double batteryVoltage;
         switch (systemState){
             case OFF:
-                robot.shooter.stopShooter();
-                robot.transfer.stopRamp();
+//                robot.shooter.stopShooter();
                 robot.transfer.stopIntake();
                 robot.transfer.stopFeed();
                 break;
@@ -158,7 +158,7 @@ public class MainTele extends LinearOpMode {
                 break;
             case SHOOTING:
                 robot.transfer.setFeedMode();
-                robot.transfer.startRamp();
+                robot.transfer.startFeed();
                 if (shooterTimer.getElapsedTimeSeconds() > 4){
                     setRobotState(RobotConstants.SystemState.OFF);
                 }

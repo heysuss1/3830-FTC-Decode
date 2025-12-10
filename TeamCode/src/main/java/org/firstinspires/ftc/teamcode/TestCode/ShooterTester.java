@@ -26,18 +26,12 @@ public class ShooterTester extends LinearOpMode {
         waitForStart();
         while(opModeIsActive()){
 
-            if (gamepad1.right_trigger > 0.3){
-                robot.shooter.setVelocity(velocity);
-            } else {
-                robot.shooter.stopShooter();
-            }
+//            if (gamepad1.right_trigger > 0.3){
+//                robot.shooter.setVelocity(velocity);
+//            } else {
+//                robot.shooter.stopShooter();
+//            }
 
-            if (gamepad1.x){
-                robot.transfer.startRamp();
-            }
-            else{
-                robot.transfer.stopRamp();
-            }
 
 
             if (gamepad1.y){

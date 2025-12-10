@@ -36,8 +36,7 @@ public class Hardware {
 //        vision.init(hwMap);//TODO: add telemetry;
         driveTrain.init(hwMap, telemetry);
         transfer = new Transfer(hwMap);
-        shooter = new Shooter(hwMap);
-//        shooter.init(hwMap);
+//        shooter = new Shooter(hwMap);
 //        turret.init(hwMap);
     }
 }

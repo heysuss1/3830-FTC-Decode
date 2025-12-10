@@ -147,7 +147,7 @@ public class RedSideAuto extends OpMode {
                 break;
             case FEED_BALLS:
                 robot.transfer.setFeedMode();
-                robot.transfer.startRamp();
+                robot.transfer.startFeed();
                 if (shooterTimer.getElapsedTimeSeconds() > 4) {
                     robot.transfer.stopTransfer();
                     setShooterState(ShooterState.DONE);
@@ -313,8 +313,8 @@ public class RedSideAuto extends OpMode {
     }
     public void loop(){
         autonomousUpdate();
-        actionUpdate();
-        shooterUpdate();
+//        actionUpdate();
+//        shooterUpdate();
         follower.update();
         telemetry.addData("Current Action State", actionState);
         telemetry.addData("Current Path State", pathState);

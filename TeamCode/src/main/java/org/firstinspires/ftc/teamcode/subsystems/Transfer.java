@@ -32,12 +32,16 @@ public class Transfer{
 
     public Transfer(HardwareMap hwMap){
         intakeMotor = hwMap.get(DcMotorEx.class, "intakeMotor");
+        intakeMotor.setDirection(DcMotorSimple.Direction.REVERSE);
+        intakeMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        intakeMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        intakeMotor.setPower(0);
 
-        rampMotor = hwMap.get(DcMotorEx.class, "rampMotor");
-        rampMotor.setDirection(DcMotorSimple.Direction.REVERSE);
-        rampMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        rampMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        rampMotor.setPower(0);
+//        rampMotor = hwMap.get(DcMotorEx.class, "rampMotor");
+//        rampMotor.setDirection(DcMotorSimple.Direction.REVERSE);
+//        rampMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+//        rampMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+//        rampMotor.setPower(0);
 
         feedMotor = hwMap.get(DcMotorEx.class, "feedMotor");
         feedMotor.setDirection(DcMotorSimple.Direction.REVERSE);
@@ -52,44 +56,40 @@ public class Transfer{
     public void stopIntake(){
         intakeMotor.setPower(0);
     }
-    public void stopRamp(){
-        rampMotor.setPower(0);
-    }
+//    public void stopRamp(){
+//        rampMotor.setPower(0);
+//    }
 
     public void setRampIntakeMode(){
         rampMotor.setPower(RAMP_INTAKE_POWER);
     }
-    public void startRamp(){
-        rampMotor.setPower(RAMP_POWER);
-    }
+//    public void startRamp(){
+//        rampMotor.setPower(RAMP_POWER);
+//    }
     public void stopFeed(){
         feedMotor.setPower(0);
     }
-    public void setFeedIntakeMode(){feedMotor.setPower(-0.2);}
+    public void setFeedIntakeMode(){feedMotor.setPower(0.1);}
     public void setIntakeMode(){
         startIntake();
         setFeedIntakeMode();
-        setRampIntakeMode();
-
     }
 
     public void stopTransfer(){
         stopFeed();
         stopIntake();
-        stopRamp();
     }
 
 
     public void moveBackwards(){
-        rampMotor.setPower(-0.4);
         feedMotor.setPower(-0.6);
+        intakeMotor.setPower(-0.5);
     }
     public void startFeed(){
-        feedMotor.setPower(FEED_POWER);
+        feedMotor.setPower(1);
     }
     public void setFeedMode(){
         startIntake();
-        startRamp();
         startFeed();
     }
 }

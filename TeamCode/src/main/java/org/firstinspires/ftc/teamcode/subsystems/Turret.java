@@ -29,13 +29,13 @@ public class Turret {
         return (volt-0.5) * (360.0/4.0);
     }
 
-    public double getDegrees(){
-        double volt = analogInput.getVoltage();
-        return (volt-0.5) * (360.0/4.0);
-    }
-    public double getServoVel(){
-        return analogInput.getVoltage();
-    }
+//    public double getDegrees(){
+//        double volt = analogInput.getVoltage();
+//        return (volt-0.5) * (360.0/4.0);
+//    }
+//    public double getServoVel(){
+//        return analogInput.getVoltage();
+//    }
     public void updateRotations(int rotations){
         servoRotations = rotations;
     }
