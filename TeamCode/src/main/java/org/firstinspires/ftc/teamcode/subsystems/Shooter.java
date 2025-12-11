@@ -15,7 +15,8 @@ public class Shooter {
 
     //1 shooter motor, 1 servo for pitch, 1 motor to pan/turret
     public kinematics kinematics = new kinematics();
-    public DcMotorEx shootingMotor;
+    public DcMotorEx topShooterMotor;
+    public DcMotorEx bottomShooterMotor;
     public static final int TICKS_PER_REVOLUTION = 28;
     public static final int SHOT_POS_VEL = 3500;
     public Servo pitchServo;
@@ -32,20 +33,30 @@ public class Shooter {
 
     public Shooter(HardwareMap hwMap){
 
-        pitchServo = hwMap.get(Servo.class, "pitchServo");
-        shootingMotor = hwMap.get(DcMotorEx.class, "shootingMotor");
-        shootingMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        shootingMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        shootingMotor.setDirection(DcMotorSimple.Direction.REVERSE);
-        shootingMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
-        shootingMotor.setPower(0);
+//        pitchServo = hwMap.get(Servo.class, "pitchServo");
+
+        topShooterMotor = hwMap.get(DcMotorEx.class, "topShooterMotor");
+        topShooterMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        topShooterMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        topShooterMotor.setDirection(DcMotorSimple.Direction.REVERSE);
+        topShooterMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
+        topShooterMotor.setPower(0);
+
+        bottomShooterMotor = hwMap.get(DcMotorEx.class, "bottomShooterMotor");
+        bottomShooterMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        bottomShooterMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        bottomShooterMotor.setDirection(DcMotorSimple.Direction.FORWARD);
+        bottomShooterMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
+        bottomShooterMotor.setPower(0);
+
     }
     public boolean isReady(int velTarget, int tolerance){
         return Math.abs(velTarget - getVelocity()) <= tolerance;
     }
 
     public void stopShooter(){
-        shootingMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        topShooterMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        bottomShooterMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         setPower(0);
     }
 
@@ -54,8 +65,12 @@ public class Shooter {
     Takes in rpm, converts it to ticks per second, and passes it into the function.
      */
     public void setVelocity(int velocity){
-        shootingMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        shootingMotor.setVelocity(RPMtoTPS(velocity));
+        topShooterMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        topShooterMotor.setVelocity(RPMtoTPS(velocity));
+        bottomShooterMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        bottomShooterMotor.setVelocity(RPMtoTPS(velocity));
+        
+        
     }
 
     public double RPMtoTPS(int rpm){
@@ -79,10 +94,10 @@ public class Shooter {
 
 
     //IN RPM
-    public double getVelocity() { return (shootingMotor.getVelocity() * 60)/28; }
+    public double getVelocity() { return (topShooterMotor.getVelocity() * 60)/TICKS_PER_REVOLUTION; }
 
     public void setPower(double power){
-        shootingMotor.setPower(power);
+        topShooterMotor.setPower(power);
     }
     public void prepShooter(){
         setVelocity(SHOT_POS_VEL);

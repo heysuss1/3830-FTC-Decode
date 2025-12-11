@@ -124,8 +124,8 @@ public class MainTele extends LinearOpMode {
 //            }
             updateRobotState();
             telemetry.addData("Starting position", startingStateList[startingState]);
-//            telemetry.addData("Shooter vel: ", robot.shooter.getVelocity());
-//            telemetry.addData("Shooter vel (raw): ", robot.shooter.shootingMotor.getVelocity());
+            telemetry.addData("Shooter vel: ", robot.shooter.getVelocity());
+            telemetry.addData("Shooter vel (raw): ", robot.shooter.topShooterMotor.getVelocity());
             telemetry.addData("System state: ", systemState);
             telemetry.addData("Shooting state: ", shooterState);
             telemetry.addData("Transfer state: ", transferState);
@@ -142,7 +142,7 @@ public class MainTele extends LinearOpMode {
         double batteryVoltage;
         switch (systemState){
             case OFF:
-//                robot.shooter.stopShooter();
+                robot.shooter.stopShooter();
                 robot.transfer.stopIntake();
                 robot.transfer.stopFeed();
                 break;
@@ -158,7 +158,6 @@ public class MainTele extends LinearOpMode {
                 break;
             case SHOOTING:
                 robot.transfer.setFeedMode();
-                robot.transfer.startFeed();
                 if (shooterTimer.getElapsedTimeSeconds() > 4){
                     setRobotState(RobotConstants.SystemState.OFF);
                 }
