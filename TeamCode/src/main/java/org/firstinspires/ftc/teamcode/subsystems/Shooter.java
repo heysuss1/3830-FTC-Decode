@@ -59,9 +59,9 @@ public class Shooter {
     }
 
     public double RPMtoTPS(int rpm){
-        return (double)(rpm*TICKS_PER_REVOLUTION/60);
+        return (rpm*TICKS_PER_REVOLUTION/60);
     }
-    public double TPStoRPM(double tps) {return (int)(60*tps/TICKS_PER_REVOLUTION);}
+    public double TPStoRPM(double tps) {return (60*tps/TICKS_PER_REVOLUTION);}
 
 
 

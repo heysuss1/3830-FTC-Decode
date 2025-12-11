@@ -13,5 +13,5 @@ public class AxonDegreesToTicksTester {
     Telemetry dashboardTelemetry = dashboard.getTelemetry();
     public static int targetDegree;
     public static double servoPosition;
-    
+
 }
