@@ -12,6 +12,7 @@ import com.qualcomm.robotcore.hardware.VoltageSensor;
 import org.firstinspires.ftc.teamcode.pedroPathing.Constants;
 import org.firstinspires.ftc.teamcode.subsystems.Shooter;
 import org.firstinspires.ftc.teamcode.subsystems.Transfer;
+import org.firstinspires.ftc.teamcode.subsystems.VelocityController;
 
 @Config
 @TeleOp (name = "TeleOp")
@@ -28,10 +29,12 @@ public class MainTele extends LinearOpMode {
     Follower follower;
     Timer shooterTimer;
 
+    VelocityController velController = new VelocityController();
     RobotConstants constants = new RobotConstants();
     Shooter.Shooter_state shooterState;
     Transfer.Transfer_state transferState;
     RobotConstants.SystemState systemState;
+    int shotCounter = 0;
 
 
     public void runOpMode() {
@@ -63,8 +66,8 @@ public class MainTele extends LinearOpMode {
         Gamepad previousGamepad1 = new Gamepad();
 
         while (opModeIsActive()){
-//            prevV = currentV;
-//            currentV = robot.turret.getDegrees();
+            prevV = currentV;
+            currentV = robot.shooter.getVelocity();
             previousGamepad1.copy(currentGamepad1);
             currentGamepad1.copy(gamepad1);
 
@@ -145,20 +148,26 @@ public class MainTele extends LinearOpMode {
                 robot.shooter.stopShooter();
                 robot.transfer.stopIntake();
                 robot.transfer.stopFeed();
+                shotCounter = 0;
                 break;
             case INTAKING:
                 robot.transfer.setIntakeMode();
                 break;
             case SPEEDING_UP:
                 //Set power to needed velocity.
-                robot.shooter.setVelocity(3500);
-                if (robot.shooter.isReady(3350, 400)){
+                robot.shooter.setPower(velController.getPower(robot.shooter.getVelocity(), 3600));
+                if (robot.shooter.isReady(3600, 300)){
                     setRobotState(RobotConstants.SystemState.SHOOTING);
                 }
                 break;
             case SHOOTING:
                 robot.transfer.setFeedMode();
-                if (shooterTimer.getElapsedTimeSeconds() > 4){
+                if (shooterTimer.getElapsedTimeSeconds() > 0.5){
+                    shotCounter++;
+                    robot.transfer.stopTransfer();
+                    setRobotState(RobotConstants.SystemState.SPEEDING_UP);
+                }
+                if (shotCounter >= 3){
                     setRobotState(RobotConstants.SystemState.OFF);
                 }
                 break;

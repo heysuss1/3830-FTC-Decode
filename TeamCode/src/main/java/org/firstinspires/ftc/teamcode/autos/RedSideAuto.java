@@ -11,6 +11,7 @@ import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import org.firstinspires.ftc.teamcode.Hardware;
 import org.firstinspires.ftc.teamcode.RobotConstants;
 import org.firstinspires.ftc.teamcode.pedroPathing.Constants;
+import org.firstinspires.ftc.teamcode.subsystems.VelocityController;
 
 
 @Autonomous (name = "Red Side Auto")
@@ -19,9 +20,12 @@ public class RedSideAuto extends OpMode {
 
     Follower follower;
     Timer pathTimer;
+    double intakePathSpeed = 0.5;
     Timer shooterTimer;
+    VelocityController velController;
+    int shotCounter = 0;
 
-    final int FORWARD_CONSTANT = 5;
+    final int FORWARD_CONSTANT = 24;
 
     enum ActionState {
         SHOOT_PRELOAD,
@@ -70,11 +74,10 @@ public class RedSideAuto extends OpMode {
     Pose balls1 = new Pose(99, 83, 0);
     Pose balls2 = new Pose(99, 60, 0);
     Pose balls3 = new Pose(100, 35, 0);
-    Pose intakeBalls1Pose = new Pose(99 + FORWARD_CONSTANT, 83, 0);
+    Pose intakeBalls1Pose = new Pose(99 + FORWARD_CONSTANT+3, 83, 0);
     Pose intakeBalls2Pose = new Pose(99 + FORWARD_CONSTANT, 60, 0);
-    Pose intakeBalls3Pose = new Pose(99 + FORWARD_CONSTANT, 35, 0);
+    Pose intakeBalls3Pose = new Pose(99 + FORWARD_CONSTANT+6, 35, 0);
     Pose gatePose = new Pose(125, 70, 0);
-
     PathChain toPreload, toBalls1, toLaunch1, toBalls2, toLaunch2, toBalls3, toLaunch3,
             intakeBalls1, intakeBalls2, intakeBalls3, toGate;
 
@@ -83,8 +86,10 @@ public class RedSideAuto extends OpMode {
         robot.init(hardwareMap, telemetry);
         pathTimer = new Timer();
         shooterTimer = new Timer();
+        velController = new VelocityController();
         follower = Constants.createFollower(hardwareMap);
         follower.setStartingPose(startingPose);
+        follower.setMaxPower(1);
         buildPaths();
     }
 
@@ -134,31 +139,32 @@ public class RedSideAuto extends OpMode {
                 .addPath(new BezierLine(launchPose, gatePose))
                 .setLinearHeadingInterpolation(launchPose.getHeading(), gatePose.getHeading())
                 .build();
-
     }
-
     public void shooterUpdate() {
         switch (shooterState) {
             case SPEED_UP:
-                robot.shooter.setVelocity(3500);
-                if (robot.shooter.isReady(3350, 400)) {
+                //Set power to needed velocity.
+                robot.shooter.setPower(velController.getPower(robot.shooter.getVelocity(), 4250));
+                if (robot.shooter.isReady(3600 , 450)){
                     setShooterState(ShooterState.FEED_BALLS);
                 }
                 break;
             case FEED_BALLS:
                 robot.transfer.setFeedMode();
-                robot.transfer.startFeed();
-                if (shooterTimer.getElapsedTimeSeconds() > 4) {
+                if (shooterTimer.getElapsedTimeSeconds() > 0.4){
+                    shotCounter++;
                     robot.transfer.stopTransfer();
+                    setShooterState(ShooterState.SPEED_UP);
+                }
+                if (shotCounter >= 3){
                     setShooterState(ShooterState.DONE);
-
                 }
                 break;
             case DONE:
+                shotCounter = 0;
                 break;
         }
     }
-
 
     public void setShooterState(ShooterState state){
         shooterState = state;
@@ -255,7 +261,7 @@ public class RedSideAuto extends OpMode {
                 break;
             case SLURPING_GROUP_1:
                 if (!follower.isBusy() && actionState == ActionState.SHOOT_GROUP_1){
-                    follower.followPath(intakeBalls1, true);
+                    follower.followPath(intakeBalls1,  intakePathSpeed, true);
                     setPathState(PathState.GROUP_1_TO_SHOOT);
                 }
                 break;
@@ -273,7 +279,7 @@ public class RedSideAuto extends OpMode {
                 break;
             case SLURPING_GROUP_2:
                 if (!follower.isBusy() && actionState == ActionState.SHOOT_GROUP_2){
-                    follower.followPath(intakeBalls2, true);
+                    follower.followPath(intakeBalls2, 0.3, true);
                     setPathState(PathState.GROUP_2_TO_SHOOT);
                 }
                 break;
@@ -291,7 +297,7 @@ public class RedSideAuto extends OpMode {
                 break;
             case SLURPING_GROUP_3:
                 if (!follower.isBusy() && actionState == ActionState.SHOOT_GROUP_3){
-                    follower.followPath(intakeBalls3, true);
+                    follower.followPath(intakeBalls3, intakePathSpeed, true);
                     setPathState(PathState.GROUP_3_TO_SHOOT);
                 }
                 break;
@@ -313,14 +319,16 @@ public class RedSideAuto extends OpMode {
     }
     public void loop(){
         autonomousUpdate();
-//        actionUpdate();
-//        shooterUpdate();
+        actionUpdate();
+        shooterUpdate();
         follower.update();
         telemetry.addData("Current Action State", actionState);
         telemetry.addData("Current Path State", pathState);
         telemetry.addData("Current Shooter State", shooterState);
         telemetry.addData("follower busy", follower.isBusy());
         telemetry.addData("shooter timer", shooterTimer.getElapsedTimeSeconds());
+        telemetry.addData("shooter velocity", robot.shooter.getVelocity());
+
         telemetry.update();
     }
 }

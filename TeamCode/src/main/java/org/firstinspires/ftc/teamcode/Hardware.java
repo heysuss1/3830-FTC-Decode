@@ -13,9 +13,8 @@ public class Hardware {
 
     public static Hardware INSTANCE = null;
     public DriveTrain driveTrain = new DriveTrain();
-
     public Shooter shooter;
-    public Turret turret = new Turret();
+//    public Turret turret = new Turret();
     public Transfer transfer;
     public Vision vision = new Vision();
     public double maxSpeed;
@@ -33,10 +32,9 @@ public class Hardware {
     }
 
     public void init(HardwareMap hwMap, Telemetry telemetry){
-//        vision.init(hwMap);//TODO: add telemetry;
         driveTrain.init(hwMap, telemetry);
         transfer = new Transfer(hwMap);
         shooter = new Shooter(hwMap);
-        turret.init(hwMap);
+//        turret.init(hwMap);
     }
 }

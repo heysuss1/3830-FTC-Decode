@@ -19,9 +19,7 @@ public class Turret {
     public double gearRatio = 0.3819;
 
     public final double TICKS_PER_REV = 142.8;
-
     public kinematics kinematics = new kinematics();
-
     public double yawRaw;
     public int yaw;
     AnalogInput analogInput;
@@ -60,7 +58,6 @@ public class Turret {
                 RobotConstants.getTEAM()
         );
         return yawRaw;
-
 
     }
 

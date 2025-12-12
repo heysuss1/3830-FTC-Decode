@@ -17,6 +17,12 @@ public class Shooter {
     public kinematics kinematics = new kinematics();
     public DcMotorEx topShooterMotor;
     public DcMotorEx bottomShooterMotor;
+
+    public ShotLocation[] lookUpTable = {
+            new ShotLocation(30, 100)
+    };
+    public double currentVel;
+    public double prevVel;
     public static final int TICKS_PER_REVOLUTION = 28;
     public static final int SHOT_POS_VEL = 3500;
     public Servo pitchServo;
@@ -37,15 +43,15 @@ public class Shooter {
 
         topShooterMotor = hwMap.get(DcMotorEx.class, "topShooterMotor");
         topShooterMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        topShooterMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        topShooterMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         topShooterMotor.setDirection(DcMotorSimple.Direction.REVERSE);
         topShooterMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
         topShooterMotor.setPower(0);
 
         bottomShooterMotor = hwMap.get(DcMotorEx.class, "bottomShooterMotor");
         bottomShooterMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        bottomShooterMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        bottomShooterMotor.setDirection(DcMotorSimple.Direction.FORWARD);
+        bottomShooterMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        bottomShooterMotor.setDirection(DcMotorSimple.Direction.REVERSE);
         bottomShooterMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
         bottomShooterMotor.setPower(0);
 
@@ -54,6 +60,17 @@ public class Shooter {
         return Math.abs(velTarget - getVelocity()) <= tolerance;
     }
 
+    public void getClosestRPM(double distance){
+        int closestRPM = lookUpTable[0].rpm;
+        double closestDistance = Math.abs(lookUpTable[0].distance - distance);
+        for (int i = 0; i < lookUpTable.length; i++){
+            double shotDistance =  Math.abs(distance - lookUpTable[i].distance);
+            if (shotDistance < closestDistance){
+                closestDistance = shotDistance;
+                closestRPM = lookUpTable[i].rpm;
+            }
+        }
+    }
     public void stopShooter(){
         topShooterMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         bottomShooterMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
@@ -70,11 +87,17 @@ public class Shooter {
         bottomShooterMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         bottomShooterMotor.setVelocity(RPMtoTPS(velocity));
         
-        
     }
 
     public double RPMtoTPS(int rpm){
-        return (rpm*TICKS_PER_REVOLUTION/60);
+        return (rpm*TICKS_PER_REVOLUTION/60.0);
+    }
+
+    public boolean isBallShot(int prevVel, int currentVel){
+        if (Math.abs(currentVel - prevVel) > 200){
+            return true;
+        }
+        return false;
     }
     public double TPStoRPM(double tps) {return (60*tps/TICKS_PER_REVOLUTION);}
 
@@ -94,10 +117,11 @@ public class Shooter {
 
 
     //IN RPM
-    public double getVelocity() { return (topShooterMotor.getVelocity() * 60)/TICKS_PER_REVOLUTION; }
+    public double getVelocity() { return (Math.abs(topShooterMotor.getVelocity()) * 60)/TICKS_PER_REVOLUTION; }
 
     public void setPower(double power){
         topShooterMotor.setPower(power);
+        bottomShooterMotor.setPower(topShooterMotor.getPower());
     }
     public void prepShooter(){
         setVelocity(SHOT_POS_VEL);
