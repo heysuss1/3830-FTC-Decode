@@ -43,6 +43,7 @@ public class VelocityPID extends OpMode {
         robot.init(hardwareMap, telemetryA);
     }
 
+    //poopy butt
     public void loop() {
         currentVel = Math.abs(robot.shooter.getVelocity());
         velError = setpoint - currentVel;
