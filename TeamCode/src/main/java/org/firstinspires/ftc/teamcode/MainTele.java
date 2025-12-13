@@ -7,12 +7,12 @@ import com.pedropathing.util.Timer;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.Gamepad;
-import com.qualcomm.robotcore.hardware.VoltageSensor;
 
 import org.firstinspires.ftc.teamcode.pedroPathing.Constants;
 import org.firstinspires.ftc.teamcode.subsystems.Shooter;
 import org.firstinspires.ftc.teamcode.subsystems.Transfer;
-import org.firstinspires.ftc.teamcode.subsystems.VelocityController;
+import org.firstinspires.ftc.teamcode.PIDControls.VelocityController;
+import org.firstinspires.ftc.teamcode.subsystems.Alignment;
 
 @Config
 @TeleOp (name = "TeleOp")
@@ -29,18 +29,23 @@ public class MainTele extends LinearOpMode {
     Follower follower;
     Timer shooterTimer;
 
-    VelocityController velController = new VelocityController();
+    VelocityController velController = new VelocityController(hardwareMap);
     RobotConstants constants = new RobotConstants();
     Shooter.Shooter_state shooterState;
     Transfer.Transfer_state transferState;
     RobotConstants.SystemState systemState;
     int shotCounter = 0;
+    int targetVel = 3600;
+    boolean hadBall, hasBall;
+
+    Gamepad currentGamepad1 = new Gamepad();
+    Gamepad previousGamepad1 = new Gamepad();
 
 
     public void runOpMode() {
         robot.init(hardwareMap, telemetry);
         follower = Constants.createFollower(hardwareMap);
-        follower.setStartingPose(new Pose(0,0,0));
+        follower.setStartingPose(new Pose(142,54,Math.PI));
         robot.driveTrain.setBrakeMode();
         robot.driveTrain.setSpeed(0.8);
         double batteryVoltage = 0;
@@ -62,10 +67,11 @@ public class MainTele extends LinearOpMode {
 
         waitForStart();
         shooterTimer = new Timer();
-        Gamepad currentGamepad1 = new Gamepad();
-        Gamepad previousGamepad1 = new Gamepad();
 
         while (opModeIsActive()){
+            hadBall = hasBall;
+            hasBall = robot.shooter.hasBall();
+
             prevV = currentV;
             currentV = robot.shooter.getVelocity();
             previousGamepad1.copy(currentGamepad1);
@@ -105,17 +111,36 @@ public class MainTele extends LinearOpMode {
 
             orienting = currentGamepad1.b;
 
-            if (currentGamepad1.right_trigger > 0.1)
+
+            if (currentGamepad1.right_trigger > 0.1|| systemState == RobotConstants.SystemState.INTAKING || currentGamepad1.x)
                 robot.driveTrain.setSpeed(0.3);
             else {
                 robot.driveTrain.setSpeed(1);
             }
 
-            if (currentGamepad1.x) {
+//            if (currentGamepad1.x) {
+//                if (Alignment.yawAligned(follower.getPose().getX(), follower.getPose().getY(), 142,140.4, follower.getHeading())) {
+//                        systemState = RobotConstants.SystemState.SPEEDING_UP;
+//                } else {
+//                    Alignment.alignYaw(follower.getPose().getX(), follower.getPose().getY(), follower.getHeading(), 142, 140.4);
+//                }
+//            }
+
+            if (currentGamepad1.x){
                 systemState = RobotConstants.SystemState.SPEEDING_UP;
             }
+
             if (currentGamepad1.b){
                 systemState = RobotConstants.SystemState.SLOWING_DOWN;
+            }
+            if (currentGamepad1.cross){
+                setRobotState(RobotConstants.SystemState.OFF);
+            }
+            if (currentGamepad1.dpad_up && !previousGamepad1.dpad_up){
+                targetVel += 100;
+            }
+            if (currentGamepad1.dpad_down && !previousGamepad1.dpad_down){
+                targetVel -= 100;
             }
 
 //            for (VoltageSensor sensor: hardwareMap.voltageSensor){
@@ -126,15 +151,18 @@ public class MainTele extends LinearOpMode {
 //                }
 //            }
             updateRobotState();
-            telemetry.addData("Starting position", startingStateList[startingState]);
             telemetry.addData("Shooter vel: ", robot.shooter.getVelocity());
             telemetry.addData("Shooter vel (raw): ", robot.shooter.topShooterMotor.getVelocity());
-            telemetry.addData("System state: ", systemState);
-            telemetry.addData("Shooting state: ", shooterState);
-            telemetry.addData("Transfer state: ", transferState);
+            telemetry.addData("Target Vel", targetVel);
 //            telemetry.addData("Shooter is ready to shoot: ", robot.shooter.isReady(3500, 40));
             telemetry.addData("Team", team);
+            telemetry.addData("x: ", follower.getPose().getX());
+            telemetry.addData("y: ", follower.getPose().getY());
+            telemetry.addData("Heading: ", follower.getHeading());
+            telemetry.addData("yawAligned?: ", Alignment.yawAligned(follower.getPose().getX(), follower.getPose().getY(), 12,140.4, follower.getHeading()));
+
             telemetry.update();
+            follower.update();
 
 
         }
@@ -149,23 +177,35 @@ public class MainTele extends LinearOpMode {
                 robot.transfer.stopIntake();
                 robot.transfer.stopFeed();
                 shotCounter = 0;
+                gamepad1.setLedColor(255,0,0,1000000000);
                 break;
             case INTAKING:
                 robot.transfer.setIntakeMode();
+                if (robot.shooter.hasBall()){
+                    currentGamepad1.rumble(1000);
+                }
+                robot.transfer.setFeedIntakeMode(robot.shooter.hasBall());
+                gamepad1.setLedColor(0,0,255,1000000000);
                 break;
             case SPEEDING_UP:
                 //Set power to needed velocity.
-                robot.shooter.setPower(velController.getPower(robot.shooter.getVelocity(), 3600));
-                if (robot.shooter.isReady(3600, 300)){
+                robot.shooter.setPower(velController.getPower(robot.shooter.getVelocity(), targetVel));
+                gamepad1.setLedColor(255,0,255,1000000000);
+                if (robot.shooter.isReady(targetVel, 100)){
                     setRobotState(RobotConstants.SystemState.SHOOTING);
                 }
                 break;
             case SHOOTING:
                 robot.transfer.setFeedMode();
-                if (shooterTimer.getElapsedTimeSeconds() > 0.5){
-                    shotCounter++;
+                if (!hasBall && hadBall && shotCounter < 3){
+                    shooterTimer.resetTimer();
+                    shotCounter ++;
                     robot.transfer.stopTransfer();
                     setRobotState(RobotConstants.SystemState.SPEEDING_UP);
+                    if (shooterTimer.getElapsedTimeSeconds() > 0.4){
+                        setRobotState(RobotConstants.SystemState.SPEEDING_UP);
+
+                    }
                 }
                 if (shotCounter >= 3){
                     setRobotState(RobotConstants.SystemState.OFF);

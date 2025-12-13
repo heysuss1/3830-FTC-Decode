@@ -22,8 +22,8 @@ public class VelocityPID extends OpMode {
     private Telemetry telemetryA;
     public static double kP, kI, kD;
 
-    public double kS = 0.02; //calculated by turning the flywheel
-    public double kV = 0.00041; //calculated by doing best line for power.
+    public static double kS = 0.1279; //calculated by turning the flywheel
+    public static double kV = 0.000388; //calculated by doing best line for power.
 
     double velError;
     public static double setpoint;

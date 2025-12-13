@@ -12,6 +12,7 @@ public class RobotConstants {
         OUTTAKING,
         WAITING,
         SPEEDING_UP,
+        WAITING_FOR_SHOT,
         SHOOTING,
         SLOWING_DOWN,
     }
