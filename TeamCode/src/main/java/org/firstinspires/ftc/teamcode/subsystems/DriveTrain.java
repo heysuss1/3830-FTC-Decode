@@ -97,4 +97,12 @@ public class DriveTrain {
         lb.setPower(Range.clip(bl, -speed, speed));
     }
 
+    public enum turnDirection {CW, CCW}
+    public void turn(turnDirection direction, double power) {
+        if (direction == DriveTrain.turnDirection.CW) {
+            setPower(-1,-1,1,1);
+        } else if (direction == DriveTrain.turnDirection.CCW) {
+            setPower(1,1,-1,-1);
+        }
+    }
 }

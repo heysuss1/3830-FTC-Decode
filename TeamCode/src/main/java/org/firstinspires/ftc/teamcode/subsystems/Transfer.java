@@ -50,10 +50,16 @@ public class Transfer{
     public void stopFeed(){
         feedMotor.setPower(0);
     }
-    public void setFeedIntakeMode(){feedMotor.setPower(0.1);}
-    public void setIntakeMode(){
+    public void setFeedIntakeMode(boolean hasBall){
+        if (hasBall){
+            feedMotor.setPower(0);
+        } else {
+            feedMotor.setPower(0.3);
+        }
+
+    }
+    public void setIntakeMode(   ){
         startIntake();
-        setFeedIntakeMode();
     }
 
     public void stopTransfer(){

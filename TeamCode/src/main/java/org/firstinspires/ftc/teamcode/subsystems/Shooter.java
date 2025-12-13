@@ -1,12 +1,14 @@
 package org.firstinspires.ftc.teamcode.subsystems;
 
 import com.pedropathing.follower.Follower;
+import com.qualcomm.hardware.rev.RevColorSensorV3;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
 
+import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.firstinspires.ftc.teamcode.RobotConstants;
 import org.firstinspires.ftc.teamcode.kinematics;
 
@@ -16,6 +18,7 @@ public class Shooter {
     //1 shooter motor, 1 servo for pitch, 1 motor to pan/turret
     public kinematics kinematics = new kinematics();
     public DcMotorEx topShooterMotor;
+    public final double HAS_BALL_TRESHOLD = 1.7;
     public DcMotorEx bottomShooterMotor;
 
     public ShotLocation[] lookUpTable = {
@@ -28,6 +31,8 @@ public class Shooter {
     public Servo pitchServo;
     public double pitchRaw;
 
+
+    public RevColorSensorV3 colorSensor;
     public enum Shooter_state{
         OFF,
         SPEEDING_UP,
@@ -41,10 +46,12 @@ public class Shooter {
 
 //        pitchServo = hwMap.get(Servo.class, "pitchServo");
 
+        colorSensor = hwMap.get(RevColorSensorV3.class, "colorSensor");
+
         topShooterMotor = hwMap.get(DcMotorEx.class, "topShooterMotor");
         topShooterMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         topShooterMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        topShooterMotor.setDirection(DcMotorSimple.Direction.REVERSE);
+        topShooterMotor.setDirection(DcMotorSimple.Direction.FORWARD);
         topShooterMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
         topShooterMotor.setPower(0);
 
@@ -58,6 +65,14 @@ public class Shooter {
     }
     public boolean isReady(int velTarget, int tolerance){
         return Math.abs(velTarget - getVelocity()) <= tolerance;
+    }
+
+    public boolean hasBall(){
+            if (colorSensor.getDistance(DistanceUnit.INCH) < HAS_BALL_TRESHOLD){
+            return true;
+        } else {
+            return false;
+        }
     }
 
     public void getClosestRPM(double distance){
@@ -100,7 +115,6 @@ public class Shooter {
         return false;
     }
     public double TPStoRPM(double tps) {return (60*tps/TICKS_PER_REVOLUTION);}
-
 
 
     public void setPitchServo(Follower follower) {
