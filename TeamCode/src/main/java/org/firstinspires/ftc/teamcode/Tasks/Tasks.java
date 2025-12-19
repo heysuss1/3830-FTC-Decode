@@ -1,6 +1,7 @@
 package org.firstinspires.ftc.teamcode.Tasks;
 
 import com.pedropathing.util.Timer;
+import com.qualcomm.robotcore.hardware.HardwareMap;
 
 import org.firstinspires.ftc.teamcode.Hardware;
 import org.firstinspires.ftc.teamcode.PIDControls.TurretController;
@@ -12,12 +13,14 @@ public class Tasks {
     private Timer shooterTimer;
     private Hardware robot;
     private int shotCounter;
+    private  VelocityController velController;
 
 
-    public Tasks(Hardware robot){
+    public Tasks(Hardware robot, HardwareMap hardwareMap){
         this.robot = robot;
         shooterTimer = new Timer();
         shotCounter = 0;
+        velController = new VelocityController(hardwareMap);
     }
     public enum ShooterState{
         SPEEDING_UP,
@@ -66,17 +69,17 @@ public class Tasks {
 
 
 
-    public void updateShooter(){
+    public void updateShooter(boolean hasBall, boolean hadBall){
         switch (shooterState) {
             case SPEEDING_UP:
-                robot.shooter.setPower(VelocityController.getPower(robot.shooter.getVelocity(), robot.shooter.getVelocityTarget()));
-                if (robot.shooter.isReady(150)){
+                robot.shooter.setPower(velController.getPower(Math.abs(robot.shooter.getVelocity()), robot.shooter.getVelocityTarget(), robot.getVoltage()));
+                if (robot.shooter.isReady(100)){
                     setShooterState(ShooterState.SHOOTING);
                 }
                 break;
             case SHOOTING:
                 setTransferState(TransferState.FEED);
-                if (shooterTimer.getElapsedTimeSeconds() > 0.28) {
+                if (hadBall && !hasBall) {
                     setTransferState(TransferState.OFF);
                     shotCounter++;
                     setShooterState(ShooterState.WAITING);
@@ -94,6 +97,7 @@ public class Tasks {
                 }
                 break;
             case DONE:
+                shotCounter = 0;
                 robot.shooter.stopShooter();
                 break;
 
@@ -106,8 +110,8 @@ public class Tasks {
 //        robot.shooter.setTurretPower(TurretController.getPower(currentTurretPosition, turretTargetPosition));
 //    }
 //
-    public void update(boolean hasBall){
-        updateShooter();
+    public void update(boolean hasBall, boolean hadBall){
+        updateShooter(hasBall, hadBall);
         updateTransfer(hasBall);
 //        updateTurret();
     }

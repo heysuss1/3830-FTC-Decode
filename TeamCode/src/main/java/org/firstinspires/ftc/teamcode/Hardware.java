@@ -15,6 +15,8 @@ public class Hardware {
     public Shooter shooter;
 //    public Turret turret = new Turret();
     public Transfer transfer;
+    private HardwareMap hwMap;
+    private double voltage;
     public Vision vision = new Vision();
     public double maxSpeed;
 
@@ -30,7 +32,17 @@ public class Hardware {
         return INSTANCE;
     }
 
+
+
+    public void setVoltage(){
+        voltage = hwMap.voltageSensor.iterator().next().getVoltage();
+    }
+
+    public double getVoltage(){
+        return voltage;
+    }
     public void init(HardwareMap hwMap, Telemetry telemetry){
+        this.hwMap = hwMap;
         driveTrain.init(hwMap, telemetry);
         transfer = new Transfer(hwMap);
         shooter = new Shooter(hwMap);

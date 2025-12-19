@@ -62,12 +62,6 @@ public class RedSideAuto extends OpMode {
         SHOOT_TO_GATE,
         STOP,
     }
-    enum ShooterState {
-        SPEED_UP,
-        FEED_BALLS,
-        DONE
-    }
-
     PathState pathState = PathState.TO_PRELOAD;
     ActionState actionState = ActionState.SHOOT_PRELOAD;
     RobotConstants.SystemState robotState = RobotConstants.SystemState.OFF;
@@ -89,7 +83,7 @@ public class RedSideAuto extends OpMode {
 
     public void init() {
         robot.init(hardwareMap, telemetry);
-        task = new Tasks(robot);
+        task = new Tasks(robot, hardwareMap);
         robot.shooter.setRobotPose(follower.getPose().getX(), follower.getPose().getY(), follower.getPose().getHeading());
         pathTimer = new Timer();
         shooterTimer = new Timer();
@@ -305,8 +299,7 @@ public class RedSideAuto extends OpMode {
         hasBall = robot.shooter.hasBall();
         autonomousUpdate();
         actionUpdate();
-        task.updateShooter();
-        task.updateTransfer(hasBall);
+        task.update(hasBall, hadBall);
         follower.update();
         telemetry.addData("Current Action State", actionState);
         telemetry.addData("Current Path State", pathState);

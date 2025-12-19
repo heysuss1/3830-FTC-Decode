@@ -62,14 +62,18 @@ public class Shooter {
         bottomShooterMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
         bottomShooterMotor.setPower(0);
 
-//        turretMotor = hwMap.get(DcMotorEx.class,"turretMotor");
-        turretMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        turretMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        turretMotor.setPower(0);
+////        turretMotor = hwMap.get(DcMotorEx.class,"turretMotor");
+//        turretMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+//        turretMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+//        turretMotor.setPower(0);
 
     }
 
 
+
+    public double getTPSVelocity(){
+        return topShooterMotor.getVelocity();
+    }
     public void setRobotPose(double xPosition, double yPosition, double headPosition){
         this.xPosition = xPosition;
         this.yPosition = yPosition;

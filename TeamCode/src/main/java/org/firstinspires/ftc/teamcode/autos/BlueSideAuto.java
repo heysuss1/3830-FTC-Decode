@@ -99,7 +99,7 @@ public class BlueSideAuto extends OpMode {
         hasBall = robot.shooter.hasBall();
         velController = new VelocityController(hardwareMap);
         batteryVoltage = velController.getBatteryVoltage();
-        tasks = new Tasks(robot);
+        tasks = new Tasks(robot, hardwareMap);
 
         follower = Constants.createFollower(hardwareMap);
         follower.setStartingPose(startingPose);
@@ -311,8 +311,7 @@ public class BlueSideAuto extends OpMode {
         autonomousUpdate();
         actionUpdate();
         robot.shooter.setRobotPose(follower.getPose().getX(), follower.getPose().getY(), follower.getPose().getHeading());
-        tasks.updateShooter();
-        tasks.updateTransfer(hasBall);
+        tasks.update(hasBall, hadBall);
         follower.update();
         telemetry.addData("Current Action State", actionState);
         telemetry.addData("Current Path State", pathState);

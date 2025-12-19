@@ -58,7 +58,7 @@ public class MainTele extends LinearOpMode {
         systemState = RobotConstants.SystemState.OFF;
         transferState = Transfer.Transfer_state.OFF;
 
-        tasks = new Tasks(robot);
+        tasks = new Tasks(robot, hardwareMap);
 
         waitForStart();
         shooterTimer = new Timer();
@@ -75,7 +75,7 @@ public class MainTele extends LinearOpMode {
 
             if (currentGamepad1.right_bumper && !previousGamepad1.right_bumper) {
                 if (!intakeOn) {
-                   tasks.setTransferState(Tasks.TransferState.INTAKE);
+                    tasks.setTransferState(Tasks.TransferState.INTAKE);
                     intakeOn = true;
                 } else {
                     tasks.setTransferState(Tasks.TransferState.OFF);
@@ -122,8 +122,8 @@ public class MainTele extends LinearOpMode {
             }
 
             robot.shooter.setVelocityTarget(targetVel);
-
-            tasks.update(hasBall);
+            robot.setVoltage();
+            tasks.update(hasBall, hadBall);
             telemetry.addData("Shooter vel: ", robot.shooter.getVelocity());
             telemetry.addData("Target Vel", targetVel);
             telemetry.addData("x: ", follower.getPose().getX());
