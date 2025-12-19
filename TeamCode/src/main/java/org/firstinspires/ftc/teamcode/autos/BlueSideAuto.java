@@ -310,6 +310,7 @@ public class BlueSideAuto extends OpMode {
         hasBall = robot.shooter.hasBall();
         autonomousUpdate();
         actionUpdate();
+        robot.shooter.setRobotPose(follower.getPose().getX(), follower.getPose().getY(), follower.getPose().getHeading());
         tasks.updateShooter();
         tasks.updateTransfer(hasBall);
         follower.update();

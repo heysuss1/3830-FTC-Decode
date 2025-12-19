@@ -90,6 +90,7 @@ public class RedSideAuto extends OpMode {
     public void init() {
         robot.init(hardwareMap, telemetry);
         task = new Tasks(robot);
+        robot.shooter.setRobotPose(follower.getPose().getX(), follower.getPose().getY(), follower.getPose().getHeading());
         pathTimer = new Timer();
         shooterTimer = new Timer();
         totalShooterTimer = new Timer();
