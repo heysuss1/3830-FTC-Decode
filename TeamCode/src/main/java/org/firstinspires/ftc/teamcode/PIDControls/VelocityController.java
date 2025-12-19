@@ -10,13 +10,14 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.util.Range;
 
 public class VelocityController {
-    public double kP = 0; double kI = 0; double kD = 0;
+    public double kP = 0.005; double kI = 0; double kD = 0;
     public double kS = 1.26; //calculated by turning the flywheel
     public double kV = 0.0024; //calculated by doing bestz line for power.
     public HardwareMap hwMap;
     public double batteryVoltage;
     SimpleMotorFeedforward feedforward = new SimpleMotorFeedforward(kS, kV);
     PIDController pid = new PIDController(kP, kI, kD);
+    PIDFController pidf = new PIDFController(0.0025, 0, 0, 0.000246, 100);
     public double RPMtoTPS(int rpm) {
         return (rpm * TICKS_PER_REVOLUTION / 60.0);
     }
@@ -27,18 +28,27 @@ public class VelocityController {
     public double getBatteryVoltage(){
         return hwMap.voltageSensor.iterator().next().getVoltage();
     }
-    public double getPower(double currentVel, int targetVel, double voltage){
-        double velError = targetVel - currentVel;
-        double velFeedforward = feedforward.calculate(targetVel);
-        double pidCorrection = pid.calculate( velError);
 
-        double output =velFeedforward + pidCorrection;
+    public void setCoefficients(double kP, double kI, double kD){
+        pid.setPID(kP, kI, kD);
+    }
+    //Uses a pid + feedforward with battery compensation
+//    public double getPower(double currentVel, int targetVel, double voltage){
+//        double velError = targetVel - currentVel;
+//        double velFeedforward = feedforward.calculate(targetVel);
+//        double pidCorrection = pid.calculate(currentVel, targetVel);
+//
+//        double output =velFeedforward + pidCorrection;
+//
+//
+//        output = (output/voltage);
+//
+//        return (Range.clip(output, -1, 1));
+//
+//    }
 
-
-        output = (output/voltage);
-
-        return (Range.clip(output, -1, 1));
-
+    public double getPower(double currentRPM, int targetRPM){
+        return pidf.calculate(targetRPM, currentRPM);
     }
 }
 

@@ -26,16 +26,20 @@ public class VelocityPIDTester extends OpMode {
     public static double kV = 0.0024; //calculated by doing best line for power.
 
     double velError;
-    public static double setpoint;
+    public static int setpoint;
     double currentVel;
     double velFeedforward;
     FtcDashboard dashboard = FtcDashboard.getInstance();
     SimpleMotorFeedforward feedforward = new SimpleMotorFeedforward(kS, kV);
 
+    VelocityController velocityController;
+
     PIDController pid;
     public void init() {
         telemetryA = new MultipleTelemetry(this.telemetry, dashboard.getTelemetry());
         pid = new PIDController(kP, kI, kD);
+
+        velocityController = new VelocityController( hardwareMap);
 
         robot.init(hardwareMap, telemetryA);
     }
@@ -45,16 +49,21 @@ public class VelocityPIDTester extends OpMode {
 
     //poopy butt
     public void loop() {
+
+//        pid.setPID(kP, kI, kD);
+        velocityController.setCoefficients(kP, kI, kD);
         currentVel = Math.abs(robot.shooter.getVelocity());
-        velError = setpoint - currentVel;
-        velFeedforward = feedforward.calculate(setpoint);
-        double pidCorrection = pid.calculate(setpoint - currentVel);
-
-
-        double output =velFeedforward + pidCorrection;
-        output = (output/getBatteryVoltage());
-
-        robot.shooter.setPower(Range.clip(output, -1, 1));
+//        velError = setpoint - currentVel;
+//        velFeedforward = feedforward.calculate(setpoint);
+//        double pidCorrection = pid.calculate(currentVel, setpoint);
+//
+//
+//
+//        double output =velFeedforward + pidCorrection;
+//        output = (output/getBatteryVoltage());
+//
+//        robot.shooter.setPower(Range.clip(output, -1, 1));
+        robot.shooter.setPower(velocityController.getPower(currentVel, setpoint));
 
         telemetryA.addData("Current Velocity (rpm)", currentVel);
         telemetryA.addData("Velocity (raw tps)", robot.shooter.getTPSVelocity());

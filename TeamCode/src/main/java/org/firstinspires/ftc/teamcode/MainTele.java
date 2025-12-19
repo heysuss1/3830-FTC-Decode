@@ -51,7 +51,6 @@ public class MainTele extends LinearOpMode {
         robot.driveTrain.setBrakeMode();
         robot.driveTrain.setSpeed(0.8);
         velController = new VelocityController(hardwareMap);
-        batteryVoltage = velController.getBatteryVoltage();
         boolean intakeOn = false;
         boolean orienting = false;
 
@@ -122,7 +121,6 @@ public class MainTele extends LinearOpMode {
             }
 
             robot.shooter.setVelocityTarget(targetVel);
-            robot.setVoltage();
             tasks.update(hasBall, hadBall);
             telemetry.addData("Shooter vel: ", robot.shooter.getVelocity());
             telemetry.addData("Target Vel", targetVel);

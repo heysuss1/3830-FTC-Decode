@@ -72,12 +72,13 @@ public class Tasks {
     public void updateShooter(boolean hasBall, boolean hadBall){
         switch (shooterState) {
             case SPEEDING_UP:
-                robot.shooter.setPower(velController.getPower(Math.abs(robot.shooter.getVelocity()), robot.shooter.getVelocityTarget(), robot.getVoltage()));
+                robot.shooter.setPower(velController.getPower(Math.abs(robot.shooter.getVelocity()), robot.shooter.getVelocityTarget()));
                 if (robot.shooter.isReady(100)){
                     setShooterState(ShooterState.SHOOTING);
                 }
                 break;
             case SHOOTING:
+                robot.shooter.setPower(velController.getPower(Math.abs(robot.shooter.getVelocity()), robot.shooter.getVelocityTarget()));
                 setTransferState(TransferState.FEED);
                 if (hadBall && !hasBall) {
                     setTransferState(TransferState.OFF);
