@@ -59,10 +59,7 @@ public class RedSideAuto extends OpMode {
         GROUP_3_TO_SHOOT,
         SHOOT_TO_GATE,
         STOP,
-
-
     }
-
     enum ShooterState {
         SPEED_UP,
         FEED_BALLS,
@@ -73,8 +70,10 @@ public class RedSideAuto extends OpMode {
     ActionState actionState = ActionState.SHOOT_PRELOAD;
     RobotConstants.SystemState robotState = RobotConstants.SystemState.OFF;
 
-    Pose startingPose = new Pose(88, 135, 0);
-    Pose launchPose = new Pose(96, 96, Math.toRadians(40));
+
+    //Starting pose wrong
+    Pose startingPose = new Pose(128, 118, Math.toRadians(40));
+    Pose launchPose = new Pose(96, 96, Math.toRadians(34));
     Pose balls1 = new Pose(99, 83, 0);
     Pose balls2 = new Pose(99, 63.5, 0);
     Pose balls3 = new Pose(100, 35, 0);
@@ -147,7 +146,6 @@ public class RedSideAuto extends OpMode {
                 .build();
     }
     public void shooterUpdate() {
-        double batteryVoltage = velController.getBatteryVoltage();
         switch (robotState){
             case OFF:
                 robot.shooter.stopShooter();
@@ -160,11 +158,12 @@ public class RedSideAuto extends OpMode {
             case INTAKING:
                 robot.transfer.setIntakeMode();
                 robot.transfer.setFeedIntakeMode(robot.shooter.hasBall());
+                batteryVoltage = velController.getBatteryVoltage();
                 break;
             case SPEEDING_UP:
                 //Set power to needed velocity.
                 robot.shooter.setPower(velController.getPower(robot.shooter.getVelocity(), 3600));
-                if (robot.shooter.isReady(3600, 300)){
+                if (robot.shooter.isReady(3600, 150) || shooterTimer.getElapsedTimeSeconds() > 1.5){ //TODO: Why 300 why not 100
                     setRobotState(RobotConstants.SystemState.SHOOTING);
                 }
                 break;
@@ -175,12 +174,14 @@ public class RedSideAuto extends OpMode {
                 }
                 if (totalShooterTimer.getElapsedTimeSeconds() > 7 || shotCounter >= 3){
                     setRobotState(RobotConstants.SystemState.OFF);
+                    return;
                 }
                 robot.transfer.setFeedMode();
                 if (hadBall && !hasBall){
                     robot.transfer.stopTransfer();
                     shotCounter++;
                     setRobotState(RobotConstants.SystemState.WAITING_FOR_SHOT);
+                    return;
                 }
                 break;
             case WAITING_FOR_SHOT:
@@ -309,7 +310,7 @@ public class RedSideAuto extends OpMode {
                 break;
             case SLURPING_GROUP_2:
                 if (!follower.isBusy() && actionState == ActionState.SHOOT_GROUP_2){
-                    follower.followPath(intakeBalls2, 0.3, true);
+                    follower.followPath(intakeBalls2, 0.6, true);
                     setPathState(PathState.GROUP_2_TO_SHOOT);
                 }
                 break;
@@ -343,10 +344,9 @@ public class RedSideAuto extends OpMode {
                     setPathState(PathState.STOP);
                 }
                 break;
-
-
         }
     }
+
     public void loop(){
         hadBall = hasBall;
         hasBall = robot.shooter.hasBall();

@@ -38,8 +38,8 @@ public class TunePidf extends OpMode {
     public void loop() {
         currentVel = Math.abs(robot.shooter.getVelocity());
         velError = targetRpm - currentVel;
-        velPower = pidf.calculate(currentVel, targetRpm);
-
+        pidf.setPidCoefficients(kP, kI, kD, kf, iZone);
+        velPower = pidf.calculate(targetRpm, currentVel);
         robot.shooter.setPower(velPower);
         telemetryA.addData("Current Error: ", velError);
         telemetryA.addData("Current Velocity (rpm)", currentVel);

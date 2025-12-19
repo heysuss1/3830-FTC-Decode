@@ -1,3 +1,5 @@
+
+
 package org.firstinspires.ftc.teamcode.PIDControls;
 
 import static org.firstinspires.ftc.teamcode.subsystems.Shooter.TICKS_PER_REVOLUTION;
@@ -14,6 +16,8 @@ public class VelocityController {
     public double batteryVoltage;
     public final double referenceVoltage = 12.9;
     SimpleMotorFeedforward feedforward = new SimpleMotorFeedforward(kS, kV);
+
+    PIDFController pidf =  new PIDFController(0.00001, 0.0, 0.0, 0.00024, 0.0);
     PIDController pid = new PIDController(kP, kI, kD);
     public double RPMtoTPS(int rpm) {
         return (rpm * TICKS_PER_REVOLUTION / 60.0);
@@ -23,18 +27,17 @@ public class VelocityController {
     }
 
     public double getBatteryVoltage(){
-         batteryVoltage = hwMap.voltageSensor.iterator().next().getVoltage();
+        batteryVoltage = hwMap.voltageSensor.iterator().next().getVoltage();
         return batteryVoltage;
     }
     public double getPower(double currentVel, int targetVel){
-        batteryVoltage =
-        targetVel = (int)RPMtoTPS(targetVel);
-        double ff = feedforward.calculate(targetVel);
-        return pid.calculate(currentVel, targetVel) + (ff);
+        return pidf.calculate(targetVel, currentVel);
     }
     public double getPower(double currentVel, int targetVel, double currentBattery){
         batteryVoltage = targetVel = (int)RPMtoTPS(targetVel);
         double ff = feedforward.calculate(targetVel);
         return pid.calculate(currentVel, targetVel) + (ff * (referenceVoltage/currentBattery));
     }
+
 }
+
