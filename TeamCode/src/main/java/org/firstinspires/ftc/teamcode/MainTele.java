@@ -121,11 +121,9 @@ public class MainTele extends LinearOpMode {
                 targetVel -= 100;
             }
 
-            robot.shooter.setVelocity(targetVel);
-            tasks.turretUpdate();
-            tasks.updateShooter();
-            tasks.updateTransfer(hasBall);
+            robot.shooter.setVelocityTarget(targetVel);
 
+            tasks.update(hasBall);
             telemetry.addData("Shooter vel: ", robot.shooter.getVelocity());
             telemetry.addData("Target Vel", targetVel);
             telemetry.addData("x: ", follower.getPose().getX());

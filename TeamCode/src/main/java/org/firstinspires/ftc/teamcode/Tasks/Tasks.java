@@ -100,10 +100,16 @@ public class Tasks {
         }
     }
 
-    public void turretUpdate(){
-        int currentTurretPosition = robot.shooter.getTurretPosition();
-        int turretTargetPosition = robot.shooter.getTurretTargetPos();
-        robot.shooter.setTurretPower(TurretController.getPower(currentTurretPosition, turretTargetPosition));
+//    public void updateTurret(){
+//        int currentTurretPosition = robot.shooter.getTurretPosition();
+//        int turretTargetPosition = robot.shooter.getTurretTargetPos();
+//        robot.shooter.setTurretPower(TurretController.getPower(currentTurretPosition, turretTargetPosition));
+//    }
+//
+    public void update(boolean hasBall){
+        updateShooter();
+        updateTransfer(hasBall);
+//        updateTurret();
     }
 
 

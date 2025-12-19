@@ -16,7 +16,7 @@ import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.teamcode.Hardware;
 
 @Config
-@TeleOp(name = "Velocity PID tuner")
+@TeleOp(name = "Pure FeedForward PID tuner")
 public class VelocityPID extends OpMode {
     Hardware robot = Hardware.getInstance();
     private Telemetry telemetryA;
@@ -36,9 +36,11 @@ public class VelocityPID extends OpMode {
     public void init() {
         telemetryA = new MultipleTelemetry(this.telemetry, dashboard.getTelemetry());
         pidf = new PIDController(kP, kI, kD);
-        setpoint = robot.shooter.RPMtoTPS((int)setpoint);
 
         robot.init(hardwareMap, telemetryA);
+    }
+    public double getBatteryVoltage(){
+        return hardwareMap.voltageSensor.iterator().next().getVoltage();
     }
 
     //poopy butt
@@ -46,16 +48,16 @@ public class VelocityPID extends OpMode {
         currentVel = Math.abs(robot.shooter.getVelocity());
         velError = setpoint - currentVel;
         pidf.setPID(kP, kI, kD);
-        velFeedforward = feedforward.calculate(setpoint);
-        double velPower = pidf.calculate(currentVel, setpoint);
+        velFeedforward = feedforward.calculate(setpoint) / getBatteryVoltage() ;
+        double pidCorrection = pidf.calculate(currentVel, setpoint);
 
-        robot.shooter.setPower(velPower+velFeedforward);
-        telemetryA.addData("Current Error: ", velError);
+        double output =velFeedforward + pidCorrection;
+
+        robot.shooter.setPower(output/getBatteryVoltage());
+
         telemetryA.addData("Current Velocity (rpm)", currentVel);
-        telemetryA.addData("Calculated PID: ", velPower);
-        telemetryA.addData("Calculated FF: ", velFeedforward);
         telemetryA.addData("Setpoint", setpoint);
-
+        telemetryA.addData("Voltage", getBatteryVoltage());
 
 
         telemetryA.update();

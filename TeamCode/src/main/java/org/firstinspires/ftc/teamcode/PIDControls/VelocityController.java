@@ -35,8 +35,8 @@ public class VelocityController {
     }
     public double getPower(double currentVel, int targetVel, double currentBattery){
         batteryVoltage = targetVel = (int)RPMtoTPS(targetVel);
-        double ff = feedforward.calculate(targetVel);
-        return pid.calculate(currentVel, targetVel) + (ff * (referenceVoltage/currentBattery));
+        double ff = feedforward.calculate(targetVel) / getBatteryVoltage();
+        return pid.calculate(currentVel, targetVel);
     }
 
 }

@@ -9,6 +9,8 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
 
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
+import org.firstinspires.ftc.teamcode.PIDControls.TurretController;
+import org.firstinspires.ftc.teamcode.PIDControls.VelocityController;
 import org.firstinspires.ftc.teamcode.RobotConstants;
 import org.firstinspires.ftc.teamcode.kinematics;
 
@@ -23,7 +25,7 @@ public class Shooter {
     private double xPosition;
     private double yPosition;
     private double headPosition;
-    private static int velocityTarget;
+    private int velocityTarget;
     private DcMotorEx turretMotor;
     private  DcMotorEx bottomShooterMotor;
     private DcMotorEx topShooterMotor;
@@ -60,7 +62,7 @@ public class Shooter {
         bottomShooterMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
         bottomShooterMotor.setPower(0);
 
-        turretMotor = hwMap.get(DcMotorEx.class,"turretMotor");
+//        turretMotor = hwMap.get(DcMotorEx.class,"turretMotor");
         turretMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         turretMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         turretMotor.setPower(0);
@@ -74,12 +76,11 @@ public class Shooter {
         this.headPosition = headPosition;
     }
 
-
-
     public int degreesToTicks(double degrees){
         int ticks = (int)Math.round((degrees/(360.0 * gearRatio)) * TICKS_PER_REV); //Change!!!
         return ticks;
     }
+
     public boolean isReady(int tolerance){
         return Math.abs(velocityTarget - getVelocity()) <= tolerance;
     }
@@ -109,16 +110,11 @@ public class Shooter {
         );
         return yawRaw - headPosition;
     }
-    public void setXPosition(double xPosition){
-        this.xPosition = xPosition;
-    }
-    public void setYPosition(double yPosition){
-        this.yPosition = yPosition;
-    }
     public int getVelocityTarget(){
         return velocityTarget;
     }
-    public void getClosestRPM(double distance){
+    public void setVelocityTarget(int velocityTarget) {this.velocityTarget = velocityTarget;}
+    public int getClosestRPM(double distance){
         int closestRPM = lookUpTable[0].rpm;
         double closestDistance = Math.abs(lookUpTable[0].distance - distance);
         for (int i = 0; i < lookUpTable.length; i++){
@@ -128,23 +124,11 @@ public class Shooter {
                 closestRPM = lookUpTable[i].rpm;
             }
         }
+        return closestRPM;
     }
+
     public void stopShooter(){
-        topShooterMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        bottomShooterMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         setPower(0);
-    }
-
-
-    /*
-    Takes in rpm, converts it to ticks per second, and passes it into the function.
-     */
-    public void setVelocity(int velocity){
-        topShooterMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        topShooterMotor.setVelocity(RPMtoTPS(velocity));
-        bottomShooterMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        bottomShooterMotor.setVelocity(RPMtoTPS(velocity));
-        
     }
 
     public double RPMtoTPS(int rpm){
@@ -171,7 +155,7 @@ public class Shooter {
         //TODO: add calculation for converting pitchRaw to servo position, prob linear
         pitchServo.setPosition(pitchRaw); //+ calculation
     }
-
+    
     //IN RPM
     public double getVelocity() { return (Math.abs(topShooterMotor.getVelocity()) * 60)/TICKS_PER_REVOLUTION; }
 
