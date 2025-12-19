@@ -35,8 +35,6 @@ public class VelocityPID extends OpMode {
     PIDController pidf;
     public void init() {
         telemetryA = new MultipleTelemetry(this.telemetry, dashboard.getTelemetry());
-        robot.shooter.bottomShooterMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        robot.shooter.topShooterMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         pidf = new PIDController(kP, kI, kD);
         setpoint = robot.shooter.RPMtoTPS((int)setpoint);
 
@@ -54,7 +52,6 @@ public class VelocityPID extends OpMode {
         robot.shooter.setPower(velPower+velFeedforward);
         telemetryA.addData("Current Error: ", velError);
         telemetryA.addData("Current Velocity (rpm)", currentVel);
-        telemetryA.addData("Current Velocity (tps)", robot.shooter.topShooterMotor.getVelocity());
         telemetryA.addData("Calculated PID: ", velPower);
         telemetryA.addData("Calculated FF: ", velFeedforward);
         telemetryA.addData("Setpoint", setpoint);

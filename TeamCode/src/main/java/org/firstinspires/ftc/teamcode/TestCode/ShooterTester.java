@@ -40,10 +40,8 @@ public class ShooterTester extends LinearOpMode {
 
     public void runOpMode(){
         robot.init(hardwareMap, telemetry);
-        robot.shooter.bottomShooterMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         velController = new VelocityController(hardwareMap);
         shooterTimer = new Timer();
-        robot.shooter.topShooterMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         telemetryA = new MultipleTelemetry(this.telemetry, dashboard.getTelemetry());
         waitForStart();
         hasBall = robot.shooter.hasBall();

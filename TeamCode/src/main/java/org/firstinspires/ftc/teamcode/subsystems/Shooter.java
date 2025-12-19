@@ -17,35 +17,33 @@ public class Shooter {
 
     //1 shooter motor, 1 servo for pitch, 1 motor to pan/turret
     public kinematics kinematics = new kinematics();
-    public DcMotorEx topShooterMotor;
     public final double HAS_BALL_TRESHOLD = 1.7;
-    public DcMotorEx bottomShooterMotor;
+    public double gearRatio = 0.3819;
+    private final double TICKS_PER_REV = 142.8;
+    private double xPosition;
+    private double yPosition;
+    private double headPosition;
+    private static int velocityTarget;
+    private DcMotorEx turretMotor;
+    private  DcMotorEx bottomShooterMotor;
+    private DcMotorEx topShooterMotor;
+
 
     public ShotLocation[] lookUpTable = {
             new ShotLocation(30, 100)
     };
-    public double currentVel;
-    public double prevVel;
     public static final int TICKS_PER_REVOLUTION = 28;
-    public static final int SHOT_POS_VEL = 3500;
     public Servo pitchServo;
     public double pitchRaw;
 
 
     public RevColorSensorV3 colorSensor;
-    public enum Shooter_state{
-        OFF,
-        SPEEDING_UP,
-        WAITING_FULL_SPEED,
-        SLOWING_DOWN,
-    }
 
     // hooray
 
     public Shooter(HardwareMap hwMap){
 
 //        pitchServo = hwMap.get(Servo.class, "pitchServo");
-
         colorSensor = hwMap.get(RevColorSensorV3.class, "colorSensor");
 
         topShooterMotor = hwMap.get(DcMotorEx.class, "topShooterMotor");
@@ -62,11 +60,29 @@ public class Shooter {
         bottomShooterMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
         bottomShooterMotor.setPower(0);
 
-    }
-    public boolean isReady(int velTarget, int tolerance){
-        return Math.abs(velTarget - getVelocity()) <= tolerance;
+        turretMotor = hwMap.get(DcMotorEx.class,"turretMotor");
+        turretMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        turretMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        turretMotor.setPower(0);
+
     }
 
+
+    public void setRobotPose(double xPosition, double yPosition, double headPosition){
+        this.xPosition = xPosition;
+        this.yPosition = yPosition;
+        this.headPosition = headPosition;
+    }
+
+
+
+    public int degreesToTicks(double degrees){
+        int ticks = (int)Math.round((degrees/(360.0 * gearRatio)) * TICKS_PER_REV); //Change!!!
+        return ticks;
+    }
+    public boolean isReady(int tolerance){
+        return Math.abs(velocityTarget - getVelocity()) <= tolerance;
+    }
     public boolean hasBall(){
             if (colorSensor.getDistance(DistanceUnit.INCH) < HAS_BALL_TRESHOLD){
             return true;
@@ -75,6 +91,33 @@ public class Shooter {
         }
     }
 
+    public int getTurretPosition(){
+        return turretMotor.getCurrentPosition();
+    }
+
+    public int getTurretTargetPos(){
+        return degreesToTicks(setYaw());
+    }
+    public void setTurretPower(double power){
+        turretMotor.setPower(power);
+    }
+    public double setYaw() {
+        double yawRaw = kinematics.getYaw(
+                xPosition,
+                yPosition,
+                RobotConstants.getTEAM()
+        );
+        return yawRaw - headPosition;
+    }
+    public void setXPosition(double xPosition){
+        this.xPosition = xPosition;
+    }
+    public void setYPosition(double yPosition){
+        this.yPosition = yPosition;
+    }
+    public int getVelocityTarget(){
+        return velocityTarget;
+    }
     public void getClosestRPM(double distance){
         int closestRPM = lookUpTable[0].rpm;
         double closestDistance = Math.abs(lookUpTable[0].distance - distance);
@@ -129,7 +172,6 @@ public class Shooter {
         pitchServo.setPosition(pitchRaw); //+ calculation
     }
 
-
     //IN RPM
     public double getVelocity() { return (Math.abs(topShooterMotor.getVelocity()) * 60)/TICKS_PER_REVOLUTION; }
 
@@ -137,9 +179,5 @@ public class Shooter {
         topShooterMotor.setPower(power);
         bottomShooterMotor.setPower(topShooterMotor.getPower());
     }
-    public void prepShooter(){
-        setVelocity(SHOT_POS_VEL);
-    }
-
 }
 

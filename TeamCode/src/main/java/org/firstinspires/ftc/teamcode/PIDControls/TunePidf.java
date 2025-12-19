@@ -27,21 +27,15 @@ public class TunePidf extends OpMode {
 
     public void init() {
         telemetryA = new MultipleTelemetry(this.telemetry, dashboard.getTelemetry());
-        robot.shooter.bottomShooterMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        robot.shooter.topShooterMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         pidf = new PIDFController(kP, kI, kD, kf, iZone);
-        //targetTps = robot.shooter.RPMtoTPS((int) targetRpm);
-
         robot.init(hardwareMap, telemetryA);
     }
 
     public void loop() {
         currentVel = Math.abs(robot.shooter.getVelocity());
-        velError = targetRpm - currentVel;
         pidf.setPidCoefficients(kP, kI, kD, kf, iZone);
         velPower = pidf.calculate(targetRpm, currentVel);
         robot.shooter.setPower(velPower);
-        telemetryA.addData("Current Error: ", velError);
         telemetryA.addData("Current Velocity (rpm)", currentVel);
         telemetryA.addData("Calculated PID: ", velPower);
         telemetryA.addData("Target Velocity", targetRpm);

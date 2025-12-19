@@ -17,7 +17,7 @@ public class VelocityController {
     public final double referenceVoltage = 12.9;
     SimpleMotorFeedforward feedforward = new SimpleMotorFeedforward(kS, kV);
 
-    PIDFController pidf =  new PIDFController(0.00001, 0.0, 0.0, 0.00024, 0.0);
+    static PIDFController pidf =  new PIDFController(0.00001, 0.0, 0.0, 0.00024, 0.0);
     PIDController pid = new PIDController(kP, kI, kD);
     public double RPMtoTPS(int rpm) {
         return (rpm * TICKS_PER_REVOLUTION / 60.0);
@@ -30,7 +30,7 @@ public class VelocityController {
         batteryVoltage = hwMap.voltageSensor.iterator().next().getVoltage();
         return batteryVoltage;
     }
-    public double getPower(double currentVel, int targetVel){
+    public static double getPower(double currentVel, int targetVel){
         return pidf.calculate(targetVel, currentVel);
     }
     public double getPower(double currentVel, int targetVel, double currentBattery){
