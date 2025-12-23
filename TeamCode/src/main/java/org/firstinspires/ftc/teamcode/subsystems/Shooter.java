@@ -31,9 +31,7 @@ public class Shooter {
     private DcMotorEx topShooterMotor;
 
 
-    public ShotLocation[] lookUpTable = {
-            new ShotLocation(30, 100)
-    };
+
     public static final int TICKS_PER_REVOLUTION = 28;
     public Servo pitchServo;
     public double pitchRaw;
@@ -118,18 +116,7 @@ public class Shooter {
         return velocityTarget;
     }
     public void setVelocityTarget(int velocityTarget) {this.velocityTarget = velocityTarget;}
-    public int getClosestRPM(double distance){
-        int closestRPM = lookUpTable[0].rpm;
-        double closestDistance = Math.abs(lookUpTable[0].distance - distance);
-        for (int i = 0; i < lookUpTable.length; i++){
-            double shotDistance =  Math.abs(distance - lookUpTable[i].distance);
-            if (shotDistance < closestDistance){
-                closestDistance = shotDistance;
-                closestRPM = lookUpTable[i].rpm;
-            }
-        }
-        return closestRPM;
-    }
+
 
     public void stopShooter(){
         setPower(0);
