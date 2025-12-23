@@ -10,6 +10,7 @@ import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 
 import org.firstinspires.ftc.teamcode.Hardware;
 import org.firstinspires.ftc.teamcode.RobotConstants;
+import org.firstinspires.ftc.teamcode.Tasks.Tasks;
 import org.firstinspires.ftc.teamcode.pedroPathing.Constants;
 import org.firstinspires.ftc.teamcode.PIDControls.VelocityController;
 
@@ -21,6 +22,7 @@ public class RedSideAuto extends OpMode {
     Follower follower;
     Timer pathTimer;
     Timer totalShooterTimer;
+    Tasks task;
     boolean hadBall, hasBall;
     double intakePathSpeed = 0.5;
     double batteryVoltage;
@@ -60,12 +62,6 @@ public class RedSideAuto extends OpMode {
         SHOOT_TO_GATE,
         STOP,
     }
-    enum ShooterState {
-        SPEED_UP,
-        FEED_BALLS,
-        DONE
-    }
-
     PathState pathState = PathState.TO_PRELOAD;
     ActionState actionState = ActionState.SHOOT_PRELOAD;
     RobotConstants.SystemState robotState = RobotConstants.SystemState.OFF;
@@ -87,6 +83,8 @@ public class RedSideAuto extends OpMode {
 
     public void init() {
         robot.init(hardwareMap, telemetry);
+        task = new Tasks(robot, hardwareMap);
+        robot.shooter.setRobotPose(follower.getPose().getX(), follower.getPose().getY(), follower.getPose().getHeading());
         pathTimer = new Timer();
         shooterTimer = new Timer();
         totalShooterTimer = new Timer();
@@ -144,57 +142,6 @@ public class RedSideAuto extends OpMode {
                 .addPath(new BezierLine(launchPose, gatePose))
                 .setLinearHeadingInterpolation(launchPose.getHeading(), gatePose.getHeading())
                 .build();
-    }
-    public void shooterUpdate() {
-        switch (robotState){
-            case OFF:
-                robot.shooter.stopShooter();
-                robot.transfer.stopIntake();
-                robot.transfer.stopFeed();
-                totalShooterTimer.resetTimer();
-                shotCounter = 0;
-                batteryVoltage = velController.getBatteryVoltage();
-                break;
-            case INTAKING:
-                robot.transfer.setIntakeMode();
-                robot.transfer.setFeedIntakeMode(robot.shooter.hasBall());
-                batteryVoltage = velController.getBatteryVoltage();
-                break;
-            case SPEEDING_UP:
-                //Set power to needed velocity.
-                robot.shooter.setPower(velController.getPower(robot.shooter.getVelocity(), 3600));
-                if (robot.shooter.isReady(3600, 150) || shooterTimer.getElapsedTimeSeconds() > 1.5){ //TODO: Why 300 why not 100
-                    setRobotState(RobotConstants.SystemState.SHOOTING);
-                }
-                break;
-            case SHOOTING:
-                if (resetCounter == 0){
-                    totalShooterTimer.resetTimer();
-                    resetCounter++;
-                }
-                if (totalShooterTimer.getElapsedTimeSeconds() > 7 || shotCounter >= 3){
-                    setRobotState(RobotConstants.SystemState.OFF);
-                    return;
-                }
-                robot.transfer.setFeedMode();
-                if (hadBall && !hasBall){
-                    robot.transfer.stopTransfer();
-                    shotCounter++;
-                    setRobotState(RobotConstants.SystemState.WAITING_FOR_SHOT);
-                    return;
-                }
-                break;
-            case WAITING_FOR_SHOT:
-                if (shooterTimer.getElapsedTimeSeconds() > 0.6){
-                    setRobotState(RobotConstants.SystemState.SPEEDING_UP);
-                }
-                break;
-            case OUTTAKING:
-                break;
-            case WAITING:
-                break;
-
-        }
     }
 
     public void setRobotState(RobotConstants.SystemState state){
@@ -352,7 +299,7 @@ public class RedSideAuto extends OpMode {
         hasBall = robot.shooter.hasBall();
         autonomousUpdate();
         actionUpdate();
-        shooterUpdate();
+        task.update(hasBall, hadBall);
         follower.update();
         telemetry.addData("Current Action State", actionState);
         telemetry.addData("Current Path State", pathState);

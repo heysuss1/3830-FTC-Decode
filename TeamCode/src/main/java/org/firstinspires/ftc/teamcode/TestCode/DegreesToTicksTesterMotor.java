@@ -2,12 +2,16 @@ package org.firstinspires.ftc.teamcode.TestCode;
 
 import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.config.Config;
+import com.pedropathing.follower.Follower;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
+import org.firstinspires.ftc.teamcode.Hardware;
+import org.firstinspires.ftc.teamcode.Tasks.Tasks;
+import org.firstinspires.ftc.teamcode.pedroPathing.Constants;
 
 @TeleOp (name = "AmeliaSadness")
 @Config
@@ -17,35 +21,37 @@ public class DegreesToTicksTesterMotor extends LinearOpMode {
     Telemetry dashboardTelemetry = dashboard.getTelemetry();
 
     public static int targetDegree;
+    Follower follower;
     public static double position;
+    Tasks task;
     public double gearRatio = 0.3819;
-    ArcSortingBot robot = ArcSortingBot.getInstance();
+    Hardware robot = Hardware.getInstance();
 
     public final double TICKS_PER_REV = 142.8;
     public void runOpMode(){
-        robot.init(hardwareMap);
+        robot.init(hardwareMap, telemetry);
+        task = new Tasks(robot, hardwareMap);
+        Constants.createFollower(hardwareMap);
         waitForStart();
         double degrees;
         int ticks;
         double robotHeading;
         while(opModeIsActive()){
-            robotHeading = robot.pinpoint.getHeading(AngleUnit.DEGREES);
             robot.shooter.pitchServo.setPosition(position);
-            robot.turret.turretMotor.setTargetPosition(robot.turret.degreesToTicks(targetDegree + (-robotHeading)));
-            robot.turret.turretMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-            robot.turret.turretMotor.setPower(0.1);
-            ticks = robot.turret.turretMotor.getCurrentPosition();
+
+            ticks = robot.shooter.getTurretPosition();
             degrees = (ticks/TICKS_PER_REV * gearRatio) * 360;
 
 
 
-            
-            dashboardTelemetry.addData("turret ticks",robot.turret.turretMotor.getCurrentPosition());
+            follower.update();
+            robot.shooter.setRobotPose(follower.getPose().getX(), follower.getPose().getY(), Math.toDegrees(follower.getPose().getHeading()));
+
+            dashboardTelemetry.addData("turret ticks", ticks);
             dashboardTelemetry.addData("Degrees", degrees);
-            dashboardTelemetry.addData("Degrees in Ticks", robot.turret.degreesToTicks(targetDegree));
-            dashboardTelemetry.addData("Robot's heading", robotHeading);
+            dashboardTelemetry.addData("Degrees in Ticks", robot.shooter.degreesToTicks(targetDegree));
+            dashboardTelemetry.addData("Robot's heading", Math.toDegrees(follower.getHeading()));
             dashboardTelemetry.update();
-            robot.pinpoint.update();
         }
     }
 }

@@ -11,7 +11,7 @@ import org.firstinspires.ftc.teamcode.Hardware;
 
 @Config
 @TeleOp (name = "Shooter Velocity Checker")
-public class MaxSpeedTester extends LinearOpMode {
+public class ShooterMotorPowerTester extends LinearOpMode {
 
     public static double power;
     FtcDashboard dashboard = FtcDashboard.getInstance();
@@ -25,10 +25,7 @@ public class MaxSpeedTester extends LinearOpMode {
         waitForStart();
         while(opModeIsActive()){
             robot.shooter.setPower(power);
-            telemetryA.addData("top shooter motor: ", robot.shooter.topShooterMotor.getPower());
-            telemetryA.addData("bottom shooter motor: ", robot.shooter.bottomShooterMotor.getPower());
             telemetryA.addData("top shooter velocity (rpm)", robot.shooter.getVelocity());
-            telemetryA.addData("top shooter velocity (tps)", robot.shooter.topShooterMotor.getVelocity());
             telemetryA.update();
         }
     }

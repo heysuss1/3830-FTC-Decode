@@ -15,6 +15,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.firstinspires.ftc.teamcode.Hardware;
 import org.firstinspires.ftc.teamcode.PIDControls.VelocityController;
 import org.firstinspires.ftc.teamcode.RobotConstants;
+import org.firstinspires.ftc.teamcode.Tasks.Tasks;
 
 
 @Config
@@ -32,6 +33,7 @@ public class ShooterTester extends LinearOpMode {
     Telemetry dashboardTelemetry = dashboard.getTelemetry();
     Hardware robot = Hardware.getInstance();
     VelocityController velController;
+    Tasks tasks;
 
     boolean intakeOn = false;
 
@@ -40,10 +42,9 @@ public class ShooterTester extends LinearOpMode {
 
     public void runOpMode(){
         robot.init(hardwareMap, telemetry);
-        robot.shooter.bottomShooterMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         velController = new VelocityController(hardwareMap);
         shooterTimer = new Timer();
-        robot.shooter.topShooterMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        tasks = new Tasks(robot, hardwareMap);
         telemetryA = new MultipleTelemetry(this.telemetry, dashboard.getTelemetry());
         waitForStart();
         hasBall = robot.shooter.hasBall();
@@ -56,10 +57,10 @@ public class ShooterTester extends LinearOpMode {
 
             if (currentGamepad1.right_bumper && !previousGamepad1.right_bumper){
                 if (!intakeOn){
-                    setRobotState(RobotConstants.SystemState.INTAKING);
+                    tasks.setTransferState(Tasks.TransferState.INTAKE);
                     intakeOn = true;
                 } else {
-                    setRobotState(RobotConstants.SystemState.OFF);
+                    tasks.setTransferState(Tasks.TransferState.OFF);
                     intakeOn = false;
                 }
             }
@@ -74,57 +75,17 @@ public class ShooterTester extends LinearOpMode {
                 systemState = RobotConstants.SystemState.SLOWING_DOWN;
             }
             if (currentGamepad1.cross){
-                setRobotState(RobotConstants.SystemState.OFF);
+                tasks.setTransferState(Tasks.TransferState.OFF);
+                tasks.setShooterState(Tasks.ShooterState.DONE);
             }
 
 
+            tasks.update(hasBall, hadBall);
             telemetryA.addData("Current Vel (in RPM)", robot.shooter.getVelocity());
             telemetryA.addData("Color Sensor Distance", robot.shooter.colorSensor.getDistance(DistanceUnit.INCH));
             telemetryA.addData("Shot Counter",shotCounter);
             telemetryA.addData("State", systemState);
             telemetryA.update();
-            updateRobotState();
-
         }
-    }
-    public void updateRobotState(){
-        switch (systemState){
-            case OFF:
-                robot.shooter.stopShooter();
-                robot.transfer.stopIntake();
-                robot.transfer.stopFeed();
-                shotCounter = 0;
-                gamepad1.setLedColor(255,0,0,1000000000);
-                break;
-            case INTAKING:
-                robot.transfer.setIntakeMode();
-                robot.transfer.setFeedIntakeMode(robot.shooter.hasBall());
-                gamepad1.setLedColor(0,0,255,1000000000);
-                break;
-            case SPEEDING_UP:
-                //Set power to needed velocity.
-                robot.shooter.setPower(velController.getPower(robot.shooter.getVelocity(), velocity));
-                if (robot.shooter.isReady(velocity, 150)){
-                    setRobotState(RobotConstants.SystemState.SHOOTING);
-                }
-                break;
-            case SHOOTING:
-                robot.transfer.setFeedMode();
-                if (!hasBall && hadBall){
-                    shotCounter ++;
-                    robot.transfer.stopTransfer();
-                    setRobotState(RobotConstants.SystemState.SPEEDING_UP);
-                }
-                break;
-            case OUTTAKING:
-                break;
-            case WAITING:
-                break;
-
-        }
-    }
-    public void setRobotState(RobotConstants.SystemState state){
-        systemState = state;
-        shooterTimer.resetTimer();
     }
 }

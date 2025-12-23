@@ -1,12 +1,9 @@
 package org.firstinspires.ftc.teamcode.subsystems;
 
-import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
-
-import org.firstinspires.ftc.teamcode.Hardware;
 
 public class Transfer{
 
@@ -58,7 +55,8 @@ public class Transfer{
         }
 
     }
-    public void setIntakeMode(   ){
+    public void setIntakeMode(boolean hasBall){
+        setFeedIntakeMode(hasBall);
         startIntake();
     }
 
@@ -68,7 +66,7 @@ public class Transfer{
     }
 
 
-    public void moveBackwards(){
+    public void setOuttakeMode(){
         feedMotor.setPower(-0.6);
         intakeMotor.setPower(-0.5);
     }

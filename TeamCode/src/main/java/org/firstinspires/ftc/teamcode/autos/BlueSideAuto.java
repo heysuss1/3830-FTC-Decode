@@ -12,6 +12,7 @@ import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import org.firstinspires.ftc.teamcode.Hardware;
 import org.firstinspires.ftc.teamcode.PIDControls.VelocityController;
 import org.firstinspires.ftc.teamcode.RobotConstants;
+import org.firstinspires.ftc.teamcode.Tasks.Tasks;
 import org.firstinspires.ftc.teamcode.pedroPathing.Constants;
 
 
@@ -30,6 +31,7 @@ public class BlueSideAuto extends OpMode {
     int shotCounter = 0;
 
     final int FORWARD_CONSTANT = 24;
+    Tasks tasks;
 
     enum ActionState {
         SHOOT_PRELOAD,
@@ -93,11 +95,12 @@ public class BlueSideAuto extends OpMode {
     public void init() {
         robot.init(hardwareMap, telemetry);
         pathTimer = new Timer();
-        shooterTimer = new Timer();
         totalShooterTimer = new Timer();
         hasBall = robot.shooter.hasBall();
         velController = new VelocityController(hardwareMap);
         batteryVoltage = velController.getBatteryVoltage();
+        tasks = new Tasks(robot, hardwareMap);
+
         follower = Constants.createFollower(hardwareMap);
         follower.setStartingPose(startingPose);
         follower.setMaxPower(1);
@@ -151,55 +154,6 @@ public class BlueSideAuto extends OpMode {
                 .setLinearHeadingInterpolation(launchPose.getHeading(), gatePose.getHeading())
                 .build();
     }
-    public void shooterUpdate() {
-        switch (robotState){
-            case OFF:
-                robot.shooter.stopShooter();
-                robot.transfer.stopIntake();
-                robot.transfer.stopFeed();
-                totalShooterTimer.resetTimer();
-                shotCounter = 0;
-                batteryVoltage = velController.getBatteryVoltage();
-                break;
-            case INTAKING:
-                robot.transfer.setIntakeMode();
-                robot.transfer.setFeedIntakeMode(robot.shooter.hasBall());
-                batteryVoltage = velController.getBatteryVoltage();
-                break;
-            case SPEEDING_UP:
-                //Set power to needed velocity.
-                robot.shooter.setPower(velController.getPower(robot.shooter.getVelocity(), 3600));
-                if (robot.shooter.isReady(3600, 150) || shooterTimer.getElapsedTimeSeconds() > 1.25){ //TODO: Why 300 why not 100
-                    setRobotState(RobotConstants.SystemState.SHOOTING);
-                }
-                break;
-             case SHOOTING:
-                if (resetCounter == 0){
-                    totalShooterTimer.resetTimer();
-                    resetCounter++;
-                }
-                if (shotCounter >= 3 || totalShooterTimer.getElapsedTimeSeconds() > 6){
-                    setRobotState(RobotConstants.SystemState.OFF);
-                }
-                robot.transfer.setFeedMode();
-                if (hadBall && !hasBall){
-                    robot.transfer.stopTransfer();
-                    shotCounter++;
-                    setRobotState(RobotConstants.SystemState.WAITING_FOR_SHOT);
-                }
-                break;
-            case WAITING_FOR_SHOT:
-                if (shooterTimer.getElapsedTimeSeconds() > 0.6){
-                    setRobotState(RobotConstants.SystemState.SPEEDING_UP);
-                }
-                break;
-            case OUTTAKING:
-                break;
-            case WAITING:
-                break;
-
-        }
-    }
 
     public void setRobotState(RobotConstants.SystemState state){
         robotState = state;
@@ -218,7 +172,7 @@ public class BlueSideAuto extends OpMode {
         switch(actionState){
             case SHOOT_PRELOAD:
                 if (!follower.isBusy()) {
-                    setRobotState(RobotConstants.SystemState.SPEEDING_UP);
+                    tasks.setShooterState(Tasks.ShooterState.SPEEDING_UP);
                     setActionState(RedSideAuto.ActionState.WAITING_FOR_PRELOAD);
                 }
                 break;
@@ -229,13 +183,13 @@ public class BlueSideAuto extends OpMode {
                 break;
             case SLURPING_GROUP_1:
                 if (!follower.isBusy() && pathState == RedSideAuto.PathState.SLURPING_GROUP_1){
-                    setRobotState(RobotConstants.SystemState.INTAKING);
+                    tasks.setTransferState(Tasks.TransferState.INTAKE);
                     setActionState(RedSideAuto.ActionState.SHOOT_GROUP_1);
                 }
                 break;
             case SHOOT_GROUP_1:
                 if (!follower.isBusy()) {
-                    setRobotState(RobotConstants.SystemState.SPEEDING_UP);
+                    tasks.setShooterState(Tasks.ShooterState.SPEEDING_UP);
                     setActionState(RedSideAuto.ActionState.WAITING_FOR_COMPLETION_1);
                 }
                 break;
@@ -246,13 +200,13 @@ public class BlueSideAuto extends OpMode {
                 break;
             case SLURPING_GROUP_2:
                 if (!follower.isBusy() && pathState == RedSideAuto.PathState.SLURPING_GROUP_2){
-                    setRobotState(RobotConstants.SystemState.INTAKING);
+                    tasks.setTransferState(Tasks.TransferState.INTAKE);
                     setActionState(RedSideAuto.ActionState.SHOOT_GROUP_2);
                 }
                 break;
             case SHOOT_GROUP_2:
                 if (!follower.isBusy()) {
-                    setRobotState(RobotConstants.SystemState.SPEEDING_UP);
+                    tasks.setShooterState(Tasks.ShooterState.SPEEDING_UP);
                     setActionState(RedSideAuto.ActionState.WAITING_FOR_COMPLETION_2);
                 }
                 break;
@@ -263,13 +217,13 @@ public class BlueSideAuto extends OpMode {
                 break;
             case SLURPING_GROUP_3:
                 if (!follower.isBusy() && pathState == RedSideAuto.PathState.SLURPING_GROUP_3){
-                    setRobotState(RobotConstants.SystemState.INTAKING);
+                    tasks.setTransferState(Tasks.TransferState.INTAKE);
                     setActionState(RedSideAuto.ActionState.SHOOT_GROUP_3);
                 }
                 break;
             case SHOOT_GROUP_3:
                 if (!follower.isBusy()) {
-                    setRobotState(RobotConstants.SystemState.SPEEDING_UP);
+                    tasks.setShooterState(Tasks.ShooterState.SPEEDING_UP);
                     setActionState(RedSideAuto.ActionState.WAITING_FOR_COMPLETION_3);
                 }
                 break;
@@ -356,7 +310,8 @@ public class BlueSideAuto extends OpMode {
         hasBall = robot.shooter.hasBall();
         autonomousUpdate();
         actionUpdate();
-        shooterUpdate();
+        robot.shooter.setRobotPose(follower.getPose().getX(), follower.getPose().getY(), follower.getPose().getHeading());
+        tasks.update(hasBall, hadBall);
         follower.update();
         telemetry.addData("Current Action State", actionState);
         telemetry.addData("Current Path State", pathState);
@@ -369,4 +324,3 @@ public class BlueSideAuto extends OpMode {
         telemetry.update();
     }
 }
-
