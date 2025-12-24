@@ -20,7 +20,6 @@ public class Regressions {
         return closestRPM;
     }
 
-
     /*
    This method will determine the pitch needed to make it into the goal based on the distance and rpm.
     * this will be used as well after each shot to determine based on the current drop in velocity, how much does

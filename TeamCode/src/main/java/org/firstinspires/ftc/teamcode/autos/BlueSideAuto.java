@@ -107,6 +107,9 @@ public class BlueSideAuto extends OpMode {
         buildPaths();
     }
 
+
+
+
     public void buildPaths() {
         toPreload = follower.pathBuilder()
                 .addPath(new BezierLine(startingPose, launchPose))
