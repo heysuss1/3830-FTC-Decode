@@ -7,6 +7,7 @@ import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
+import com.qualcomm.robotcore.robot.Robot;
 
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.firstinspires.ftc.teamcode.PIDControls.TurretController;
@@ -37,14 +38,16 @@ public class Shooter {
 
 
     public RevColorSensorV3 colorSensor;
+    private Follower follower;
 
     // hooray
 
-    public Shooter(HardwareMap hwMap){
+    public Shooter(HardwareMap hwMap, Follower follower){
 
 //        pitchServo = hwMap.get(Servo.class, "pitchServo");
         colorSensor = hwMap.get(RevColorSensorV3.class, "colorSensor");
 
+        this.follower = follower;
         topShooterMotor = hwMap.get(DcMotorEx.class, "topShooterMotor");
         topShooterMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         topShooterMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
@@ -98,21 +101,17 @@ public class Shooter {
     }
 
     public int getTurretTargetPos(){
-        return degreesToTicks(setYaw());
+        return degreesToTicks(getYaw());
     }
     public void setTurretPower(double power){
         turretMotor.setPower(power);
     }
 
-    public double getDistance(double x_ball, double y_ball, RobotConstants.Team team){
-        double x_goal = team == RobotConstants.Team.BLUE ? RobotConstants.X_GOAL_BLUE: RobotConstants.X_GOAL_RED;
-        return Math.sqrt(Math.pow(y_ball-RobotConstants.Y_GOAL, 2)+Math.pow(x_ball-x_goal,2));
-    }
 
-    public static double getYaw(double x_ball, double y_ball, RobotConstants.Team team){
-        double x_goal = team == RobotConstants.Team.BLUE ? 12: 132;
-        return Math.toDegrees(Math.atan2((y_ball-140.8), (x_ball-x_goal)))+180;
 
+    public double getYaw(){
+        double x_goal =  RobotConstants.getTEAM() == RobotConstants.Team.BLUE ? RobotConstants.X_GOAL_BLUE : RobotConstants.X_GOAL_RED;
+        return Math.toDegrees(Math.atan2((follower.getPose().getY()-140.8), (follower.getPose().getX()-x_goal)))+180;
     }
 
     public int getVelocityTarget(){

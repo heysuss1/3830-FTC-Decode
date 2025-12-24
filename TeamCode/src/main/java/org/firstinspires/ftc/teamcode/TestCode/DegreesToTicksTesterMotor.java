@@ -13,7 +13,7 @@ import org.firstinspires.ftc.teamcode.Hardware;
 import org.firstinspires.ftc.teamcode.Tasks.Tasks;
 import org.firstinspires.ftc.teamcode.pedroPathing.Constants;
 
-@TeleOp (name = "AmeliaSadness")
+@TeleOp (name = "Test Turret Rotation")
 @Config
 public class DegreesToTicksTesterMotor extends LinearOpMode {
 
