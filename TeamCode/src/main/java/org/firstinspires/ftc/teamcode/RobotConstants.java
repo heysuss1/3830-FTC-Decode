@@ -24,7 +24,9 @@ public class RobotConstants {
     }
     static Team TEAM;
     static Motif MOTIF;
-    static double Y_GOAL = 140;
+    public final static double Y_GOAL = 142;
+    public final static double X_GOAL_RED = 142;
+    public final static double X_GOAL_BLUE = 2;
 
     public static Team getTEAM() {
         return TEAM;

@@ -12,13 +12,12 @@ import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.firstinspires.ftc.teamcode.PIDControls.TurretController;
 import org.firstinspires.ftc.teamcode.PIDControls.VelocityController;
 import org.firstinspires.ftc.teamcode.RobotConstants;
-import org.firstinspires.ftc.teamcode.kinematics;
 
 public class Shooter {
     //TODO: add shooter motors/servos
 
     //1 shooter motor, 1 servo for pitch, 1 motor to pan/turret
-    public kinematics kinematics = new kinematics();
+
     public final double HAS_BALL_TRESHOLD = 1.7;
     public double gearRatio = 0.3819;
     private final double TICKS_PER_REV = 142.8;
@@ -104,14 +103,18 @@ public class Shooter {
     public void setTurretPower(double power){
         turretMotor.setPower(power);
     }
-    public double setYaw() {
-        double yawRaw = kinematics.getYaw(
-                xPosition,
-                yPosition,
-                RobotConstants.getTEAM()
-        );
-        return yawRaw - headPosition;
+
+    public double getDistance(double x_ball, double y_ball, RobotConstants.Team team){
+        double x_goal = team == RobotConstants.Team.BLUE ? RobotConstants.X_GOAL_BLUE: RobotConstants.X_GOAL_RED;
+        return Math.sqrt(Math.pow(y_ball-RobotConstants.Y_GOAL, 2)+Math.pow(x_ball-x_goal,2));
     }
+
+    public static double getYaw(double x_ball, double y_ball, RobotConstants.Team team){
+        double x_goal = team == RobotConstants.Team.BLUE ? 12: 132;
+        return Math.toDegrees(Math.atan2((y_ball-140.8), (x_ball-x_goal)))+180;
+
+    }
+
     public int getVelocityTarget(){
         return velocityTarget;
     }
@@ -134,18 +137,6 @@ public class Shooter {
     }
     public double TPStoRPM(double tps) {return (60*tps/TICKS_PER_REVOLUTION);}
 
-
-    public void setPitchServo(Follower follower) {
-        pitchRaw = kinematics.getPitch(
-                follower.getPose().getX() + RobotConstants.ballXOffset,
-                follower.getPose().getY() + RobotConstants.ballYOffset,
-                536,
-                false,
-                RobotConstants.getTEAM()
-        );
-        //TODO: add calculation for converting pitchRaw to servo position, prob linear
-        pitchServo.setPosition(pitchRaw); //+ calculation
-    }
     
     //IN RPM
     public double getVelocity() { return (Math.abs(topShooterMotor.getVelocity()) * 60)/TICKS_PER_REVOLUTION; }
