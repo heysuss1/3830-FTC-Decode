@@ -86,6 +86,12 @@ public class TwelveBallAuto extends OpMode {
     //This is where we set the team color;
     //If gamepad1.dpad_up, make it blue, gamepad1.dpad_down, make it red
     public void init_loop(){
+        if (gamepad1.dpad_up) {
+            RobotConstants.setTeam(RobotConstants.Team.BLUE);
+        }
+        if (gamepad1.dpad_down){
+            RobotConstants.setTeam(RobotConstants.Team.RED);
+        }
 
     }
 
@@ -94,13 +100,28 @@ public class TwelveBallAuto extends OpMode {
 
     public void initializeBluePoses(){
         startingPose = new Pose(convertRedToBluePosition(128), 118, Math.toRadians(140));
-
+        launchPose = new Pose(convertRedToBluePosition(96), 96, Math.toRadians(34));
+        balls1 = new Pose(convertRedToBluePosition(99), 83, 0);
+        balls2 = new Pose(convertRedToBluePosition(99), 63.5, 0);
+        balls3 = new Pose(convertRedToBluePosition(100), 35, 0);
+        intakeBalls1Pose = new Pose(convertRedToBluePosition(126.5), 64, 0);
+        intakeBalls2Pose = new Pose(convertRedToBluePosition(124), 65, 0);
+        intakeBalls3Pose = new Pose(convertRedToBluePosition(131), 37, 0);
+        gatePose = new Pose(convertRedToBluePosition(120), 70, 0);
     }
 
 
     //Use values from redsideauto.java
     public void initializeRedPoses(){
         startingPose = new Pose(128, 118, Math.toRadians(140));
+        launchPose = new Pose(96, 96, Math.toRadians(34));
+        balls1 = new Pose(99, 83, 0);
+        balls2 = new Pose(99, 63.5, 0);
+        balls3 = new Pose(100, 35, 0);
+        intakeBalls1Pose = new Pose(126.5, 64, 0);
+        intakeBalls2Pose = new Pose(124, 65, 0);
+        intakeBalls3Pose = new Pose(131, 37, 0);
+        gatePose = new Pose(120, 70, 0);
     }
 
 
