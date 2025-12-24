@@ -15,6 +15,10 @@ public class TwelveBallAuto extends OpMode {
         RobotConstants.setTeam(RobotConstants.Team.BLUE);
     }
 
+    
+    public void init(){
+    }
+
     public void buildRedPaths(){
 
     }
