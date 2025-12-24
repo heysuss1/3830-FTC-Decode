@@ -73,9 +73,9 @@ public class RedSideAuto extends OpMode {
     Pose balls1 = new Pose(99, 83, 0);
     Pose balls2 = new Pose(99, 63.5, 0);
     Pose balls3 = new Pose(100, 35, 0);
-    Pose intakeBalls1Pose = new Pose(99 + FORWARD_CONSTANT+3.5, 84, 0);
-    Pose intakeBalls2Pose = new Pose(99 + FORWARD_CONSTANT+1, 65, 0);
-    Pose intakeBalls3Pose = new Pose(99 + FORWARD_CONSTANT+8, 37, 0);
+    Pose intakeBalls1Pose = new Pose(126.5, 84, 0);
+    Pose intakeBalls2Pose = new Pose(124, 65, 0);
+    Pose intakeBalls3Pose = new Pose(131, 37, 0);
     Pose gatePose = new Pose(120, 70, 0);
     PathChain toPreload, toBalls1, toLaunch1, toBalls2, toLaunch2, toBalls3, toLaunch3,
             intakeBalls1, intakeBalls2, intakeBalls3, toGate;
