@@ -1,6 +1,7 @@
 package org.firstinspires.ftc.teamcode;
 
 import com.pedropathing.follower.Follower;
+import com.qualcomm.hardware.lynx.LynxModule;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
@@ -54,6 +55,11 @@ public class Hardware {
     public void init(HardwareMap hwMap, Telemetry telemetry){
 
         follower = Constants.createFollower(hwMap);
+
+
+//        for (LynxModule hub: hwMap.getAll(LynxModule.class)){
+//            hub.setBulkCachingMode(LynxModule.BulkCachingMode.MANUAL);
+//        }
         this.hwMap = hwMap;
         driveTrain.init(hwMap, telemetry);
         transfer = new Transfer(hwMap);

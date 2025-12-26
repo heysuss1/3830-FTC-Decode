@@ -99,7 +99,7 @@ public class BlueSideAuto extends OpMode {
         hasBall = robot.shooter.hasBall();
         velController = new VelocityController(hardwareMap);
         batteryVoltage = velController.getBatteryVoltage();
-        tasks = new Tasks(robot, hardwareMap);
+        tasks = new Tasks(robot, hardwareMap, true);
 
         follower = Constants.createFollower(hardwareMap);
         follower.setStartingPose(startingPose);
