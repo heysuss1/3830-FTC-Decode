@@ -99,34 +99,34 @@ public class TwelveBallAuto extends OpMode {
     //Use the values from redsideauto.java as well, but convert the x values to blue.
 
     public void initializeBluePoses(){
-        startingPose = new Pose(convertRedToBluePosition(128), 118, Math.toRadians(140));
-        launchPose = new Pose(convertRedToBluePosition(96), 96, Math.toRadians(34));
+        startingPose = new Pose(convertRedToBluePosition(128), 118, Math.toRadians(40));
+        launchPose = new Pose(convertRedToBluePosition(96), 96, Math.toRadians(40));
         balls1 = new Pose(convertRedToBluePosition(99), 83, 0);
-        balls2 = new Pose(convertRedToBluePosition(99), 63.5, 0);
+        balls2 = new Pose(convertRedToBluePosition(99), 61, 0);
         balls3 = new Pose(convertRedToBluePosition(100), 35, 0);
-        intakeBalls1Pose = new Pose(convertRedToBluePosition(126.5), 64, 0);
-        intakeBalls2Pose = new Pose(convertRedToBluePosition(124), 65, 0);
-        intakeBalls3Pose = new Pose(convertRedToBluePosition(131), 37, 0);
+        intakeBalls1Pose = new Pose(convertRedToBluePosition(127.5), 83, 0);
+        intakeBalls2Pose = new Pose(convertRedToBluePosition(124), 61, 0);
+        intakeBalls3Pose = new Pose(convertRedToBluePosition(131), 35, 0);
         gatePose = new Pose(convertRedToBluePosition(120), 70, 0);
     }
 
     //Use values from redsideauto.java
     public void initializeRedPoses(){
-        startingPose = new Pose(128, 118, Math.toRadians(140));
-        launchPose = new Pose(96, 96, Math.toRadians(34));
+        startingPose = new Pose(128, 118, Math.toRadians(40));
+        launchPose = new Pose(96, 96, Math.toRadians(40));
         balls1 = new Pose(99, 83, 0);
-        balls2 = new Pose(99, 63.5, 0);
+        balls2 = new Pose(99, 61, 0);
         balls3 = new Pose(100, 35, 0);
-        intakeBalls1Pose = new Pose(126.5, 64, 0);
-        intakeBalls2Pose = new Pose(124, 65, 0);
-        intakeBalls3Pose = new Pose(131, 37, 0);
+        intakeBalls1Pose = new Pose(127.5, 83, 0);
+        intakeBalls2Pose = new Pose(124, 61, 0);
+        intakeBalls3Pose = new Pose(131, 35, 0);
         gatePose = new Pose(120, 70, 0);
     }
 
 
     public void init() {
         robot.init(hardwareMap, telemetry);
-        task = new Tasks(robot, hardwareMap);
+        task = new Tasks(robot, hardwareMap, true);
         robot.shooter.setRobotPose(follower.getPose().getX(), follower.getPose().getY(), follower.getPose().getHeading());
         pathTimer = new Timer();
         shooterTimer = new Timer();

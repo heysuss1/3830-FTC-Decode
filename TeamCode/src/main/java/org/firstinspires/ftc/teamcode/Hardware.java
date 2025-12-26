@@ -19,13 +19,9 @@ public class Hardware {
 
     Follower follower;
 
-//    public Turret turret = new Turret();
     public Transfer transfer;
     private HardwareMap hwMap;
     private double voltage;
-    public Vision vision = new Vision();
-    public double maxSpeed;
-
 
 
 
@@ -57,9 +53,9 @@ public class Hardware {
         follower = Constants.createFollower(hwMap);
 
 
-//        for (LynxModule hub: hwMap.getAll(LynxModule.class)){
-//            hub.setBulkCachingMode(LynxModule.BulkCachingMode.MANUAL);
-//        }
+        for (LynxModule hub: hwMap.getAll(LynxModule.class)){
+            hub.setBulkCachingMode(LynxModule.BulkCachingMode.AUTO);
+        }
         this.hwMap = hwMap;
         driveTrain.init(hwMap, telemetry);
         transfer = new Transfer(hwMap);
