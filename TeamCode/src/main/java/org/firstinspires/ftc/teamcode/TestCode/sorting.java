@@ -1,6 +1,4 @@
-package org.firstinspires.ftc.teamcode;
-
-import java.util.ArrayList;
+package org.firstinspires.ftc.teamcode.TestCode;
 
 public class sorting {
     String[] motifs = {"GPP", "PGP", "PPG"};

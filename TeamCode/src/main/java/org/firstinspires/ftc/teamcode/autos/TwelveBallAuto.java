@@ -110,7 +110,6 @@ public class TwelveBallAuto extends OpMode {
         gatePose = new Pose(convertRedToBluePosition(120), 70, 0);
     }
 
-
     //Use values from redsideauto.java
     public void initializeRedPoses(){
         startingPose = new Pose(128, 118, Math.toRadians(140));

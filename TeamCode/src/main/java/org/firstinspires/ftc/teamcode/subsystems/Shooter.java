@@ -99,7 +99,6 @@ public class Shooter {
     public int getTurretPosition(){
         return turretMotor.getCurrentPosition();
     }
-
     public int getTurretTargetPos(){
         return degreesToTicks(getYaw());
     }
@@ -123,11 +122,9 @@ public class Shooter {
     public void stopShooter(){
         setPower(0);
     }
-
     public double RPMtoTPS(int rpm){
         return (rpm*TICKS_PER_REVOLUTION/60.0);
     }
-
     public boolean isBallShot(int prevVel, int currentVel){
         if (Math.abs(currentVel - prevVel) > 200){
             return true;
