@@ -64,18 +64,19 @@ public class RedSideAuto extends OpMode {
     }
     PathState pathState = PathState.TO_PRELOAD;
     ActionState actionState = ActionState.SHOOT_PRELOAD;
-    RobotConstants.SystemState robotState = RobotConstants.SystemState.OFF;
+    Tasks.ShooterState shooterState = Tasks.ShooterState.DONE;
+    Tasks.TransferState transferState = Tasks.TransferState.OFF;
 
 
     //Starting pose wrong
     Pose startingPose = new Pose(128, 118, Math.toRadians(40));
-    Pose launchPose = new Pose(96, 96, Math.toRadians(34));
+    Pose launchPose = new Pose(96, 96, Math.toRadians(40));
     Pose balls1 = new Pose(99, 83, 0);
-    Pose balls2 = new Pose(99, 63.5, 0);
+    Pose balls2 = new Pose(99, 61, 0);
     Pose balls3 = new Pose(100, 35, 0);
-    Pose intakeBalls1Pose = new Pose(126.5, 84, 0);
-    Pose intakeBalls2Pose = new Pose(124, 65, 0);
-    Pose intakeBalls3Pose = new Pose(131, 37, 0);
+    Pose intakeBalls1Pose = new Pose(99 + FORWARD_CONSTANT+4.5, 83, 0);
+    Pose intakeBalls2Pose = new Pose(99 + FORWARD_CONSTANT+1, 61, 0);
+    Pose intakeBalls3Pose = new Pose(99 + FORWARD_CONSTANT+8, 35, 0);
     Pose gatePose = new Pose(120, 70, 0);
     PathChain toPreload, toBalls1, toLaunch1, toBalls2, toLaunch2, toBalls3, toLaunch3,
             intakeBalls1, intakeBalls2, intakeBalls3, toGate;
@@ -83,8 +84,7 @@ public class RedSideAuto extends OpMode {
 
     public void init() {
         robot.init(hardwareMap, telemetry);
-        task = new Tasks(robot, hardwareMap);
-        robot.shooter.setRobotPose(follower.getPose().getX(), follower.getPose().getY(), follower.getPose().getHeading());
+        task = new Tasks(robot, hardwareMap, true);
         pathTimer = new Timer();
         shooterTimer = new Timer();
         totalShooterTimer = new Timer();
@@ -93,6 +93,8 @@ public class RedSideAuto extends OpMode {
         follower = Constants.createFollower(hardwareMap);
         follower.setStartingPose(startingPose);
         follower.setMaxPower(1);
+        robot.shooter.setVelocityTarget(3550);
+        robot.shooter.setRobotPose(follower.getPose().getX(), follower.getPose().getY(), follower.getPose().getHeading());
         buildPaths();
     }
 
@@ -144,11 +146,6 @@ public class RedSideAuto extends OpMode {
                 .build();
     }
 
-    public void setRobotState(RobotConstants.SystemState state){
-        robotState = state;
-        shooterTimer.resetTimer();
-    }
-
 
     public void setPathState(PathState state){
         pathState = state;
@@ -161,63 +158,63 @@ public class RedSideAuto extends OpMode {
         switch(actionState){
             case SHOOT_PRELOAD:
                 if (!follower.isBusy()) {
-                    setRobotState(RobotConstants.SystemState.SPEEDING_UP);
+                    task.setShooterState(Tasks.ShooterState.SPEEDING_UP);
                     setActionState(ActionState.WAITING_FOR_PRELOAD);
                 }
                 break;
             case WAITING_FOR_PRELOAD:
-                if (robotState == RobotConstants.SystemState.OFF){
+                if (shooterState == Tasks.ShooterState.DONE){
                     setActionState(ActionState.SLURPING_GROUP_1);
                 }
                 break;
             case SLURPING_GROUP_1:
                 if (!follower.isBusy() && pathState == PathState.SLURPING_GROUP_1){
-                    setRobotState(RobotConstants.SystemState.INTAKING);
+                    task.setTransferState(Tasks.TransferState.INTAKE);
                     setActionState(ActionState.SHOOT_GROUP_1);
                 }
                 break;
             case SHOOT_GROUP_1:
                 if (!follower.isBusy()) {
-                    setRobotState(RobotConstants.SystemState.SPEEDING_UP);
+                    task.setShooterState(Tasks.ShooterState.SPEEDING_UP);
                     setActionState(ActionState.WAITING_FOR_COMPLETION_1);
                 }
                 break;
             case WAITING_FOR_COMPLETION_1:
-                if (robotState == RobotConstants.SystemState.OFF){
+                if (shooterState == Tasks.ShooterState.DONE){
                     setActionState(ActionState.SLURPING_GROUP_2);
                 }
                 break;
             case SLURPING_GROUP_2:
                 if (!follower.isBusy() && pathState == PathState.SLURPING_GROUP_2){
-                    setRobotState(RobotConstants.SystemState.INTAKING);
+                    task.setTransferState(Tasks.TransferState.INTAKE);
                     setActionState(ActionState.SHOOT_GROUP_2);
                 }
                 break;
             case SHOOT_GROUP_2:
                 if (!follower.isBusy()) {
-                    setRobotState(RobotConstants.SystemState.SPEEDING_UP);
+                    task.setShooterState(Tasks.ShooterState.SPEEDING_UP);
                     setActionState(ActionState.WAITING_FOR_COMPLETION_2);
                 }
                 break;
             case WAITING_FOR_COMPLETION_2:
-                if (robotState == RobotConstants.SystemState.OFF){
+                if (shooterState == Tasks.ShooterState.DONE){
                     setActionState(ActionState.SLURPING_GROUP_3);
                 }
                 break;
             case SLURPING_GROUP_3:
                 if (!follower.isBusy() && pathState == PathState.SLURPING_GROUP_3){
-                    setRobotState(RobotConstants.SystemState.INTAKING);
+                    task.setTransferState(Tasks.TransferState.INTAKE);
                     setActionState(ActionState.SHOOT_GROUP_3);
                 }
                 break;
             case SHOOT_GROUP_3:
                 if (!follower.isBusy()) {
-                    setRobotState(RobotConstants.SystemState.SPEEDING_UP);
+                    task.setShooterState(Tasks.ShooterState.SPEEDING_UP);
                     setActionState(ActionState.WAITING_FOR_COMPLETION_3);
                 }
                 break;
             case WAITING_FOR_COMPLETION_3:
-                if (robotState == RobotConstants.SystemState.OFF){
+                if (shooterState == Tasks.ShooterState.DONE){
                     setActionState(ActionState.STOP);
                 }
                 break;
@@ -239,7 +236,7 @@ public class RedSideAuto extends OpMode {
                 break;
             case SLURPING_GROUP_1:
                 if (!follower.isBusy() && actionState == ActionState.SHOOT_GROUP_1){
-                    follower.followPath(intakeBalls1,  intakePathSpeed, true);
+                    follower.followPath(intakeBalls1,  1, true);
                     setPathState(PathState.GROUP_1_TO_SHOOT);
                 }
                 break;
@@ -257,7 +254,7 @@ public class RedSideAuto extends OpMode {
                 break;
             case SLURPING_GROUP_2:
                 if (!follower.isBusy() && actionState == ActionState.SHOOT_GROUP_2){
-                    follower.followPath(intakeBalls2, 0.6, true);
+                    follower.followPath(intakeBalls2, 1, true);
                     setPathState(PathState.GROUP_2_TO_SHOOT);
                 }
                 break;
@@ -275,7 +272,7 @@ public class RedSideAuto extends OpMode {
                 break;
             case SLURPING_GROUP_3:
                 if (!follower.isBusy() && actionState == ActionState.SHOOT_GROUP_3){
-                    follower.followPath(intakeBalls3, intakePathSpeed, true);
+                    follower.followPath(intakeBalls3, 1, true);
                     setPathState(PathState.GROUP_3_TO_SHOOT);
                 }
                 break;
@@ -297,13 +294,15 @@ public class RedSideAuto extends OpMode {
     public void loop(){
         hadBall = hasBall;
         hasBall = robot.shooter.hasBall();
+        shooterState = task.getShooterState();
+        transferState = task.getTransferState();
         autonomousUpdate();
         actionUpdate();
         task.update(hasBall, hadBall);
         follower.update();
         telemetry.addData("Current Action State", actionState);
         telemetry.addData("Current Path State", pathState);
-        telemetry.addData("Current Shooter State", robotState);
+        telemetry.addData("Current Shooter State", shooterState);
         telemetry.addData("follower busy", follower.isBusy());
         telemetry.addData("shooter timer", shooterTimer.getElapsedTimeSeconds());
         telemetry.addData("shooter velocity", robot.shooter.getVelocity());

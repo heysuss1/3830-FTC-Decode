@@ -11,16 +11,22 @@ import org.firstinspires.ftc.teamcode.RobotConstants;
 public class Tasks {
 
     private Timer shooterTimer;
+    private Timer ballCountTimer;
     private Hardware robot;
     private int shotCounter;
     private  VelocityController velController;
+    private boolean isAuto;
 
 
-    public Tasks(Hardware robot, HardwareMap hardwareMap){
+
+
+    public Tasks(Hardware robot, HardwareMap hardwareMap, boolean isAuto){
         this.robot = robot;
         shooterTimer = new Timer();
         shotCounter = 0;
         velController = new VelocityController(hardwareMap);
+        ballCountTimer = new Timer();
+        this.isAuto = isAuto;
     }
     public enum ShooterState{
         SPEEDING_UP,
@@ -67,6 +73,14 @@ public class Tasks {
         }
     }
 
+    public ShooterState getShooterState(){
+        return shooterState;
+    }
+
+    public TransferState getTransferState(){
+        return transferState;
+    }
+
 
 
     private void setShooterPower(){
@@ -95,6 +109,9 @@ public class Tasks {
 
                 if (shotCounter >= 3) {
                     setTransferState(TransferState.OFF);
+                    setShooterState(ShooterState.DONE);
+                }
+                if (shooterTimer.getElapsedTimeSeconds() > 1.5){
                     setShooterState(ShooterState.DONE);
                 }
                 break;

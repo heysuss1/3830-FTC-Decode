@@ -67,8 +67,8 @@ public class Transfer{
 
 
     public void setOuttakeMode(){
-        feedMotor.setPower(-0.6);
-        intakeMotor.setPower(-0.5);
+        feedMotor.setPower(-1);
+        intakeMotor.setPower(-1);
     }
     public void startFeed(){
         feedMotor.setPower(FEED_POWER);

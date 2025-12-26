@@ -30,7 +30,7 @@ public class DegreesToTicksTesterMotor extends LinearOpMode {
     public final double TICKS_PER_REV = 142.8;
     public void runOpMode(){
         robot.init(hardwareMap, telemetry);
-        task = new Tasks(robot, hardwareMap);
+        task = new Tasks(robot, hardwareMap, false);
         Constants.createFollower(hardwareMap);
         waitForStart();
         double degrees;

@@ -4,6 +4,7 @@ import com.acmerobotics.dashboard.config.Config;
 import com.pedropathing.follower.Follower;
 import com.pedropathing.geometry.Pose;
 import com.pedropathing.util.Timer;
+import com.qualcomm.hardware.lynx.LynxModule;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.Gamepad;
@@ -29,19 +30,17 @@ public class MainTele extends LinearOpMode {
     Hardware robot = Hardware.getInstance();
     Follower follower;
     Tasks tasks;
-    Timer shooterTimer;
-
     VelocityController velController;
     RobotConstants constants = new RobotConstants();
-    Transfer.Transfer_state transferState;
-    RobotConstants.SystemState systemState;
-    double batteryVoltage;
-    int shotCounter = 0;
+    Timer loopTimer;
+    double currentTime = 0, lastTime = 0;
     int targetVel = 3600;
-    boolean hadBall, hasBall;
+    boolean hadBall, hasBall, showTelemetry;
 
     Gamepad currentGamepad1 = new Gamepad();
     Gamepad previousGamepad1 = new Gamepad();
+
+    int loopCount = 0;
 
 
     public void runOpMode() {
@@ -53,16 +52,21 @@ public class MainTele extends LinearOpMode {
         velController = new VelocityController(hardwareMap);
         boolean intakeOn = false;
         boolean orienting = false;
+        boolean showTelemetry = false;
 
-        systemState = RobotConstants.SystemState.OFF;
-        transferState = Transfer.Transfer_state.OFF;
+        tasks = new Tasks(robot, hardwareMap, false);
 
-        tasks = new Tasks(robot, hardwareMap);
+        loopTimer = new Timer();
 
         waitForStart();
-        shooterTimer = new Timer();
-
         while (opModeIsActive()) {
+
+//            for (LynxModule hub: hardwareMap.getAll(LynxModule.class)){
+//                hub.clearBulkCache();
+//            }
+            lastTime = currentTime;
+            currentTime = loopTimer.getElapsedTime();
+
             robot.shooter.setRobotPose(follower.getPose().getX(), follower.getPose().getY(), Math.toDegrees(follower.getPose().getHeading()));
             hadBall = hasBall;
             hasBall = robot.shooter.hasBall();
@@ -86,11 +90,8 @@ public class MainTele extends LinearOpMode {
             }
 
             if (currentGamepad1.circle) {
-                robot.transfer.setOuttakeMode();
+                tasks.setTransferState(Tasks.TransferState.OUTTAKE);
             }
-
-            orienting = currentGamepad1.b;
-
 
             if (currentGamepad1.right_trigger > 0.1 || currentGamepad1.x)
                 robot.driveTrain.setSpeed(0.3);
@@ -122,18 +123,27 @@ public class MainTele extends LinearOpMode {
 
             robot.shooter.setVelocityTarget(targetVel);
             tasks.update(hasBall, hadBall);
-            telemetry.addData("Shooter vel: ", robot.shooter.getVelocity());
-            telemetry.addData("Target Vel", targetVel);
-            telemetry.addData("x: ", follower.getPose().getX());
-            telemetry.addData("y: ", follower.getPose().getY());
-            telemetry.addData("Heading: ", follower.getHeading());
-            telemetry.addData("Shooter Timer", shooterTimer.getElapsedTimeSeconds());
-            telemetry.addData("Shooter state", systemState);
-            telemetry.addData("yawAligned?: ", Alignment.yawAligned(follower.getPose().getX(), follower.getPose().getY(), 12, 140.4, follower.getHeading()));
-            telemetry.update();
+
+
+
+            if (showTelemetry){
+
+            }
+
+
+
             follower.update();
 
-
+            if (loopCount % 5 == 0){
+                telemetry.addData("Shooter vel: ", robot.shooter.getVelocity());
+                telemetry.addData("Loop Time", currentTime - lastTime);
+                telemetry.addData("Target Vel", targetVel);
+                telemetry.addData("x: ", follower.getPose().getX());
+                telemetry.addData("y: ", follower.getPose().getY());
+                telemetry.addData("Heading: ", follower.getHeading());
+                telemetry.update();
+            }
+            loopCount++;
         }
     }
 }

@@ -44,7 +44,7 @@ public class ShooterTester extends LinearOpMode {
         robot.init(hardwareMap, telemetry);
         velController = new VelocityController(hardwareMap);
         shooterTimer = new Timer();
-        tasks = new Tasks(robot, hardwareMap);
+        tasks = new Tasks(robot, hardwareMap, false);
         telemetryA = new MultipleTelemetry(this.telemetry, dashboard.getTelemetry());
         waitForStart();
         hasBall = robot.shooter.hasBall();
