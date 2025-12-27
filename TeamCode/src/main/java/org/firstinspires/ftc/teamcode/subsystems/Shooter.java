@@ -1,6 +1,7 @@
 package org.firstinspires.ftc.teamcode.subsystems;
 
 import com.pedropathing.follower.Follower;
+import com.pedropathing.geometry.Pose;
 import com.qualcomm.hardware.rev.RevColorSensorV3;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
@@ -100,17 +101,14 @@ public class Shooter {
         return turretMotor.getCurrentPosition();
     }
     public int getTurretTargetPos(){
-        return degreesToTicks(getYaw());
+        return degreesToTicks(getYaw(follower.getPose()));
     }
     public void setTurretPower(double power){
         turretMotor.setPower(power);
     }
-
-
-
-    public double getYaw(){
+    public double getYaw(Pose robotPose){
         double x_goal =  RobotConstants.getTEAM() == RobotConstants.Team.BLUE ? RobotConstants.X_GOAL_BLUE : RobotConstants.X_GOAL_RED;
-        return Math.toDegrees(Math.atan2((follower.getPose().getY()-140.8), (follower.getPose().getX()-x_goal)))+180;
+        return (Math.toDegrees(Math.atan2((robotPose.getY()-140.8), (robotPose.getX()-x_goal)))+180) - robotPose.getHeading();
     }
 
     public int getVelocityTarget(){
