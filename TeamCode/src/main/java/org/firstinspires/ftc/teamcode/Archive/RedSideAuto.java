@@ -6,6 +6,7 @@ import com.pedropathing.geometry.Pose;
 import com.pedropathing.paths.PathChain;
 import com.pedropathing.util.Timer;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 
 import org.firstinspires.ftc.teamcode.Hardware;
@@ -14,6 +15,8 @@ import org.firstinspires.ftc.teamcode.pedroPathing.Constants;
 import org.firstinspires.ftc.teamcode.PIDControls.VelocityController;
 
 
+
+@Disabled
 @Autonomous (name = "Red Side Auto")
 public class RedSideAuto extends OpMode {
     Hardware robot = Hardware.getInstance();
@@ -93,7 +96,6 @@ public class RedSideAuto extends OpMode {
         follower.setStartingPose(startingPose);
         follower.setMaxPower(1);
         robot.shooter.setVelocityTarget(3550);
-        robot.shooter.setRobotPose(follower.getPose().getX(), follower.getPose().getY(), follower.getPose().getHeading());
         buildPaths();
     }
 

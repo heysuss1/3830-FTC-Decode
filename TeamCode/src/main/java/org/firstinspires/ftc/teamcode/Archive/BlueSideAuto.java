@@ -6,6 +6,7 @@ import com.pedropathing.geometry.Pose;
 import com.pedropathing.paths.PathChain;
 import com.pedropathing.util.Timer;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 
 import org.firstinspires.ftc.teamcode.Hardware;
@@ -15,6 +16,7 @@ import org.firstinspires.ftc.teamcode.Tasks.Tasks;
 import org.firstinspires.ftc.teamcode.pedroPathing.Constants;
 
 
+@Disabled
 @Autonomous (name = "Blue Side Auto")
 public class BlueSideAuto extends OpMode {
     Hardware robot = Hardware.getInstance();
@@ -312,7 +314,6 @@ public class BlueSideAuto extends OpMode {
         hasBall = robot.shooter.hasBall();
         autonomousUpdate();
         actionUpdate();
-        robot.shooter.setRobotPose(follower.getPose().getX(), follower.getPose().getY(), follower.getPose().getHeading());
         tasks.update(hasBall, hadBall);
         follower.update();
         telemetry.addData("Current Action State", actionState);

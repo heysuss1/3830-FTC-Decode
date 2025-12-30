@@ -66,8 +66,6 @@ public class MainTele extends LinearOpMode {
 //            }
             lastTime = currentTime;
             currentTime = loopTimer.getElapsedTime();
-
-            robot.shooter.setRobotPose(follower.getPose().getX(), follower.getPose().getY(), Math.toDegrees(follower.getPose().getHeading()));
             hadBall = hasBall;
             hasBall = robot.shooter.hasBall();
 

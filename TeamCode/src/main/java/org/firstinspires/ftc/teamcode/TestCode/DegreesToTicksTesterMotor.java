@@ -45,8 +45,6 @@ public class DegreesToTicksTesterMotor extends LinearOpMode {
 
 
             follower.update();
-            robot.shooter.setRobotPose(follower.getPose().getX(), follower.getPose().getY(), Math.toDegrees(follower.getPose().getHeading()));
-
             dashboardTelemetry.addData("turret ticks", ticks);
             dashboardTelemetry.addData("Degrees", degrees);
             dashboardTelemetry.addData("Degrees in Ticks", robot.shooter.degreesToTicks(targetDegree));

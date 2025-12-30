@@ -8,11 +8,8 @@ import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
-import com.qualcomm.robotcore.robot.Robot;
 
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
-import org.firstinspires.ftc.teamcode.PIDControls.TurretController;
-import org.firstinspires.ftc.teamcode.PIDControls.VelocityController;
 import org.firstinspires.ftc.teamcode.RobotConstants;
 
 public class Shooter {
@@ -23,9 +20,6 @@ public class Shooter {
     public final double HAS_BALL_TRESHOLD = 1.7;
     public double gearRatio = 0.3819;
     private final double TICKS_PER_REV = 142.8;
-    private double xPosition;
-    private double yPosition;
-    private double headPosition;
     private int velocityTarget;
     private DcMotorEx turretMotor;
     private  DcMotorEx bottomShooterMotor;
@@ -75,17 +69,11 @@ public class Shooter {
     public double getTPSVelocity(){
         return topShooterMotor.getVelocity();
     }
-    public void setRobotPose(double xPosition, double yPosition, double headPosition){
-        this.xPosition = xPosition;
-        this.yPosition = yPosition;
-        this.headPosition = headPosition;
-    }
 
     public int degreesToTicks(double degrees){
         int ticks = (int)Math.round((degrees/(360.0 * gearRatio)) * TICKS_PER_REV); //Change!!!
         return ticks;
     }
-
     public boolean isReady(int tolerance){
         return Math.abs(velocityTarget - getVelocity()) <= tolerance;
     }
