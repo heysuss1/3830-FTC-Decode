@@ -28,6 +28,8 @@ public class RobotConstants {
     public final static double X_GOAL_RED = 142;
     public final static double X_GOAL_BLUE = 2;
 
+    public final static boolean inComp = false;
+
     public static Team getTEAM() {
         return TEAM;
     }

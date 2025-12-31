@@ -1,5 +1,7 @@
 package org.firstinspires.ftc.teamcode.subsystems;
 
+import androidx.annotation.NonNull;
+
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
@@ -20,8 +22,7 @@ public class Transfer{
 
     public DcMotorEx intakeMotor;
     public DcMotorEx feedMotor;
-
-
+    //add color sensors and sh maybe
 
     public Transfer(HardwareMap hwMap){
         intakeMotor = hwMap.get(DcMotorEx.class, "intakeMotor");

@@ -10,7 +10,7 @@ import com.qualcomm.robotcore.hardware.Gamepad;
 
 import org.firstinspires.ftc.teamcode.tasks.Tasks;
 import org.firstinspires.ftc.teamcode.pedroPathing.Constants;
-import org.firstinspires.ftc.teamcode.pidControllers.VelocityController;
+import org.firstinspires.ftc.teamcode.controllers.VelocityController;
 
 @Config
 @TeleOp (name = "TeleOp")

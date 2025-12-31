@@ -1,6 +1,6 @@
 
 
-package org.firstinspires.ftc.teamcode.pidControllers;
+package org.firstinspires.ftc.teamcode.controllers;
 
 import static org.firstinspires.ftc.teamcode.subsystems.Shooter.TICKS_PER_REVOLUTION;
 
@@ -16,7 +16,7 @@ public class VelocityController {
     public double batteryVoltage;
     SimpleMotorFeedforward feedforward = new SimpleMotorFeedforward(kS, kV);
     PIDController pid = new PIDController(kP, kI, kD);
-    PIDFController pidf = new PIDFController(0.0025, 0, 0, 0.000246, 100);
+    PidfController pidf = new PidfController(0.0025, 0, 0, 0.000246, 100);
     public double RPMtoTPS(int rpm) {
         return (rpm * TICKS_PER_REVOLUTION / 60.0);
     }

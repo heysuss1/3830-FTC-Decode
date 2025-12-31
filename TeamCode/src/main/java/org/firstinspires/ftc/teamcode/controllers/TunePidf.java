@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.pidControllers;
+package org.firstinspires.ftc.teamcode.controllers;
 
 import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.config.Config;
@@ -14,31 +14,23 @@ import org.firstinspires.ftc.teamcode.Hardware;
 public class TunePidf extends OpMode {
     Hardware robot = Hardware.getInstance();
     private Telemetry telemetryA;
-    public static double kP, kI, kD, kf, iZone;
-    public static double targetRpm;
-    double targetTps;
+    public static double kP, kI, kD, kF, iZone;
+    public static int targetRpm;
     FtcDashboard dashboard = FtcDashboard.getInstance();
-    PIDFController pidf;
-
-    double velError;
-    double currentVel;
-    double velPower;
 
     public void init() {
         telemetryA = new MultipleTelemetry(this.telemetry, dashboard.getTelemetry());
-        pidf = new PIDFController(kP, kI, kD, kf, iZone);
+        robot.shooter.getShooterController().setPidCoefficients(kP, kI, kD, kF, iZone);
         robot.init(hardwareMap, telemetryA);
     }
 
     public void loop() {
-        currentVel = Math.abs(robot.shooter.getVelocity());
-        pidf.setPidCoefficients(kP, kI, kD, kf, iZone);
-        velPower = pidf.calculate(targetRpm, currentVel);
-        robot.shooter.setPower(velPower);
-        telemetryA.addData("Current Velocity (rpm)", currentVel);
-        telemetryA.addData("Calculated PID: ", velPower);
-        telemetryA.addData("Target Velocity", targetRpm);
-        telemetryA.update();
+        robot.shooter.getShooterController().setPidCoefficients(kP, kI, kD, kF, iZone);
+        robot.shooter.setVelocityTarget(targetRpm);
+        telemetryA.addData("Target Velocity (RPM)", targetRpm);
+        telemetryA.addData("Current Velocity (RPM)", robot.shooter.getVelocity());
+        telemetryA.addData("Current Power", 67);
+        telemetryA.addData("Current Error", robot.shooter.getShooterController().getError());
     }
 
 }

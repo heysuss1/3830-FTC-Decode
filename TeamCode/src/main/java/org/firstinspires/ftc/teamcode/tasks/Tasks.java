@@ -4,7 +4,7 @@ import com.pedropathing.util.Timer;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
 import org.firstinspires.ftc.teamcode.Hardware;
-import org.firstinspires.ftc.teamcode.pidControllers.VelocityController;
+import org.firstinspires.ftc.teamcode.controllers.VelocityController;
 
 public class Tasks {
 
@@ -26,6 +26,7 @@ public class Tasks {
         ballCountTimer = new Timer();
         this.isAuto = isAuto;
     }
+
     public enum ShooterState{
         SPEEDING_UP,
         SHOOTING,

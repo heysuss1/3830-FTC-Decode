@@ -1,21 +1,23 @@
-package org.firstinspires.ftc.teamcode.pidControllers;
+package org.firstinspires.ftc.teamcode.controllers;
 
 import com.qualcomm.robotcore.util.ElapsedTime;
+import com.qualcomm.robotcore.util.Range;
 
-public class PIDFController
+public class PidfController
 {
     private ElapsedTime runtime = new ElapsedTime();
     private double kP, kI, kD, kF, iZone;
-    private double prevErr, totalErr, prevTime;
+    private double prevErr, totalErr, error;
     private Double inputMin = null, inputMax = null, inputModulus = null, inputBound = null;
 
-    public PIDFController(double kP, double kI, double kD, double kF, double iZone)
+
+    public PidfController(double kP, double kI, double kD, double kF, double iZone)
     {
         setPidCoefficients(kP, kI, kD, kF, iZone);
         reset();
     }
 
-    public PIDFController(double kP, double kI, double kD)
+    public PidfController(double kP, double kI, double kD)
     {
         this(kP, kI, kD, 0.0, 0.0);
     }
@@ -34,16 +36,6 @@ public class PIDFController
         setPidCoefficients(kP, kI, kD, 0.0, 0.0);
     }
 
-    public double clip(double value, double lower, double upper)
-    {
-        if (value < lower) {
-            return lower;
-        }
-        else if (value > upper) {
-            return upper;
-        }
-        return value;
-    }
 
     public void reset()
     {
@@ -69,10 +61,14 @@ public class PIDFController
         return Math.abs(prevErr) <= tolerance;
     }
 
+    public double getError() {
+        return error;
+    }
+
     public double calculate(double reference, double input)
     {
         double deltaTime = runtime.seconds();
-        double error = reference - input;
+        error = reference - input;
         runtime.reset();
         // For wrap input, calculate shortest route to setPoint.
         if (inputBound != null)
@@ -92,7 +88,7 @@ public class PIDFController
         double iTerm = kI * totalErr;
         double dTerm = kD * (error - prevErr) / deltaTime;
         double fTerm = kF * reference;
-        double output = clip(pTerm + iTerm + dTerm + fTerm, -1.0, 1.0);
+        double output = Range.clip(pTerm + iTerm + dTerm + fTerm, -1.0, 1.0);
 
         return output;
     }

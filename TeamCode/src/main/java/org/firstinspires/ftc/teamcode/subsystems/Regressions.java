@@ -1,5 +1,15 @@
 package org.firstinspires.ftc.teamcode.subsystems;
 
+class ShotLocation {
+    public double distance;
+    public int rpm;
+
+    public ShotLocation(double distance, int rpm){
+        this.distance = distance;
+        this.rpm = rpm;
+    }
+
+}
 
 // shooting position: 131 137 red, 13 137 blue
 public class Regressions {

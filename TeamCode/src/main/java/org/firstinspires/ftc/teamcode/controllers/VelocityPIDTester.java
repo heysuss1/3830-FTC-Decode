@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.pidControllers;
+package org.firstinspires.ftc.teamcode.controllers;
 
 import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.config.Config;

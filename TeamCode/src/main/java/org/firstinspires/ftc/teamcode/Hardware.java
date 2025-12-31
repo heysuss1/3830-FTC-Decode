@@ -17,6 +17,7 @@ public class Hardware {
     public Shooter shooter;
 
     Follower follower;
+    public Telemetry telemetry;
 
     public Transfer transfer;
     private HardwareMap hwMap;
@@ -52,13 +53,14 @@ public class Hardware {
         follower = Constants.createFollower(hwMap);
 
 
-        for (LynxModule hub: hwMap.getAll(LynxModule.class)){
+        for (LynxModule hub: hwMap.getAll(LynxModule.class)) {
             hub.setBulkCachingMode(LynxModule.BulkCachingMode.AUTO);
         }
         this.hwMap = hwMap;
+        this.telemetry = telemetry;
         driveTrain.init(hwMap, telemetry);
         transfer = new Transfer(hwMap);
-        shooter = new Shooter(hwMap, follower);
+        shooter = new Shooter(hwMap, follower, telemetry);
 //        turret.init(hwMap);
     }
 }
