@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.TestCode;
+package org.firstinspires.ftc.teamcode.testCode;
 
 
 import com.acmerobotics.dashboard.FtcDashboard;
@@ -7,15 +7,14 @@ import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
 import com.pedropathing.util.Timer;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
-import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.Gamepad;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.firstinspires.ftc.teamcode.Hardware;
-import org.firstinspires.ftc.teamcode.PIDControls.VelocityController;
+import org.firstinspires.ftc.teamcode.pidControllers.VelocityController;
 import org.firstinspires.ftc.teamcode.RobotConstants;
-import org.firstinspires.ftc.teamcode.Tasks.Tasks;
+import org.firstinspires.ftc.teamcode.tasks.Tasks;
 
 
 @Config

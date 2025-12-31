@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.TestCode;
+package org.firstinspires.ftc.teamcode.testCode;
 
 public class sorting {
     String[] motifs = {"GPP", "PGP", "PPG"};

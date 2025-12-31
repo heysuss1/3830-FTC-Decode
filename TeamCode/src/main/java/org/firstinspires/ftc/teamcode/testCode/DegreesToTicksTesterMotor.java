@@ -1,16 +1,14 @@
-package org.firstinspires.ftc.teamcode.TestCode;
+package org.firstinspires.ftc.teamcode.testCode;
 
 import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.config.Config;
 import com.pedropathing.follower.Follower;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
-import com.qualcomm.robotcore.hardware.DcMotor;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
-import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.teamcode.Hardware;
-import org.firstinspires.ftc.teamcode.Tasks.Tasks;
+import org.firstinspires.ftc.teamcode.tasks.Tasks;
 import org.firstinspires.ftc.teamcode.pedroPathing.Constants;
 
 @TeleOp (name = "Test Turret Rotation")

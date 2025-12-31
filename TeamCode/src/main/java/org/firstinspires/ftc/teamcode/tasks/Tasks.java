@@ -1,12 +1,10 @@
-package org.firstinspires.ftc.teamcode.Tasks;
+package org.firstinspires.ftc.teamcode.tasks;
 
 import com.pedropathing.util.Timer;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
 import org.firstinspires.ftc.teamcode.Hardware;
-import org.firstinspires.ftc.teamcode.PIDControls.TurretController;
-import org.firstinspires.ftc.teamcode.PIDControls.VelocityController;
-import org.firstinspires.ftc.teamcode.RobotConstants;
+import org.firstinspires.ftc.teamcode.pidControllers.VelocityController;
 
 public class Tasks {
 

@@ -4,17 +4,13 @@ import com.acmerobotics.dashboard.config.Config;
 import com.pedropathing.follower.Follower;
 import com.pedropathing.geometry.Pose;
 import com.pedropathing.util.Timer;
-import com.qualcomm.hardware.lynx.LynxModule;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.Gamepad;
 
-import org.firstinspires.ftc.teamcode.Tasks.Tasks;
+import org.firstinspires.ftc.teamcode.tasks.Tasks;
 import org.firstinspires.ftc.teamcode.pedroPathing.Constants;
-import org.firstinspires.ftc.teamcode.subsystems.Shooter;
-import org.firstinspires.ftc.teamcode.subsystems.Transfer;
-import org.firstinspires.ftc.teamcode.PIDControls.VelocityController;
-import org.firstinspires.ftc.teamcode.subsystems.Alignment;
+import org.firstinspires.ftc.teamcode.pidControllers.VelocityController;
 
 @Config
 @TeleOp (name = "TeleOp")

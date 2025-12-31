@@ -1,13 +1,12 @@
 
 
-package org.firstinspires.ftc.teamcode.PIDControls;
+package org.firstinspires.ftc.teamcode.pidControllers;
 
 import static org.firstinspires.ftc.teamcode.subsystems.Shooter.TICKS_PER_REVOLUTION;
 
 import com.arcrobotics.ftclib.controller.PIDController;
 import com.arcrobotics.ftclib.controller.wpilibcontroller.SimpleMotorFeedforward;
 import com.qualcomm.robotcore.hardware.HardwareMap;
-import com.qualcomm.robotcore.util.Range;
 
 public class VelocityController {
     public double kP = 0.005; double kI = 0; double kD = 0;

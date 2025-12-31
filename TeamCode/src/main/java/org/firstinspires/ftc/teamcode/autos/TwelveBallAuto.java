@@ -10,9 +10,8 @@ import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 
 import org.firstinspires.ftc.teamcode.Hardware;
 import org.firstinspires.ftc.teamcode.RobotConstants;
-import org.firstinspires.ftc.teamcode.Tasks.Tasks;
+import org.firstinspires.ftc.teamcode.tasks.Tasks;
 import org.firstinspires.ftc.teamcode.pedroPathing.Constants;
-import org.firstinspires.ftc.teamcode.PIDControls.VelocityController;
 
 
 @Autonomous (name = "Red Side Auto")

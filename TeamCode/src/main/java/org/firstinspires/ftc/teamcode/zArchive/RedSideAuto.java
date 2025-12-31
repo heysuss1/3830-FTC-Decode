@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.Archive;
+package org.firstinspires.ftc.teamcode.zArchive;
 
 import com.pedropathing.follower.Follower;
 import com.pedropathing.geometry.BezierLine;
@@ -10,20 +10,21 @@ import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 
 import org.firstinspires.ftc.teamcode.Hardware;
-import org.firstinspires.ftc.teamcode.PIDControls.VelocityController;
-import org.firstinspires.ftc.teamcode.RobotConstants;
-import org.firstinspires.ftc.teamcode.Tasks.Tasks;
+import org.firstinspires.ftc.teamcode.tasks.Tasks;
 import org.firstinspires.ftc.teamcode.pedroPathing.Constants;
+import org.firstinspires.ftc.teamcode.pidControllers.VelocityController;
+
 
 
 @Disabled
-@Autonomous (name = "Blue Side Auto")
-public class BlueSideAuto extends OpMode {
+@Autonomous (name = "Red Side Auto")
+public class RedSideAuto extends OpMode {
     Hardware robot = Hardware.getInstance();
 
     Follower follower;
     Timer pathTimer;
     Timer totalShooterTimer;
+    Tasks task;
     boolean hadBall, hasBall;
     double intakePathSpeed = 0.5;
     double batteryVoltage;
@@ -32,7 +33,6 @@ public class BlueSideAuto extends OpMode {
     int shotCounter = 0;
 
     final int FORWARD_CONSTANT = 24;
-    Tasks tasks;
 
     enum ActionState {
         SHOOT_PRELOAD,
@@ -64,52 +64,40 @@ public class BlueSideAuto extends OpMode {
         SHOOT_TO_GATE,
         STOP,
     }
+    PathState pathState = PathState.TO_PRELOAD;
+    ActionState actionState = ActionState.SHOOT_PRELOAD;
+    Tasks.ShooterState shooterState = Tasks.ShooterState.DONE;
+    Tasks.TransferState transferState = Tasks.TransferState.OFF;
 
-    enum ShooterState {
-        SPEED_UP,
-        FEED_BALLS,
-        DONE
-    }
 
-    RedSideAuto.PathState pathState = RedSideAuto.PathState.TO_PRELOAD;
-    RedSideAuto.ActionState actionState = RedSideAuto.ActionState.SHOOT_PRELOAD;
-    RobotConstants.SystemState robotState = RobotConstants.SystemState.OFF;
-    Pose startingPose = new Pose(convertRedToBluePosition(128), 118, Math.toRadians(140));
-    Pose launchPose = new Pose((convertRedToBluePosition(96)), 96, Math.toRadians(149.4));
-
-    Pose balls1 = new Pose(convertRedToBluePosition(99), 78, Math.toRadians(180));
-    Pose balls2 = new Pose(convertRedToBluePosition(99)-4, 57, Math.toRadians(182));
-    Pose balls3 = new Pose(convertRedToBluePosition(100)-5, 33, Math.toRadians(182));
-    Pose intakeBalls1Pose = new Pose(convertRedToBluePosition(99 + FORWARD_CONSTANT+3.5), 78, Math.toRadians(182));
-    Pose intakeBalls2Pose = new Pose(convertRedToBluePosition(99 + FORWARD_CONSTANT+1), 57, Math.toRadians(182));
-    Pose intakeBalls3Pose = new Pose(convertRedToBluePosition(99 + FORWARD_CONSTANT+8), 33, Math.toRadians(180));
-    Pose gatePose = new Pose(convertRedToBluePosition(120), 70, Math.toRadians(180));
+    //Starting pose wrong
+    Pose startingPose = new Pose(128, 118, Math.toRadians(40));
+    Pose launchPose = new Pose(96, 96, Math.toRadians(40));
+    Pose balls1 = new Pose(99, 83, 0);
+    Pose balls2 = new Pose(99, 61, 0);
+    Pose balls3 = new Pose(100, 35, 0);
+    Pose intakeBalls1Pose = new Pose(99 + FORWARD_CONSTANT+4.5, 83, 0);
+    Pose intakeBalls2Pose = new Pose(99 + FORWARD_CONSTANT+1, 61, 0);
+    Pose intakeBalls3Pose = new Pose(99 + FORWARD_CONSTANT+8, 35, 0);
+    Pose gatePose = new Pose(120, 70, 0);
     PathChain toPreload, toBalls1, toLaunch1, toBalls2, toLaunch2, toBalls3, toLaunch3,
             intakeBalls1, intakeBalls2, intakeBalls3, toGate;
 
 
-
-    public double convertRedToBluePosition(double position){
-        return position - 2 * (position - 75);
-    }
-
     public void init() {
         robot.init(hardwareMap, telemetry);
+        task = new Tasks(robot, hardwareMap, true);
         pathTimer = new Timer();
+        shooterTimer = new Timer();
         totalShooterTimer = new Timer();
         hasBall = robot.shooter.hasBall();
         velController = new VelocityController(hardwareMap);
-        batteryVoltage = velController.getBatteryVoltage();
-        tasks = new Tasks(robot, hardwareMap, true);
-
         follower = Constants.createFollower(hardwareMap);
         follower.setStartingPose(startingPose);
         follower.setMaxPower(1);
+        robot.shooter.setVelocityTarget(3550);
         buildPaths();
     }
-
-
-
 
     public void buildPaths() {
         toPreload = follower.pathBuilder()
@@ -159,81 +147,76 @@ public class BlueSideAuto extends OpMode {
                 .build();
     }
 
-    public void setRobotState(RobotConstants.SystemState state){
-        robotState = state;
-        shooterTimer.resetTimer();
-    }
 
-
-    public void setPathState(RedSideAuto.PathState state){
+    public void setPathState(PathState state){
         pathState = state;
         pathTimer.resetTimer();
     }
-    public void setActionState(RedSideAuto.ActionState state) {
+    public void setActionState(ActionState state) {
         actionState = state;
     }
     public void actionUpdate(){
         switch(actionState){
             case SHOOT_PRELOAD:
                 if (!follower.isBusy()) {
-                    tasks.setShooterState(Tasks.ShooterState.SPEEDING_UP);
-                    setActionState(RedSideAuto.ActionState.WAITING_FOR_PRELOAD);
+                    task.setShooterState(Tasks.ShooterState.SPEEDING_UP);
+                    setActionState(ActionState.WAITING_FOR_PRELOAD);
                 }
                 break;
             case WAITING_FOR_PRELOAD:
-                if (robotState == RobotConstants.SystemState.OFF){
-                    setActionState(RedSideAuto.ActionState.SLURPING_GROUP_1);
+                if (shooterState == Tasks.ShooterState.DONE){
+                    setActionState(ActionState.SLURPING_GROUP_1);
                 }
                 break;
             case SLURPING_GROUP_1:
-                if (!follower.isBusy() && pathState == RedSideAuto.PathState.SLURPING_GROUP_1){
-                    tasks.setTransferState(Tasks.TransferState.INTAKE);
-                    setActionState(RedSideAuto.ActionState.SHOOT_GROUP_1);
+                if (!follower.isBusy() && pathState == PathState.SLURPING_GROUP_1){
+                    task.setTransferState(Tasks.TransferState.INTAKE);
+                    setActionState(ActionState.SHOOT_GROUP_1);
                 }
                 break;
             case SHOOT_GROUP_1:
                 if (!follower.isBusy()) {
-                    tasks.setShooterState(Tasks.ShooterState.SPEEDING_UP);
-                    setActionState(RedSideAuto.ActionState.WAITING_FOR_COMPLETION_1);
+                    task.setShooterState(Tasks.ShooterState.SPEEDING_UP);
+                    setActionState(ActionState.WAITING_FOR_COMPLETION_1);
                 }
                 break;
             case WAITING_FOR_COMPLETION_1:
-                if (robotState == RobotConstants.SystemState.OFF){
-                    setActionState(RedSideAuto.ActionState.SLURPING_GROUP_2);
+                if (shooterState == Tasks.ShooterState.DONE){
+                    setActionState(ActionState.SLURPING_GROUP_2);
                 }
                 break;
             case SLURPING_GROUP_2:
-                if (!follower.isBusy() && pathState == RedSideAuto.PathState.SLURPING_GROUP_2){
-                    tasks.setTransferState(Tasks.TransferState.INTAKE);
-                    setActionState(RedSideAuto.ActionState.SHOOT_GROUP_2);
+                if (!follower.isBusy() && pathState == PathState.SLURPING_GROUP_2){
+                    task.setTransferState(Tasks.TransferState.INTAKE);
+                    setActionState(ActionState.SHOOT_GROUP_2);
                 }
                 break;
             case SHOOT_GROUP_2:
                 if (!follower.isBusy()) {
-                    tasks.setShooterState(Tasks.ShooterState.SPEEDING_UP);
-                    setActionState(RedSideAuto.ActionState.WAITING_FOR_COMPLETION_2);
+                    task.setShooterState(Tasks.ShooterState.SPEEDING_UP);
+                    setActionState(ActionState.WAITING_FOR_COMPLETION_2);
                 }
                 break;
             case WAITING_FOR_COMPLETION_2:
-                if (robotState == RobotConstants.SystemState.OFF){
-                    setActionState(RedSideAuto.ActionState.SLURPING_GROUP_3);
+                if (shooterState == Tasks.ShooterState.DONE){
+                    setActionState(ActionState.SLURPING_GROUP_3);
                 }
                 break;
             case SLURPING_GROUP_3:
-                if (!follower.isBusy() && pathState == RedSideAuto.PathState.SLURPING_GROUP_3){
-                    tasks.setTransferState(Tasks.TransferState.INTAKE);
-                    setActionState(RedSideAuto.ActionState.SHOOT_GROUP_3);
+                if (!follower.isBusy() && pathState == PathState.SLURPING_GROUP_3){
+                    task.setTransferState(Tasks.TransferState.INTAKE);
+                    setActionState(ActionState.SHOOT_GROUP_3);
                 }
                 break;
             case SHOOT_GROUP_3:
                 if (!follower.isBusy()) {
-                    tasks.setShooterState(Tasks.ShooterState.SPEEDING_UP);
-                    setActionState(RedSideAuto.ActionState.WAITING_FOR_COMPLETION_3);
+                    task.setShooterState(Tasks.ShooterState.SPEEDING_UP);
+                    setActionState(ActionState.WAITING_FOR_COMPLETION_3);
                 }
                 break;
             case WAITING_FOR_COMPLETION_3:
-                if (robotState == RobotConstants.SystemState.OFF){
-                    setActionState(RedSideAuto.ActionState.STOP);
+                if (shooterState == Tasks.ShooterState.DONE){
+                    setActionState(ActionState.STOP);
                 }
                 break;
         }
@@ -244,66 +227,66 @@ public class BlueSideAuto extends OpMode {
         switch (pathState){
             case TO_PRELOAD:
                 follower.followPath(toPreload, true);
-                setPathState(RedSideAuto.PathState.TO_GROUP_1);
+                setPathState(PathState.TO_GROUP_1);
                 break;
             case TO_GROUP_1:
-                if (!follower.isBusy() && actionState == RedSideAuto.ActionState.SLURPING_GROUP_1){
+                if (!follower.isBusy() && actionState == ActionState.SLURPING_GROUP_1){
                     follower.followPath(toBalls1, true);
-                    setPathState(RedSideAuto.PathState.SLURPING_GROUP_1);
+                    setPathState(PathState.SLURPING_GROUP_1);
                 }
                 break;
             case SLURPING_GROUP_1:
-                if (!follower.isBusy() && actionState == RedSideAuto.ActionState.SHOOT_GROUP_1){
-                    follower.followPath(intakeBalls1,  intakePathSpeed, true);
-                    setPathState(RedSideAuto.PathState.GROUP_1_TO_SHOOT);
+                if (!follower.isBusy() && actionState == ActionState.SHOOT_GROUP_1){
+                    follower.followPath(intakeBalls1,  1, true);
+                    setPathState(PathState.GROUP_1_TO_SHOOT);
                 }
                 break;
             case GROUP_1_TO_SHOOT:
                 if (!follower.isBusy()){
                     follower.followPath(toLaunch1, true);
-                    setPathState(RedSideAuto.PathState.TO_GROUP_2);
+                    setPathState(PathState.TO_GROUP_2);
                 }
                 break;
             case TO_GROUP_2:
-                if (!follower.isBusy() && actionState == RedSideAuto.ActionState.SLURPING_GROUP_2){
+                if (!follower.isBusy() && actionState == ActionState.SLURPING_GROUP_2){
                     follower.followPath(toBalls2, true);
-                    setPathState(RedSideAuto.PathState.SLURPING_GROUP_2);
+                    setPathState(PathState.SLURPING_GROUP_2);
                 }
                 break;
             case SLURPING_GROUP_2:
-                if (!follower.isBusy() && actionState == RedSideAuto.ActionState.SHOOT_GROUP_2){
-                    follower.followPath(intakeBalls2, 0.3, true);
-                    setPathState(RedSideAuto.PathState.GROUP_2_TO_SHOOT);
+                if (!follower.isBusy() && actionState == ActionState.SHOOT_GROUP_2){
+                    follower.followPath(intakeBalls2, 1, true);
+                    setPathState(PathState.GROUP_2_TO_SHOOT);
                 }
                 break;
             case GROUP_2_TO_SHOOT:
                 if (!follower.isBusy()){
                     follower.followPath(toLaunch2, true);
-                    setPathState(RedSideAuto.PathState.TO_GROUP_3);
+                    setPathState(PathState.TO_GROUP_3);
                 }
                 break;
             case TO_GROUP_3:
-                if (!follower.isBusy() && actionState == RedSideAuto.ActionState.SLURPING_GROUP_3){
+                if (!follower.isBusy() && actionState == ActionState.SLURPING_GROUP_3){
                     follower.followPath(toBalls3, true);
-                    setPathState(RedSideAuto.PathState.SLURPING_GROUP_3);
+                    setPathState(PathState.SLURPING_GROUP_3);
                 }
                 break;
             case SLURPING_GROUP_3:
-                if (!follower.isBusy() && actionState == RedSideAuto.ActionState.SHOOT_GROUP_3){
-                    follower.followPath(intakeBalls3, intakePathSpeed, true);
-                    setPathState(RedSideAuto.PathState.GROUP_3_TO_SHOOT);
+                if (!follower.isBusy() && actionState == ActionState.SHOOT_GROUP_3){
+                    follower.followPath(intakeBalls3, 1, true);
+                    setPathState(PathState.GROUP_3_TO_SHOOT);
                 }
                 break;
             case GROUP_3_TO_SHOOT:
                 if (!follower.isBusy()){
                     follower.followPath(toLaunch3, true);
-                    setPathState(RedSideAuto.PathState.SHOOT_TO_GATE);
+                    setPathState(PathState.SHOOT_TO_GATE);
                 }
                 break;
             case SHOOT_TO_GATE:
-                if (!follower.isBusy() && actionState == RedSideAuto.ActionState.STOP){
+                if (!follower.isBusy() && actionState == ActionState.STOP){
                     follower.followPath(toGate);
-                    setPathState(RedSideAuto.PathState.STOP);
+                    setPathState(PathState.STOP);
                 }
                 break;
         }
@@ -312,13 +295,15 @@ public class BlueSideAuto extends OpMode {
     public void loop(){
         hadBall = hasBall;
         hasBall = robot.shooter.hasBall();
+        shooterState = task.getShooterState();
+        transferState = task.getTransferState();
         autonomousUpdate();
         actionUpdate();
-        tasks.update(hasBall, hadBall);
+        task.update(hasBall, hadBall);
         follower.update();
         telemetry.addData("Current Action State", actionState);
         telemetry.addData("Current Path State", pathState);
-        telemetry.addData("Current Shooter State", robotState);
+        telemetry.addData("Current Shooter State", shooterState);
         telemetry.addData("follower busy", follower.isBusy());
         telemetry.addData("shooter timer", shooterTimer.getElapsedTimeSeconds());
         telemetry.addData("shooter velocity", robot.shooter.getVelocity());

@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.PIDControls;
+package org.firstinspires.ftc.teamcode.pidControllers;
 
 import com.qualcomm.robotcore.util.ElapsedTime;
 
