@@ -21,7 +21,7 @@ public class DriveTrain {
     private double speed;
 
     //Get motors from the hardware map
-    public void init(HardwareMap hwMap, Telemetry telemetry){
+    public DriveTrain(HardwareMap hwMap, Telemetry telemetry){
         this.telemetry = telemetry;
         lf = hwMap.get(DcMotorEx.class, "lf");
         lf.setDirection(DcMotorSimple.Direction.REVERSE);

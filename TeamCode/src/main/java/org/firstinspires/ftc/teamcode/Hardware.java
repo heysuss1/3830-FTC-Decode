@@ -10,21 +10,48 @@ import org.firstinspires.ftc.teamcode.subsystems.DriveTrain;
 import org.firstinspires.ftc.teamcode.subsystems.Transfer;
 import org.firstinspires.ftc.teamcode.subsystems.Shooter;
 
+
 public class Hardware {
 
+    public class AimInfo {
+        public double distance;
+        public double angle;
+
+        public AimInfo(double distance, double angle) {
+            this.distance = distance;
+            this.angle = angle;
+        }
+
+        public double getDistanceToGoal() {
+            return distance;
+        }
+        public double getAngleToGoal() {
+            return angle;
+        }
+    }
+
     public static Hardware INSTANCE = null;
-    public DriveTrain driveTrain = new DriveTrain();
-    public Shooter shooter;
-
-    Follower follower;
-    public Telemetry telemetry;
-
-    public Transfer transfer;
+    public final DriveTrain driveTrain;
+    public final Shooter shooter;
+    public final Follower follower;
+    public final Telemetry telemetry;
+    public final Transfer transfer;
     private HardwareMap hwMap;
     private double voltage;
 
+    public Hardware(HardwareMap hwMap, Telemetry telemetry){
 
+        for (LynxModule hub: hwMap.getAll(LynxModule.class)) {
+            hub.setBulkCachingMode(LynxModule.BulkCachingMode.AUTO);
+        }
 
+        follower = Constants.createFollower(hwMap);
+        this.telemetry = telemetry;
+
+        driveTrain = new DriveTrain(hwMap, telemetry);
+        transfer = new Transfer(hwMap);
+        shooter = new Shooter(hwMap, follower, telemetry);
+    }
 
 
     public static Hardware getInstance(){
@@ -40,27 +67,26 @@ public class Hardware {
         voltage = hwMap.voltageSensor.iterator().next().getVoltage();
     }
 
-    public double getDistance( ){
-        double x_goal =  RobotConstants.getTEAM() == RobotConstants.Team.BLUE ? RobotConstants.X_GOAL_BLUE : RobotConstants.X_GOAL_RED;
-        return Math.sqrt(Math.pow(follower.getPose().getY()-RobotConstants.Y_GOAL, 2)+Math.pow(follower.getPose().getY()-x_goal,2));
-    }
-
     public double getVoltage(){
         return voltage;
     }
-    public void init(HardwareMap hwMap, Telemetry telemetry){
-
-        follower = Constants.createFollower(hwMap);
 
 
-        for (LynxModule hub: hwMap.getAll(LynxModule.class)) {
-            hub.setBulkCachingMode(LynxModule.BulkCachingMode.AUTO);
-        }
-        this.hwMap = hwMap;
-        this.telemetry = telemetry;
-        driveTrain.init(hwMap, telemetry);
-        transfer = new Transfer(hwMap);
-        shooter = new Shooter(hwMap, follower, telemetry);
-//        turret.init(hwMap);
+    public AimInfo getAimInfo(){
+        AimInfo aimInfo;
+        double robotX = follower.getPose().getX();
+        double robotY = follower.getPose().getY();
+
+        double deltaX = RobotConstants.getTEAM() == RobotConstants.Team.BLUE ? robotX - RobotConstants.X_GOAL_BLUE: robotX - RobotConstants.X_GOAL_RED;
+        double deltaY = robotY - RobotConstants.Y_GOAL;
+        double distanceToGoal = Math.hypot(deltaY, deltaX);
+        double angleToGOal = Math.toDegrees(Math.atan2(deltaY, deltaX)) + 180;
+
+        return new AimInfo(distanceToGoal, angleToGOal);
+
     }
+
+
+
+
 }

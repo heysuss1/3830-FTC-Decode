@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.controllers;
+package org.firstinspires.ftc.teamcode.zArchive;
 
 import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.config.Config;
@@ -10,6 +10,7 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.teamcode.Hardware;
+import org.firstinspires.ftc.teamcode.controllers.VelocityController;
 
 @Config
 @TeleOp(name = "Pure FeedForward PID tuner")
@@ -65,7 +66,6 @@ public class VelocityPIDTester extends OpMode {
         robot.shooter.setPower(velocityController.getPower(currentVel, setpoint));
 
         telemetryA.addData("Current Velocity (rpm)", currentVel);
-        telemetryA.addData("Velocity (raw tps)", robot.shooter.getTPSVelocity());
         telemetryA.addData("Setpoint", setpoint);
         telemetryA.addData("Voltage", getBatteryVoltage());
 

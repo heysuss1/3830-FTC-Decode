@@ -31,20 +31,6 @@ public class VelocityController {
     public void setCoefficients(double kP, double kI, double kD){
         pid.setPID(kP, kI, kD);
     }
-    //Uses a pid + feedforward with battery compensation
-//    public double getPower(double currentVel, int targetVel, double voltage){
-//        double velError = targetVel - currentVel;
-//        double velFeedforward = feedforward.calculate(targetVel);
-//        double pidCorrection = pid.calculate(currentVel, targetVel);
-//
-//        double output =velFeedforward + pidCorrection;
-//
-//
-//        output = (output/voltage);
-//
-//        return (Range.clip(output, -1, 1));
-//
-//    }
 
     public double getPower(double currentRPM, int targetRPM){
         return pidf.calculate(targetRPM, currentRPM);
