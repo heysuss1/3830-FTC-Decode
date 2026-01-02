@@ -54,15 +54,6 @@ public class Hardware {
     }
 
 
-    public static Hardware getInstance(){
-        if (INSTANCE == null){
-            INSTANCE = new Hardware();
-        }
-        return INSTANCE;
-    }
-
-
-
     public void setVoltage(){
         voltage = hwMap.voltageSensor.iterator().next().getVoltage();
     }
@@ -71,6 +62,9 @@ public class Hardware {
         return voltage;
     }
 
+    public Follower getFollower() {
+        return follower;
+    }
 
     public AimInfo getAimInfo(){
         AimInfo aimInfo;

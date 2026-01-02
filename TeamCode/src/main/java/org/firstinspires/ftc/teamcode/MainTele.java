@@ -7,7 +7,9 @@ import com.pedropathing.util.Timer;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.Gamepad;
+import com.qualcomm.robotcore.hardware.HardwareMap;
 
+import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.teamcode.tasks.Tasks;
 import org.firstinspires.ftc.teamcode.pedroPathing.Constants;
 import org.firstinspires.ftc.teamcode.controllers.VelocityController;
@@ -23,7 +25,7 @@ public class MainTele extends LinearOpMode {
     TODO: square - open gate
 
     */
-    Hardware robot = Hardware.getInstance();
+    Hardware robot;
     Follower follower;
     Tasks tasks;
     VelocityController velController;
@@ -40,8 +42,8 @@ public class MainTele extends LinearOpMode {
 
 
     public void runOpMode() {
-        robot.init(hardwareMap, telemetry);
-        follower = Constants.createFollower(hardwareMap);
+        robot = new Hardware(hardwareMap, telemetry);
+        follower = robot.getFollower();
         follower.setStartingPose(new Pose(142, 54, Math.PI));
         robot.driveTrain.setBrakeMode();
         robot.driveTrain.setSpeed(0.8);

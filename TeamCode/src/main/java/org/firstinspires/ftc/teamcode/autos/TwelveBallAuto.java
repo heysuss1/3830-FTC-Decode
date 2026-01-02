@@ -16,7 +16,7 @@ import org.firstinspires.ftc.teamcode.pedroPathing.Constants;
 
 @Autonomous (name = "Red Side Auto")
 public class TwelveBallAuto extends OpMode {
-    Hardware robot = Hardware.getInstance();
+    Hardware robot;
     Follower follower;
     Timer pathTimer;
     Tasks task;
@@ -118,11 +118,11 @@ public class TwelveBallAuto extends OpMode {
 
 
     public void init() {
-        robot.init(hardwareMap, telemetry);
+        robot = new Hardware(hardwareMap, telemetry);
         task = new Tasks(robot, hardwareMap, true);
         pathTimer = new Timer();
         hasBall = robot.shooter.hasBall();
-        follower = Constants.createFollower(hardwareMap);
+        follower = robot.getFollower();
         follower.setStartingPose(startingPose);
         follower.setMaxPower(1);
         if (RobotConstants.getTEAM() == RobotConstants.Team.BLUE){
