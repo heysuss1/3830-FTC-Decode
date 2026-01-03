@@ -13,10 +13,12 @@ import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
+import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.util.Range;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
+import org.firstinspires.ftc.teamcode.Hardware;
 import org.firstinspires.ftc.teamcode.RobotConstants;
 import org.firstinspires.ftc.teamcode.controllers.PidfController;
 
@@ -49,6 +51,7 @@ public class Shooter {
 
         //Turret Params
 
+        private static final double turretKP = (((67))), turretKI = (((67))), turretKD = (((67))), turretKF = (((67))), turretIZone = (((67)));
         public static final int TURRET_TICKS_PER_REV = 67;
 
         public static final int TURRET_GEAR_RATIO = 67; //Servo gear / turret gear
@@ -60,31 +63,31 @@ public class Shooter {
 
     private final Servo pitchServo;
     private final AnalogInput pitchEncoder;
+
     private final CRServo primaryTurretServo;
     private final CRServo secondaryTurretServo;
+    private final AnalogInput turretEncoder;
 
     private final Telemetry telemetry;
     private final PidfController shooterController;
-    //TODO: figure out these constants ^^^
+    private final PidfController turretController;
 
-
-    public double pitchRaw;
+    private final ElapsedTime timer;
+    public final Hardware robot;
 
     public Double velocityTarget = null;
     public Double pitchTarget = null;
     public Double turretTarget = null;
 
-    public RevColorSensorV3 colorSensor;
-    private Follower follower;
+    private double timeout = 0.0;
 
-    // hooray
+    public static boolean alwaysSetVelocity = false;
+    public static boolean alwaysAimShooter = false;
 
-    public Shooter(HardwareMap hwMap, Telemetry telemetry){
-
-//        pitchServo = hwMap.get(Servo.class, "pitchServo");
-        colorSensor = hwMap.get(RevColorSensorV3.class, "colorSensor");
+    public Shooter(HardwareMap hwMap, Telemetry telemetry, Hardware robot) {
 
         this.telemetry = telemetry;
+        this.robot = robot;
 
         pitchServo = hwMap.get(Servo.class, "pitchServo");
         pitchEncoder = hwMap.get(AnalogInput.class, "pitchEncoder");
@@ -105,13 +108,10 @@ public class Shooter {
 
         primaryTurretServo = hwMap.get(CRServo.class, "primaryTurretServo");
         secondaryTurretServo = hwMap.get(CRServo.class, "secondaryTurretServo");
+        turretEncoder = hwMap.get(AnalogInput.class, "turretEncoder");
 
         shooterController = new PidfController(Params.shooterKP, Params.shooterKI, Params.shooterKD, Params.shooterKF, Params.shooterIZone);
-
-////        turretMotor = hwMap.get(DcMotorEx.class,"turretMotor");
-//        turretMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-//        turretMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-//        turretMotor.setPower(0);
+        turretController = new PidfController(Params.turretKP, Params.turretKI, Params.turretKD, Params.turretKF, Params.turretIZone);
     }
 
     public PidfController getShooterController() {
@@ -148,13 +148,6 @@ public class Shooter {
     public boolean isReady(int tolerance){
         return Math.abs(velocityTarget - getVelocity()) <= tolerance;
     }
-    public boolean hasBall(){
-        if (colorSensor.getDistance(DistanceUnit.INCH) < Params.HAS_BALL_TRESHOLD){
-            return true;
-        } else {
-            return false;
-        }
-    }
 
 
     public double getTurretPosition(){
@@ -162,7 +155,7 @@ public class Shooter {
     }
 
     public int getTurretTargetPos(){
-        return degreesToTicks(getYaw(follower.getPose()));
+        return degreesToTicks(getYaw(robot.follower.getPose()));
     }
 
 //    public void setTurretPower(double power){

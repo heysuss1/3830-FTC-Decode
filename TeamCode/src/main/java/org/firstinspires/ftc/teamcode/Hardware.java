@@ -50,7 +50,7 @@ public class Hardware {
         voltageSensor = hwMap.voltageSensor.iterator().next();
         driveTrain = new DriveTrain(hwMap, telemetry);
         intakeUptake = new IntakeUptake(hwMap, telemetry);
-        shooter = new Shooter(hwMap, telemetry);
+        shooter = new Shooter(hwMap, telemetry, this);
     }
 
 
