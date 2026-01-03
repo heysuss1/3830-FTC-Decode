@@ -79,13 +79,12 @@ public class Shooter {
 
     // hooray
 
-    public Shooter(HardwareMap hwMap, Follower follower, Telemetry telemetry){
+    public Shooter(HardwareMap hwMap, Telemetry telemetry){
 
 //        pitchServo = hwMap.get(Servo.class, "pitchServo");
         colorSensor = hwMap.get(RevColorSensorV3.class, "colorSensor");
 
         this.telemetry = telemetry;
-        this.follower = follower;
 
         pitchServo = hwMap.get(Servo.class, "pitchServo");
         pitchEncoder = hwMap.get(AnalogInput.class, "pitchEncoder");

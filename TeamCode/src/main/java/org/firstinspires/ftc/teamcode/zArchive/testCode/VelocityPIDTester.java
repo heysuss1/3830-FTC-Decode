@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.zArchive;
+package org.firstinspires.ftc.teamcode.zArchive.testCode;
 
 import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.config.Config;
@@ -10,7 +10,6 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.teamcode.Hardware;
-import org.firstinspires.ftc.teamcode.controllers.VelocityController;
 
 @Config
 @TeleOp(name = "Pure FeedForward PID tuner")

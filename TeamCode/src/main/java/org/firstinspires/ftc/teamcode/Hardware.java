@@ -3,11 +3,12 @@ package org.firstinspires.ftc.teamcode;
 import com.pedropathing.follower.Follower;
 import com.qualcomm.hardware.lynx.LynxModule;
 import com.qualcomm.robotcore.hardware.HardwareMap;
+import com.qualcomm.robotcore.hardware.VoltageSensor;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.teamcode.pedroPathing.Constants;
 import org.firstinspires.ftc.teamcode.subsystems.DriveTrain;
-import org.firstinspires.ftc.teamcode.subsystems.Transfer;
+import org.firstinspires.ftc.teamcode.subsystems.IntakeUptake;
 import org.firstinspires.ftc.teamcode.subsystems.Shooter;
 
 
@@ -30,14 +31,12 @@ public class Hardware {
         }
     }
 
-    public static Hardware INSTANCE = null;
     public final DriveTrain driveTrain;
     public final Shooter shooter;
     public final Follower follower;
     public final Telemetry telemetry;
-    public final Transfer transfer;
-    private HardwareMap hwMap;
-    private double voltage;
+    public final IntakeUptake intakeUptake;
+    public final VoltageSensor voltageSensor;
 
     public Hardware(HardwareMap hwMap, Telemetry telemetry){
 
@@ -48,18 +47,15 @@ public class Hardware {
         follower = Constants.createFollower(hwMap);
         this.telemetry = telemetry;
 
+        voltageSensor = hwMap.voltageSensor.iterator().next();
         driveTrain = new DriveTrain(hwMap, telemetry);
-        transfer = new Transfer(hwMap);
-        shooter = new Shooter(hwMap, follower, telemetry);
+        intakeUptake = new IntakeUptake(hwMap, telemetry);
+        shooter = new Shooter(hwMap, telemetry);
     }
 
-
-    public void setVoltage(){
-        voltage = hwMap.voltageSensor.iterator().next().getVoltage();
-    }
 
     public double getVoltage(){
-        return voltage;
+        return voltageSensor.getVoltage();
     }
 
     public Follower getFollower() {
@@ -67,7 +63,6 @@ public class Hardware {
     }
 
     public AimInfo getAimInfo(){
-        AimInfo aimInfo;
         double robotX = follower.getPose().getX();
         double robotY = follower.getPose().getY();
 
@@ -79,8 +74,5 @@ public class Hardware {
         return new AimInfo(distanceToGoal, angleToGOal);
 
     }
-
-
-
 
 }

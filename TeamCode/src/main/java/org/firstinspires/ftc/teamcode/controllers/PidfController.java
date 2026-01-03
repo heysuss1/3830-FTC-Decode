@@ -39,7 +39,7 @@ public class PidfController
 
     public void reset()
     {
-        prevErr = totalErr = prevTime = 0.0;
+        prevErr = totalErr = 0.0;
         runtime.reset();
     }
 

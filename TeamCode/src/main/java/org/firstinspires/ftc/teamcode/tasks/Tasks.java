@@ -4,7 +4,7 @@ import com.pedropathing.util.Timer;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
 import org.firstinspires.ftc.teamcode.Hardware;
-import org.firstinspires.ftc.teamcode.controllers.VelocityController;
+import org.firstinspires.ftc.teamcode.zArchive.VelocityController;
 
 public class Tasks {
 
@@ -12,17 +12,15 @@ public class Tasks {
     private Timer ballCountTimer;
     private Hardware robot;
     private int shotCounter;
-    private  VelocityController velController;
     private boolean isAuto;
 
-
+    //TODO: fix shooter class and then refactor this class
 
 
     public Tasks(Hardware robot, HardwareMap hardwareMap, boolean isAuto){
         this.robot = robot;
         shooterTimer = new Timer();
         shotCounter = 0;
-        velController = new VelocityController(hardwareMap);
         ballCountTimer = new Timer();
         this.isAuto = isAuto;
     }
@@ -55,22 +53,22 @@ public class Tasks {
     }
 
 
-    public void updateTransfer(boolean hasBall){
-        switch (transferState){
-            case OFF:
-                robot.transfer.stopTransfer();
-                break;
-            case INTAKE:
-                robot.transfer.setIntakeMode(hasBall);
-                break;
-            case OUTTAKE:
-                robot.transfer.setOuttakeMode();
-                break;
-            case FEED:
-                robot.transfer.setFeedMode();
-                break;
-        }
-    }
+//    public void updateTransfer(boolean hasBall){
+//        switch (transferState){
+//            case OFF:
+//                robot.intakeUptake.stopTransfer();
+//                break;
+//            case INTAKE:
+//                robot.intakeUptake.setIntakeMode(hasBall);
+//                break;
+//            case OUTTAKE:
+//                robot.intakeUptake.setOuttakeMode();
+//                break;
+//            case FEED:
+//                robot.intakeUptake.setFeedMode();
+//                break;
+//        }
+//    }
 
     public ShooterState getShooterState(){
         return shooterState;

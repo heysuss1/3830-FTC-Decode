@@ -1,18 +1,14 @@
 package org.firstinspires.ftc.teamcode;
 
 import com.acmerobotics.dashboard.config.Config;
-import com.pedropathing.follower.Follower;
 import com.pedropathing.geometry.Pose;
 import com.pedropathing.util.Timer;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.Gamepad;
-import com.qualcomm.robotcore.hardware.HardwareMap;
 
-import org.firstinspires.ftc.robotcore.external.Telemetry;
+import org.firstinspires.ftc.teamcode.subsystems.IntakeUptake;
 import org.firstinspires.ftc.teamcode.tasks.Tasks;
-import org.firstinspires.ftc.teamcode.pedroPathing.Constants;
-import org.firstinspires.ftc.teamcode.controllers.VelocityController;
 
 @Config
 @TeleOp (name = "TeleOp")
@@ -27,7 +23,6 @@ public class MainTele extends LinearOpMode {
     */
     Hardware robot;
     Tasks tasks;
-    VelocityController velController;
     RobotConstants constants = new RobotConstants();
     Timer loopTimer;
     double currentTime = 0, lastTime = 0;
@@ -45,7 +40,7 @@ public class MainTele extends LinearOpMode {
         robot.follower.setStartingPose(new Pose(142, 54, Math.PI));
         robot.driveTrain.setBrakeMode();
         robot.driveTrain.setSpeed(0.8);
-        velController = new VelocityController(hardwareMap);
+
         boolean intakeOn = false;
         boolean orienting = false;
         boolean showTelemetry = false;
@@ -80,7 +75,7 @@ public class MainTele extends LinearOpMode {
                 }
             }
             if (currentGamepad1.y) {
-                robot.transfer.startFeed();
+                robot.intakeUptake.setIntakeUptakeMode(IntakeUptake.intakeUptakeStates.UPTAKING);
             }
 
             if (currentGamepad1.circle) {
@@ -115,7 +110,7 @@ public class MainTele extends LinearOpMode {
                 targetVel -= 100;
             }
 
-            robot.shooter.setVelocityTarget(targetVel);
+            //robot.shooter.setVelocityTarget(targetVel);
             tasks.update(hasBall, hadBall);
 
 
