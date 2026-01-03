@@ -17,7 +17,6 @@ import org.firstinspires.ftc.teamcode.pedroPathing.Constants;
 @Autonomous (name = "Red Side Auto")
 public class TwelveBallAuto extends OpMode {
     Hardware robot;
-    Follower follower;
     Timer pathTimer;
     Tasks task;
     boolean hadBall, hasBall;
@@ -122,9 +121,9 @@ public class TwelveBallAuto extends OpMode {
         task = new Tasks(robot, hardwareMap, true);
         pathTimer = new Timer();
         hasBall = robot.shooter.hasBall();
-        follower = robot.getFollower();
-        follower.setStartingPose(startingPose);
-        follower.setMaxPower(1);
+
+        robot.follower.setStartingPose(startingPose);
+        robot.follower.setMaxPower(1);
         if (RobotConstants.getTEAM() == RobotConstants.Team.BLUE){
             initializeBluePoses();
         } else {
@@ -134,48 +133,48 @@ public class TwelveBallAuto extends OpMode {
     }
 
     public void buildPaths() {
-        toPreload = follower.pathBuilder()
+        toPreload = robot.follower.pathBuilder()
                 .addPath(new BezierLine(startingPose, launchPose))
                 .setLinearHeadingInterpolation(startingPose.getHeading(), launchPose.getHeading())
                 .build();
-        toBalls1 = follower.pathBuilder()
+        toBalls1 = robot.follower.pathBuilder()
                 .addPath(new BezierLine(launchPose, balls1))
                 .setLinearHeadingInterpolation(launchPose.getHeading(), balls1.getHeading())
                 .build();
-        intakeBalls1 = follower.pathBuilder()
+        intakeBalls1 = robot.follower.pathBuilder()
                 .addPath(new BezierLine(balls1, intakeBalls1Pose))
                 .setConstantHeadingInterpolation(balls1.getHeading())
                 .build();
 
-        toLaunch1 = follower.pathBuilder()
+        toLaunch1 = robot.follower.pathBuilder()
                 .addPath(new BezierLine(intakeBalls1Pose, launchPose))
                 .setLinearHeadingInterpolation(balls1.getHeading(), launchPose.getHeading())
                 .build();
-        toBalls2 = follower.pathBuilder()
+        toBalls2 = robot.follower.pathBuilder()
                 .addPath(new BezierLine(launchPose, balls2))
                 .setLinearHeadingInterpolation(launchPose.getHeading(), balls2.getHeading())
                 .build();
-        intakeBalls2 = follower.pathBuilder()
+        intakeBalls2 = robot.follower.pathBuilder()
                 .addPath(new BezierLine(balls2, intakeBalls2Pose))
                 .setConstantHeadingInterpolation(balls2.getHeading())
                 .build();
-        toLaunch2 = follower.pathBuilder()
+        toLaunch2 = robot.follower.pathBuilder()
                 .addPath(new BezierLine(intakeBalls2Pose, launchPose))
                 .setLinearHeadingInterpolation(balls2.getHeading(), launchPose.getHeading())
                 .build();
-        toBalls3 = follower.pathBuilder()
+        toBalls3 = robot.follower.pathBuilder()
                 .addPath(new BezierLine(launchPose, balls3))
                 .setLinearHeadingInterpolation(launchPose.getHeading(), balls3.getHeading())
                 .build();
-        intakeBalls3 = follower.pathBuilder()
+        intakeBalls3 = robot.follower.pathBuilder()
                 .addPath(new BezierLine(balls3, intakeBalls3Pose))
                 .setConstantHeadingInterpolation(balls3.getHeading())
                 .build();
-        toLaunch3 = follower.pathBuilder()
+        toLaunch3 = robot.follower.pathBuilder()
                 .addPath(new BezierLine(intakeBalls3Pose, launchPose))
                 .setLinearHeadingInterpolation(balls3.getHeading(), launchPose.getHeading())
                 .build();
-        toGate = follower.pathBuilder()
+        toGate = robot.follower.pathBuilder()
                 .addPath(new BezierLine(launchPose, gatePose))
                 .setLinearHeadingInterpolation(launchPose.getHeading(), gatePose.getHeading())
                 .build();
@@ -193,7 +192,7 @@ public class TwelveBallAuto extends OpMode {
     public void actionUpdate(){
         switch(actionState){
             case SHOOT_PRELOAD:
-                if (!follower.isBusy()) {
+                if (!robot.follower.isBusy()) {
                     task.setShooterState(Tasks.ShooterState.SPEEDING_UP);
                     setActionState(ActionState.WAITING_FOR_PRELOAD);
                 }
@@ -204,13 +203,13 @@ public class TwelveBallAuto extends OpMode {
                 }
                 break;
             case SLURPING_GROUP_1:
-                if (!follower.isBusy() && pathState == PathState.SLURPING_GROUP_1){
+                if (!robot.follower.isBusy() && pathState == PathState.SLURPING_GROUP_1){
                     task.setTransferState(Tasks.TransferState.INTAKE);
                     setActionState(ActionState.SHOOT_GROUP_1);
                 }
                 break;
             case SHOOT_GROUP_1:
-                if (!follower.isBusy()) {
+                if (!robot.follower.isBusy()) {
                     task.setShooterState(Tasks.ShooterState.SPEEDING_UP);
                     setActionState(ActionState.WAITING_FOR_COMPLETION_1);
                 }
@@ -221,13 +220,13 @@ public class TwelveBallAuto extends OpMode {
                 }
                 break;
             case SLURPING_GROUP_2:
-                if (!follower.isBusy() && pathState == PathState.SLURPING_GROUP_2){
+                if (!robot.follower.isBusy() && pathState == PathState.SLURPING_GROUP_2){
                     task.setTransferState(Tasks.TransferState.INTAKE);
                     setActionState(ActionState.SHOOT_GROUP_2);
                 }
                 break;
             case SHOOT_GROUP_2:
-                if (!follower.isBusy()) {
+                if (!robot.follower.isBusy()) {
                     task.setShooterState(Tasks.ShooterState.SPEEDING_UP);
                     setActionState(ActionState.WAITING_FOR_COMPLETION_2);
                 }
@@ -238,13 +237,13 @@ public class TwelveBallAuto extends OpMode {
                 }
                 break;
             case SLURPING_GROUP_3:
-                if (!follower.isBusy() && pathState == PathState.SLURPING_GROUP_3){
+                if (!robot.follower.isBusy() && pathState == PathState.SLURPING_GROUP_3){
                     task.setTransferState(Tasks.TransferState.INTAKE);
                     setActionState(ActionState.SHOOT_GROUP_3);
                 }
                 break;
             case SHOOT_GROUP_3:
-                if (!follower.isBusy()) {
+                if (!robot.follower.isBusy()) {
                     task.setShooterState(Tasks.ShooterState.SPEEDING_UP);
                     setActionState(ActionState.WAITING_FOR_COMPLETION_3);
                 }
@@ -261,66 +260,66 @@ public class TwelveBallAuto extends OpMode {
     public void autonomousUpdate(){
         switch (pathState){
             case TO_PRELOAD:
-                follower.followPath(toPreload, true);
+                robot.follower.followPath(toPreload, true);
                 setPathState(PathState.TO_GROUP_1);
                 break;
             case TO_GROUP_1:
-                if (!follower.isBusy() && actionState == ActionState.SLURPING_GROUP_1){
-                    follower.followPath(toBalls1, true);
+                if (!robot.follower.isBusy() && actionState == ActionState.SLURPING_GROUP_1){
+                    robot.follower.followPath(toBalls1, true);
                     setPathState(PathState.SLURPING_GROUP_1);
                 }
                 break;
             case SLURPING_GROUP_1:
-                if (!follower.isBusy() && actionState == ActionState.SHOOT_GROUP_1){
-                    follower.followPath(intakeBalls1,  intakePathSpeed, true);
+                if (!robot.follower.isBusy() && actionState == ActionState.SHOOT_GROUP_1){
+                    robot.follower.followPath(intakeBalls1,  intakePathSpeed, true);
                     setPathState(PathState.GROUP_1_TO_SHOOT);
                 }
                 break;
             case GROUP_1_TO_SHOOT:
-                if (!follower.isBusy()){
-                    follower.followPath(toLaunch1, true);
+                if (!robot.follower.isBusy()){
+                    robot.follower.followPath(toLaunch1, true);
                     setPathState(PathState.TO_GROUP_2);
                 }
                 break;
             case TO_GROUP_2:
-                if (!follower.isBusy() && actionState == ActionState.SLURPING_GROUP_2){
-                    follower.followPath(toBalls2, true);
+                if (!robot.follower.isBusy() && actionState == ActionState.SLURPING_GROUP_2){
+                    robot.follower.followPath(toBalls2, true);
                     setPathState(PathState.SLURPING_GROUP_2);
                 }
                 break;
             case SLURPING_GROUP_2:
-                if (!follower.isBusy() && actionState == ActionState.SHOOT_GROUP_2){
-                    follower.followPath(intakeBalls2, 0.6, true);
+                if (!robot.follower.isBusy() && actionState == ActionState.SHOOT_GROUP_2){
+                    robot.follower.followPath(intakeBalls2, 0.6, true);
                     setPathState(PathState.GROUP_2_TO_SHOOT);
                 }
                 break;
             case GROUP_2_TO_SHOOT:
-                if (!follower.isBusy()){
-                    follower.followPath(toLaunch2, true);
+                if (!robot.follower.isBusy()){
+                    robot.follower.followPath(toLaunch2, true);
                     setPathState(PathState.TO_GROUP_3);
                 }
                 break;
             case TO_GROUP_3:
-                if (!follower.isBusy() && actionState == ActionState.SLURPING_GROUP_3){
-                    follower.followPath(toBalls3, true);
+                if (!robot.follower.isBusy() && actionState == ActionState.SLURPING_GROUP_3){
+                    robot.follower.followPath(toBalls3, true);
                     setPathState(PathState.SLURPING_GROUP_3);
                 }
                 break;
             case SLURPING_GROUP_3:
-                if (!follower.isBusy() && actionState == ActionState.SHOOT_GROUP_3){
-                    follower.followPath(intakeBalls3, intakePathSpeed, true);
+                if (!robot.follower.isBusy() && actionState == ActionState.SHOOT_GROUP_3){
+                    robot.follower.followPath(intakeBalls3, intakePathSpeed, true);
                     setPathState(PathState.GROUP_3_TO_SHOOT);
                 }
                 break;
             case GROUP_3_TO_SHOOT:
-                if (!follower.isBusy()){
-                    follower.followPath(toLaunch3, true);
+                if (!robot.follower.isBusy()){
+                    robot.follower.followPath(toLaunch3, true);
                     setPathState(PathState.SHOOT_TO_GATE);
                 }
                 break;
             case SHOOT_TO_GATE:
-                if (!follower.isBusy() && actionState == ActionState.STOP){
-                    follower.followPath(toGate);
+                if (!robot.follower.isBusy() && actionState == ActionState.STOP){
+                    robot.follower.followPath(toGate);
                     setPathState(PathState.STOP);
                 }
                 break;
@@ -333,11 +332,11 @@ public class TwelveBallAuto extends OpMode {
         autonomousUpdate();
         actionUpdate();
         task.update(hasBall, hadBall);
-        follower.update();
+        robot.follower.update();
         telemetry.addData("Current Action State", actionState);
         telemetry.addData("Current Path State", pathState);
         telemetry.addData("Current Shooter State", shooterState);
-        telemetry.addData("follower busy", follower.isBusy());
+        telemetry.addData("follower busy", robot.follower.isBusy());
         telemetry.addData("shooter velocity", robot.shooter.getVelocity());
         telemetry.addData("shot number", shotCounter);
         telemetry.update();

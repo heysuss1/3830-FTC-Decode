@@ -26,7 +26,6 @@ public class MainTele extends LinearOpMode {
 
     */
     Hardware robot;
-    Follower follower;
     Tasks tasks;
     VelocityController velController;
     RobotConstants constants = new RobotConstants();
@@ -43,8 +42,7 @@ public class MainTele extends LinearOpMode {
 
     public void runOpMode() {
         robot = new Hardware(hardwareMap, telemetry);
-        follower = robot.getFollower();
-        follower.setStartingPose(new Pose(142, 54, Math.PI));
+        robot.follower.setStartingPose(new Pose(142, 54, Math.PI));
         robot.driveTrain.setBrakeMode();
         robot.driveTrain.setSpeed(0.8);
         velController = new VelocityController(hardwareMap);
@@ -70,7 +68,7 @@ public class MainTele extends LinearOpMode {
             previousGamepad1.copy(currentGamepad1);
             currentGamepad1.copy(gamepad1);
 
-            robot.driveTrain.moveRobot(currentGamepad1, follower, orienting);
+            robot.driveTrain.moveRobot(currentGamepad1, robot.follower, orienting);
 
             if (currentGamepad1.right_bumper && !previousGamepad1.right_bumper) {
                 if (!intakeOn) {
@@ -121,22 +119,21 @@ public class MainTele extends LinearOpMode {
             tasks.update(hasBall, hadBall);
 
 
-
             if (showTelemetry){
 
             }
 
 
 
-            follower.update();
+            robot.follower.update();
 
             if (loopCount % 5 == 0){
                 telemetry.addData("Shooter vel: ", robot.shooter.getVelocity());
                 telemetry.addData("Loop Time", currentTime - lastTime);
                 telemetry.addData("Target Vel", targetVel);
-                telemetry.addData("x: ", follower.getPose().getX());
-                telemetry.addData("y: ", follower.getPose().getY());
-                telemetry.addData("Heading: ", follower.getHeading());
+                telemetry.addData("x: ", robot.follower.getPose().getX());
+                telemetry.addData("y: ", robot.follower.getPose().getY());
+                telemetry.addData("Heading: ", robot.follower.getHeading());
                 telemetry.update();
             }
             loopCount++;
