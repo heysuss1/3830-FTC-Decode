@@ -14,10 +14,13 @@ import org.firstinspires.ftc.teamcode.tasks.Tasks;
 public class TeleOp extends LinearOpMode {
 
     /*
-    TODO: right trigger - shoot
-    TODO: left trigger - intake  (and/or left trigger)
-    TODO: left trigger - aim
-    TODO: square - open gate
+
+    cross - shoot
+    right bumper - intake on and off
+    left trigger - aim
+    right trigger - slow mode
+    circle - outtake
+
 
     */
 
@@ -42,7 +45,6 @@ public class TeleOp extends LinearOpMode {
         //set if doing driver practice and thus not in comp.
         if (!Robot.inComp){
             robot.follower.setStartingPose(new Pose(142, 54, Math.PI));
-
         }
         robot.driveTrain.setBrakeMode();
         robot.driveTrain.setSpeed(0.8);
@@ -77,19 +79,23 @@ public class TeleOp extends LinearOpMode {
 
             if (currentGamepad1.circle) {
                 robot.intakeUptake.setIntakeUptakeMode(IntakeUptake.intakeUptakeStates.OUTTAKING);
+                intakeOn = false;
             }
 
-            if (currentGamepad1.right_trigger > 0.1 || currentGamepad1.x)
+            if (currentGamepad1.right_trigger > 0.1)
                 robot.driveTrain.setSpeed(0.3);
             else {
                 robot.driveTrain.setSpeed(1);
             }
+
             if (currentGamepad1.x && !previousGamepad1.x) {
                 tasks.setShooterState(Tasks.ShooterState.SPEEDING_UP);
             }
-            if (currentGamepad1.cross) {
+
+            if (currentGamepad1.cross && !previousGamepad1.cross) {
                 tasks.setShooterState(Tasks.ShooterState.DONE);
                 robot.intakeUptake.setIntakeUptakeMode(IntakeUptake.intakeUptakeStates.OFF);
+                intakeOn = false;
             }
 
             tasks.update(hasBall, hadBall);

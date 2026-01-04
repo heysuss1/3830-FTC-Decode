@@ -95,7 +95,7 @@ public class Robot {
     public double getVoltage(){
         return voltageSensor.getVoltage();
     }
-    
+
     public AimInfo getAimInfo(){
         double robotX = follower.getPose().getX();
         double robotY = follower.getPose().getY();
