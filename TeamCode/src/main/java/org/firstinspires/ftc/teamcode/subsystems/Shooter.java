@@ -45,6 +45,7 @@ public class Shooter {
         public static  final double PITCH_ENCODER_ZERO_OFFSET = 0;
         public static  final double PITCH_POSITION_OFFSET = MIN_PITCH_DEGREES;
         public static final double PITCH_DEGREES_PER_REV = 360 * PITCH_GEAR_RATIO;
+        public static final int PITCH_TOLERANCE = 5;
 
         //Turret Params
 
@@ -55,9 +56,10 @@ public class Shooter {
         public static final int MIN_TURRET_DEGREES = -90;
         public static final int MAX_TURRET_DEGREES = 90;
 
-        public static  final double TURRET_ENCODER_ZERO_OFFSET = 0;
-        public static  final double TURRET_POSITION_OFFSET = 0;
+        public static final double TURRET_ENCODER_ZERO_OFFSET = 0;
+        public static final double TURRET_POSITION_OFFSET = 0;
         public static final double TURRET_DEGREES_PER_REV = 360 * TURRET_GEAR_RATIO;
+        public static final int TURRET_TOLERANCE = 5;
 
     }
 
