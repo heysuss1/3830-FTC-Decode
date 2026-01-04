@@ -41,11 +41,10 @@ public class TurretTester extends LinearOpMode {
             crossoverCount(currentPos, prevPos);
             prevPos = currentPos;
 
-            robot.telemetry
-                    .addData("Current Pos", currentPos)
-                    .addData("Previous Pos", prevPos)
-                    .addData("Crossovers", crossovers)
-                    .addData("Alleged Degrees", getTurretDegree());
+            robot.telemetry.addData("Current Pos", currentPos);
+            robot.telemetry.addData("Previous Pos", prevPos);
+            robot.telemetry.addData("Crossovers", crossovers);
+            robot.telemetry.addData("Alleged Degrees", getTurretDegree());
         }
     }
 }

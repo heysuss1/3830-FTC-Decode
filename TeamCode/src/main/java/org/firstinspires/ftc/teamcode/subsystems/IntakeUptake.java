@@ -112,9 +112,10 @@ public class IntakeUptake {
         }
 
         if (RobotConstants.inComp) {
+            telemetry.addLine("\nIntake/Uptake Info:");
             telemetry.addData("Intake Power",intakeMotor.getPower());
-            telemetry.addData("Transfer Power", uptakeMotor.getPower());
-            telemetry.addData("Color Sensors Distances", "Ball One Sensor: %f, Ball Two Sensor: %f, Ball Three Sensor: %f",
+            telemetry.addData("Uptake Power", uptakeMotor.getPower());
+            telemetry.addData("Color Sensors Distances", "Ball 1 Sensor: %f, Ball 2 Sensor: %f, Ball 3 Sensor: %f",
                     colorSensor1.getDistance(DistanceUnit.INCH),
                     colorSensor2.getDistance(DistanceUnit.INCH),
                     colorSensor3.getDistance(DistanceUnit.INCH));
