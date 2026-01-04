@@ -68,16 +68,11 @@ public class TeleOp extends LinearOpMode {
             robot.driveTrain.moveRobot(currentGamepad1, robot.follower, orienting);
 
             if (currentGamepad1.right_bumper && !previousGamepad1.right_bumper) {
-                if (!intakeOn) {
-                    robot.intakeUptake.setIntakeUptakeMode(IntakeUptake.intakeUptakeStates.INTAKING);
-                    intakeOn = true;
-                } else {
-                    robot.intakeUptake.setIntakeUptakeMode(IntakeUptake.intakeUptakeStates.OFF);
-                    intakeOn = false;
-                }
-            }
-            if (currentGamepad1.y) {
-                robot.intakeUptake.setIntakeUptakeMode(IntakeUptake.intakeUptakeStates.UPTAKING);
+                intakeOn = !intakeOn;  // Toggle the boolean
+                robot.intakeUptake.setIntakeUptakeMode(
+                        intakeOn ? IntakeUptake.intakeUptakeStates.INTAKING
+                                : IntakeUptake.intakeUptakeStates.OFF
+                );
             }
 
             if (currentGamepad1.circle) {
@@ -100,6 +95,8 @@ public class TeleOp extends LinearOpMode {
             tasks.update(hasBall, hadBall);
 
             robot.follower.update();
+            robot.shooter.shooterTask();
+            robot.intakeUptake.intakeUptakeTask();
 
             if (loopCount % 5 == 0){
                 telemetry.addData("Shooter vel: ", robot.shooter.getVelocityRPM());

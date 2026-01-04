@@ -52,17 +52,6 @@ public class Robot {
     }
     public static double cameraHeight = 6.7; //Inches
     public static double cameraAngle = 35; //degrees
-    public static void setMotif(Motif motif) {
-        Robot.MOTIF = motif;
-    }
-
-    public static Motif getMotif() {
-        return MOTIF;
-    }
-
-    public static void setTeam(Team team){
-        TEAM = team;
-    }
 
     public static double ballXOffset = 0, ballYOffset = 0;
     public final static double Y_GOAL = 142;
@@ -86,11 +75,22 @@ public class Robot {
 
         voltageSensor = hwMap.voltageSensor.iterator().next();
         driveTrain = new DriveTrain(hwMap, telemetry);
-        transfer = new IntakeUptake(hwMap, telemetry);
+        intakeUptake = new IntakeUptake(hwMap, telemetry);
         shooter = new Shooter(hwMap, telemetry, this);
     }
 
 
+    public static void setMotif(Motif motif) {
+        Robot.MOTIF = motif;
+    }
+
+    public static Motif getMotif() {
+        return MOTIF;
+    }
+
+    public static void setTeam(Team team){
+        TEAM = team;
+    }
     public double getVoltage(){
         return voltageSensor.getVoltage();
     }

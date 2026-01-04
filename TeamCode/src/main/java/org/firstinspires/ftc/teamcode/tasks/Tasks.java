@@ -22,6 +22,7 @@ public class Tasks {
     }
 
     public enum ShooterState{
+        OPEN_BLOCKING_SERVO,
         SPEEDING_UP,
         SHOOTING,
         WAITING,
@@ -35,41 +36,27 @@ public class Tasks {
         shooterTimer.resetTimer();
     }
 
-
-
-
-//    public void updateTransfer(boolean hasBall){
-//        switch (transferState){
-//            case OFF:
-//                robot.intakeUptake.stopTransfer();
-//                break;
-//            case INTAKE:
-//                robot.intakeUptake.setIntakeMode(hasBall);
-//                break;
-//            case OUTTAKE:
-//                robot.intakeUptake.setOuttakeMode();
-//                break;
-//            case FEED:
-//                robot.intakeUptake.setFeedMode();
-//                break;
-//        }
-//    }
-
     public ShooterState getShooterState(){
         return shooterState;
     }
 
     public void updateShooter(boolean hasBall, boolean hadBall){
         switch (shooterState) {
+            case OPEN_BLOCKING_SERVO:
+                robot.intakeUptake.openBlockingServo();
+                robot.shooter.setVelocityTarget(3550.0);
+                setShooterState(ShooterState.SPEEDING_UP);
+                break;
             case SPEEDING_UP:
-                robot.shooter.shooterTask();
                 if (robot.shooter.isShooterReady(Shooter.Params.SHOOTER_TOLERANCE_RPM, Shooter.Params.PITCH_TOLERANCE, Shooter.Params.TURRET_TOLERANCE)){
                     setShooterState(ShooterState.SHOOTING);
                 }
                 break;
             case SHOOTING:
-                robot.shooter.shooterTask();
-                setTransferState(TransferState.FEED);
+                /*TODO: check how much the velocity has dropped compared to the target velocity and change
+                TODO: the pitch according to that, and remove has/hadball logic
+                 */
+                robot.intakeUptake.setIntakeUptakeMode(IntakeUptake.intakeUptakeStates.UPTAKING);
                 if (hadBall && !hasBall) {
                     robot.intakeUptake.setIntakeUptakeMode(IntakeUptake.intakeUptakeStates.OFF);
                     shotCounter++;
@@ -85,15 +72,10 @@ public class Tasks {
                     setShooterState(ShooterState.DONE);
                 }
                 break;
-            case WAITING:
-                robot.shooter.shooterTask();
-                if (shooterTimer.getElapsedTimeSeconds() > 0.6){
-                    setShooterState(ShooterState.SPEEDING_UP);
-                }
-                break;
             case DONE:
                 shotCounter = 0;
                 robot.shooter.stopShooterSystem();
+                robot.intakeUptake.closeBlockingServo();
                 break;
 
         }
@@ -104,7 +86,6 @@ public class Tasks {
     public void update(boolean hasBall, boolean hadBall){
         updateShooter(hasBall, hadBall);
         robot.intakeUptake.intakeUptakeTask();
-//        updateTurret();
     }
 
 
