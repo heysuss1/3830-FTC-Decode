@@ -182,8 +182,9 @@ public class Shooter {
 
     public void setTurretDegrees(Robot.AimInfo aimInfo) {
         double turretTargetRaw = aimInfo.getAngleToGoal() - robot.follower.getHeading();
+        double turretTargetModulo = (turretTargetRaw + 180) % 360 - 180;
         //once it can rotate more, add some code to modulo this btwn -180 and 180 (like (n-180)%360+180 or smth)
-        turretTarget = Range.clip(turretTargetRaw, Params.MIN_PITCH_DEGREES, Params.MAX_PITCH_DEGREES);
+        turretTarget = Range.clip(turretTargetModulo, Params.MIN_PITCH_DEGREES, Params.MAX_PITCH_DEGREES);
     }
 
     public void resetTimeout() {
