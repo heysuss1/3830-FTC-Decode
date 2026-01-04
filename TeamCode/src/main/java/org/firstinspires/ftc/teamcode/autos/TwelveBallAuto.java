@@ -8,6 +8,7 @@ import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 
 import org.firstinspires.ftc.teamcode.Robot;
+import org.firstinspires.ftc.teamcode.subsystems.IntakeUptake;
 import org.firstinspires.ftc.teamcode.tasks.Tasks;
 
 
@@ -54,7 +55,6 @@ public class TwelveBallAuto extends OpMode {
     PathState pathState = PathState.TO_PRELOAD;
     ActionState actionState = ActionState.SHOOT_PRELOAD;
     Tasks.ShooterState shooterState = Tasks.ShooterState.DONE;
-    Tasks.TransferState transferState = Tasks.TransferState.OFF;
 
 
 
@@ -115,7 +115,7 @@ public class TwelveBallAuto extends OpMode {
 
     public void init() {
         robot = new Robot(hardwareMap, telemetry);
-        task = new Tasks(robot, hardwareMap, true);
+        task = new Tasks(robot);
         pathTimer = new Timer();
         hasBall = !robot.intakeUptake.isUptakeEmpty();
 
@@ -201,7 +201,7 @@ public class TwelveBallAuto extends OpMode {
                 break;
             case SLURPING_GROUP_1:
                 if (!robot.follower.isBusy() && pathState == PathState.SLURPING_GROUP_1){
-                    task.setTransferState(Tasks.TransferState.INTAKE);
+                    robot.intakeUptake.setIntakeUptakeMode(IntakeUptake.intakeUptakeStates.INTAKING);
                     setActionState(ActionState.SHOOT_GROUP_1);
                 }
                 break;
@@ -218,7 +218,7 @@ public class TwelveBallAuto extends OpMode {
                 break;
             case SLURPING_GROUP_2:
                 if (!robot.follower.isBusy() && pathState == PathState.SLURPING_GROUP_2){
-                    task.setTransferState(Tasks.TransferState.INTAKE);
+                    robot.intakeUptake.setIntakeUptakeMode(IntakeUptake.intakeUptakeStates.INTAKING);
                     setActionState(ActionState.SHOOT_GROUP_2);
                 }
                 break;
@@ -235,7 +235,7 @@ public class TwelveBallAuto extends OpMode {
                 break;
             case SLURPING_GROUP_3:
                 if (!robot.follower.isBusy() && pathState == PathState.SLURPING_GROUP_3){
-                    task.setTransferState(Tasks.TransferState.INTAKE);
+                    robot.intakeUptake.setIntakeUptakeMode(IntakeUptake.intakeUptakeStates.INTAKING);
                     setActionState(ActionState.SHOOT_GROUP_3);
                 }
                 break;

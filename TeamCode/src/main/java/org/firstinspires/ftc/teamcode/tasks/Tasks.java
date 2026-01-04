@@ -9,20 +9,16 @@ import org.firstinspires.ftc.teamcode.subsystems.Shooter;
 public class Tasks {
 
     private Timer shooterTimer;
-    private Timer ballCountTimer;
     private Robot robot;
     private int shotCounter;
-    private boolean isAuto;
 
     //TODO: refactor this class
 
 
-    public Tasks(Robot robot, HardwareMap hardwareMap, boolean isAuto){
+    public Tasks(Robot robot){
         this.robot = robot;
         shooterTimer = new Timer();
         shotCounter = 0;
-        ballCountTimer = new Timer();
-        this.isAuto = isAuto;
     }
 
     public enum ShooterState{
@@ -32,15 +28,7 @@ public class Tasks {
         DONE
     }
 
-    public enum TransferState{
-        INTAKE,
-        FEED,
-        OUTTAKE,
-        OFF
-    }
-
     ShooterState shooterState = ShooterState.DONE;
-    TransferState transferState = TransferState.OFF;
 
     public void setShooterState(ShooterState state){
         shooterState = state;
@@ -48,9 +36,6 @@ public class Tasks {
     }
 
 
-    public void setTransferState(TransferState state){
-        transferState = state;
-    }
 
 
 //    public void updateTransfer(boolean hasBall){
@@ -73,14 +58,6 @@ public class Tasks {
     public ShooterState getShooterState(){
         return shooterState;
     }
-
-    public TransferState getTransferState(){
-        return transferState;
-    }
-
-
-
-
 
     public void updateShooter(boolean hasBall, boolean hadBall){
         switch (shooterState) {

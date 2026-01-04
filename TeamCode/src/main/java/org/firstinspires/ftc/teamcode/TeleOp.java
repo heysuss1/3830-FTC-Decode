@@ -27,8 +27,7 @@ public class TeleOp extends LinearOpMode {
     Tasks tasks;
     Timer loopTimer;
     double currentTime = 0, lastTime = 0;
-    int targetVel = 3600;
-    boolean hadBall, hasBall, showTelemetry;
+    boolean hadBall, hasBall;
 
     Gamepad currentGamepad1 = new Gamepad();
     Gamepad previousGamepad1 = new Gamepad();
@@ -38,14 +37,20 @@ public class TeleOp extends LinearOpMode {
 
     public void runOpMode() {
         robot = new Robot(hardwareMap, telemetry);
-        robot.follower.setStartingPose(new Pose(142, 54, Math.PI));
+
+        //I did this because the robots positions should be stored after auto, and it would only need to be manually
+        //set if doing driver practice and thus not in comp.
+        if (!Robot.inComp){
+            robot.follower.setStartingPose(new Pose(142, 54, Math.PI));
+
+        }
         robot.driveTrain.setBrakeMode();
         robot.driveTrain.setSpeed(0.8);
 
         boolean intakeOn = false;
         boolean orienting = false;
 
-        tasks = new Tasks(robot, hardwareMap, false);
+        tasks = new Tasks(robot);
 
         loopTimer = new Timer();
 
@@ -64,10 +69,10 @@ public class TeleOp extends LinearOpMode {
 
             if (currentGamepad1.right_bumper && !previousGamepad1.right_bumper) {
                 if (!intakeOn) {
-                    tasks.setTransferState(Tasks.TransferState.INTAKE);
+                    robot.intakeUptake.setIntakeUptakeMode(IntakeUptake.intakeUptakeStates.INTAKING);
                     intakeOn = true;
                 } else {
-                    tasks.setTransferState(Tasks.TransferState.OFF);
+                    robot.intakeUptake.setIntakeUptakeMode(IntakeUptake.intakeUptakeStates.OFF);
                     intakeOn = false;
                 }
             }
@@ -76,7 +81,7 @@ public class TeleOp extends LinearOpMode {
             }
 
             if (currentGamepad1.circle) {
-                tasks.setTransferState(Tasks.TransferState.OUTTAKE);
+                robot.intakeUptake.setIntakeUptakeMode(IntakeUptake.intakeUptakeStates.OUTTAKING);
             }
 
             if (currentGamepad1.right_trigger > 0.1 || currentGamepad1.x)
@@ -89,13 +94,7 @@ public class TeleOp extends LinearOpMode {
             }
             if (currentGamepad1.cross) {
                 tasks.setShooterState(Tasks.ShooterState.DONE);
-                tasks.setTransferState(Tasks.TransferState.OFF);
-            }
-            if (currentGamepad1.dpad_up && !previousGamepad1.dpad_up) {
-                targetVel += 100;
-            }
-            if (currentGamepad1.dpad_down && !previousGamepad1.dpad_down) {
-                targetVel -= 100;
+                robot.intakeUptake.setIntakeUptakeMode(IntakeUptake.intakeUptakeStates.OFF);
             }
 
             tasks.update(hasBall, hadBall);
@@ -105,7 +104,6 @@ public class TeleOp extends LinearOpMode {
             if (loopCount % 5 == 0){
                 telemetry.addData("Shooter vel: ", robot.shooter.getVelocityRPM());
                 telemetry.addData("Loop Time", currentTime - lastTime);
-                telemetry.addData("Target Vel", targetVel);
                 telemetry.addData("x: ", robot.follower.getPose().getX());
                 telemetry.addData("y: ", robot.follower.getPose().getY());
                 telemetry.addData("Heading: ", robot.follower.getHeading());
