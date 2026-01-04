@@ -9,12 +9,12 @@ import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
-import org.firstinspires.ftc.teamcode.Hardware;
+import org.firstinspires.ftc.teamcode.Robot;
 
 @Config
 @TeleOp(name = "Pure FeedForward PID tuner")
 public class VelocityPIDTester extends OpMode {
-    Hardware robot = Hardware.getInstance();
+    Robot robot = Robot.getInstance();
     private Telemetry telemetryA;
 
 

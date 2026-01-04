@@ -11,7 +11,7 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.util.Range;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
-import org.firstinspires.ftc.teamcode.Hardware;
+import org.firstinspires.ftc.teamcode.Robot;
 import org.firstinspires.ftc.teamcode.RobotConstants;
 import org.firstinspires.ftc.teamcode.controllers.PidfController;
 
@@ -76,7 +76,7 @@ public class Shooter {
     private final PidfController turretController;
 
     private final ElapsedTime timer;
-    public final Hardware robot;
+    public final Robot robot;
 
     public Double velocityTarget = null;
     public Double pitchTarget = null;
@@ -87,7 +87,7 @@ public class Shooter {
     public static boolean alwaysSetVelocity = false;
     public static boolean alwaysAimShooter = false;
 
-    public Shooter(HardwareMap hwMap, Telemetry telemetry, Hardware robot) {
+    public Shooter(HardwareMap hwMap, Telemetry telemetry, Robot robot) {
 
         this.telemetry = telemetry;
         this.robot = robot;
@@ -179,7 +179,7 @@ public class Shooter {
         turretTarget = targetDegrees;
     }
 
-    public void setTurretDegrees(Hardware.AimInfo aimInfo) {
+    public void setTurretDegrees(Robot.AimInfo aimInfo) {
         double turretTargetRaw = aimInfo.getAngleToGoal() - robot.follower.getHeading();
         //once it can rotate more, add some code to modulo this btwn -180 and 180 (like (n-180)%360+180 or smth)
         turretTarget = Range.clip(turretTargetRaw, Params.MIN_PITCH_DEGREES, Params.MAX_PITCH_DEGREES);
@@ -306,7 +306,7 @@ public class Shooter {
         turretTask();
 
         if (alwaysAimShooter) {
-            Hardware.AimInfo aimInfo = robot.getAimInfo();
+            Robot.AimInfo aimInfo = robot.getAimInfo();
             ShootParams.Entry shootParams = Shooter.shootParamsTable.get(aimInfo.getDistanceToGoal());
             setPitchDegrees(shootParams.region.tiltAngle);
             setTurretDegrees(aimInfo);

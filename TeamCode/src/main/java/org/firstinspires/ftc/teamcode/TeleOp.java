@@ -4,15 +4,14 @@ import com.acmerobotics.dashboard.config.Config;
 import com.pedropathing.geometry.Pose;
 import com.pedropathing.util.Timer;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
-import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.Gamepad;
 
 import org.firstinspires.ftc.teamcode.subsystems.IntakeUptake;
 import org.firstinspires.ftc.teamcode.tasks.Tasks;
 
 @Config
-@TeleOp (name = "TeleOp")
-public class MainTele extends LinearOpMode {
+@com.qualcomm.robotcore.eventloop.opmode.TeleOp(name = "TeleOp")
+public class TeleOp extends LinearOpMode {
 
     /*
     TODO: right trigger - shoot
@@ -24,7 +23,7 @@ public class MainTele extends LinearOpMode {
 
     //TODO: REWRITE THIS CLASS TO FIT WITH THE NEW SHOOTER STUFF
 
-    Hardware robot;
+    Robot robot;
     Tasks tasks;
     RobotConstants constants = new RobotConstants();
     Timer loopTimer;
@@ -39,7 +38,7 @@ public class MainTele extends LinearOpMode {
 
 
     public void runOpMode() {
-        robot = new Hardware(hardwareMap, telemetry);
+        robot = new Robot(hardwareMap, telemetry);
         robot.follower.setStartingPose(new Pose(142, 54, Math.PI));
         robot.driveTrain.setBrakeMode();
         robot.driveTrain.setSpeed(0.8);

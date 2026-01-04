@@ -7,14 +7,14 @@ import com.pedropathing.util.Timer;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 
-import org.firstinspires.ftc.teamcode.Hardware;
+import org.firstinspires.ftc.teamcode.Robot;
 import org.firstinspires.ftc.teamcode.RobotConstants;
 import org.firstinspires.ftc.teamcode.tasks.Tasks;
 
 
 @Autonomous (name = "Red Side Auto")
 public class TwelveBallAuto extends OpMode {
-    Hardware robot;
+    Robot robot;
     Timer pathTimer;
     Tasks task;
     boolean hadBall, hasBall;
@@ -115,7 +115,7 @@ public class TwelveBallAuto extends OpMode {
 
 
     public void init() {
-        robot = new Hardware(hardwareMap, telemetry);
+        robot = new Robot(hardwareMap, telemetry);
         task = new Tasks(robot, hardwareMap, true);
         pathTimer = new Timer();
         hasBall = !robot.intakeUptake.isUptakeEmpty();

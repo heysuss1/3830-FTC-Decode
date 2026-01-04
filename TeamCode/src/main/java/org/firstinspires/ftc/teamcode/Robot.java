@@ -12,7 +12,7 @@ import org.firstinspires.ftc.teamcode.subsystems.IntakeUptake;
 import org.firstinspires.ftc.teamcode.subsystems.Shooter;
 
 
-public class Hardware {
+public class Robot {
 
     public class AimInfo {
         public double distance;
@@ -38,7 +38,7 @@ public class Hardware {
     public final IntakeUptake intakeUptake;
     public final VoltageSensor voltageSensor;
 
-    public Hardware(HardwareMap hwMap, Telemetry telemetry){
+    public Robot(HardwareMap hwMap, Telemetry telemetry){
 
         for (LynxModule hub: hwMap.getAll(LynxModule.class)) {
             hub.setBulkCachingMode(LynxModule.BulkCachingMode.AUTO);

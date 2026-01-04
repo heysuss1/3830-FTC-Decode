@@ -4,14 +4,14 @@ import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
-import org.firstinspires.ftc.teamcode.Hardware;
+import org.firstinspires.ftc.teamcode.Robot;
 import org.firstinspires.ftc.teamcode.subsystems.Shooter;
 
 @TeleOp(name="Turret Tester")
 @Disabled
 public class TurretTester extends LinearOpMode {
 
-    Hardware robot;
+    Robot robot;
 
     int crossovers;
     private void crossoverCount(double prevValue, double currentValue) {
@@ -31,7 +31,7 @@ public class TurretTester extends LinearOpMode {
 
     @Override
     public void runOpMode() {
-        robot = new Hardware(hardwareMap, telemetry);
+        robot = new Robot(hardwareMap, telemetry);
         waitForStart();
         double currentPos = 0, prevPos = 0;
 

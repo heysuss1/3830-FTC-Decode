@@ -3,21 +3,21 @@ package org.firstinspires.ftc.teamcode.tasks;
 import com.pedropathing.util.Timer;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
-import org.firstinspires.ftc.teamcode.Hardware;
+import org.firstinspires.ftc.teamcode.Robot;
 import org.firstinspires.ftc.teamcode.zArchive.VelocityController;
 
 public class Tasks {
 
     private Timer shooterTimer;
     private Timer ballCountTimer;
-    private Hardware robot;
+    private Robot robot;
     private int shotCounter;
     private boolean isAuto;
 
     //TODO: refactor this class
 
 
-    public Tasks(Hardware robot, HardwareMap hardwareMap, boolean isAuto){
+    public Tasks(Robot robot, HardwareMap hardwareMap, boolean isAuto){
         this.robot = robot;
         shooterTimer = new Timer();
         shotCounter = 0;

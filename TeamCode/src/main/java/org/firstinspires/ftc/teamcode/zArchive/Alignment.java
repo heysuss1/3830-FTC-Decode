@@ -1,11 +1,11 @@
 package org.firstinspires.ftc.teamcode.zArchive;
 
-import org.firstinspires.ftc.teamcode.Hardware;
+import org.firstinspires.ftc.teamcode.Robot;
 import org.firstinspires.ftc.teamcode.subsystems.DriveTrain;
 
 public class Alignment {
 
-    static Hardware robot = Hardware.getInstance();
+    static Robot robot = Robot.getInstance();
 
     /* NOTE TO THE GOAT RITCHEL JOHN-MARVENS MESIDOR:
     if i put a value in three sets of parenthesis for no reason,
