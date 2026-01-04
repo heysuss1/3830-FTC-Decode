@@ -89,11 +89,10 @@ public class RedSideAuto extends OpMode {
         shooterTimer = new Timer();
         totalShooterTimer = new Timer();
         hasBall = robot.shooter.hasBall();
-        velController = new VelocityController(hardwareMap);
         follower = Constants.createFollower(hardwareMap);
         follower.setStartingPose(startingPose);
         follower.setMaxPower(1);
-        robot.shooter.setVelocityTarget(3550);
+        robot.shooter.setVelocityTarget(3550.0);
         buildPaths();
     }
 

@@ -4,7 +4,7 @@ import com.qualcomm.hardware.limelightvision.LLResult;
 import com.qualcomm.hardware.limelightvision.Limelight3A;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
-import org.firstinspires.ftc.teamcode.RobotConstants;
+import org.firstinspires.ftc.teamcode.Robot;
 
 public class  Vision {
 
@@ -19,12 +19,12 @@ public class  Vision {
 
 
 
-    public RobotConstants.Motif getMotif(){
+    public Robot.Motif getMotif(){
         LLResult result = limelight.getLatestResult();
 
 
         int id;
-        RobotConstants.Motif motif = RobotConstants.Motif.NULL;
+        Robot.Motif motif = Robot.Motif.NULL;
         if (result != null && result.isValid() && !result.getFiducialResults().isEmpty()){
             id = result.getFiducialResults().get(0).getFiducialId();
         } else {
@@ -32,13 +32,13 @@ public class  Vision {
         }
         switch (id){
             case 21:
-                motif = RobotConstants.Motif.GPP;
+                motif = Robot.Motif.GPP;
                 break;
             case 22:
-                motif = RobotConstants.Motif.PGP;
+                motif = Robot.Motif.PGP;
                 break;
             case 23:
-                motif = RobotConstants.Motif.PPG;
+                motif = Robot.Motif.PPG;
                 break;
         }
         return motif;

@@ -12,7 +12,6 @@ import com.qualcomm.robotcore.util.Range;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.teamcode.Robot;
-import org.firstinspires.ftc.teamcode.RobotConstants;
 import org.firstinspires.ftc.teamcode.controllers.PidfController;
 
 public class Shooter {
@@ -260,7 +259,7 @@ public class Shooter {
             topShooterMotor.setPower(output);
             bottomShooterMotor.setPower(topShooterMotor.getPower());
         }
-        if (RobotConstants.inComp) {
+        if (Robot.inComp) {
             telemetry.addLine("\nFlywheel Info:");
             telemetry.addData("Target Velocity (rpm)", velocityTarget );
             telemetry.addData("Current Velocity (rpm)", currentVelocity);
@@ -274,7 +273,7 @@ public class Shooter {
         if (pitchTarget != null) {
             pitchServo.setPosition(pitchTarget);
         }
-        if (RobotConstants.inComp) {
+        if (Robot.inComp) {
             telemetry.addLine("\nPitch Info:");
             telemetry.addData("Pitch Target", pitchTarget);
             telemetry.addData("Current Pitch Degrees", getPitchDegrees());
@@ -292,7 +291,7 @@ public class Shooter {
             secondaryTurretServo.setPower(output);
         }
 
-        if (RobotConstants.inComp) {
+        if (Robot.inComp) {
             telemetry.addLine("\nTurret Info:");
             telemetry.addData("Turret Target", turretTarget);
             telemetry.addData("Current Turret Degrees", getTurretDegrees());

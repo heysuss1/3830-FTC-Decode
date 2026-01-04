@@ -10,7 +10,6 @@ import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 
 import org.firstinspires.ftc.teamcode.Robot;
-import org.firstinspires.ftc.teamcode.RobotConstants;
 import org.firstinspires.ftc.teamcode.tasks.Tasks;
 import org.firstinspires.ftc.teamcode.pedroPathing.Constants;
 
@@ -72,7 +71,6 @@ public class BlueSideAuto extends OpMode {
 
     RedSideAuto.PathState pathState = RedSideAuto.PathState.TO_PRELOAD;
     RedSideAuto.ActionState actionState = RedSideAuto.ActionState.SHOOT_PRELOAD;
-    RobotConstants.SystemState robotState = RobotConstants.SystemState.OFF;
     Pose startingPose = new Pose(convertRedToBluePosition(128), 118, Math.toRadians(140));
     Pose launchPose = new Pose((convertRedToBluePosition(96)), 96, Math.toRadians(149.4));
 

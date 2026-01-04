@@ -8,7 +8,6 @@ import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 
 import org.firstinspires.ftc.teamcode.Robot;
-import org.firstinspires.ftc.teamcode.RobotConstants;
 import org.firstinspires.ftc.teamcode.tasks.Tasks;
 
 
@@ -77,10 +76,10 @@ public class TwelveBallAuto extends OpMode {
     //If gamepad1.dpad_up, make it blue, gamepad1.dpad_down, make it red
     public void init_loop(){
         if (gamepad1.dpad_up) {
-            RobotConstants.setTeam(RobotConstants.Team.BLUE);
+            Robot.setTeam(Robot.Team.BLUE);
         }
         if (gamepad1.dpad_down){
-            RobotConstants.setTeam(RobotConstants.Team.RED);
+            Robot.setTeam(Robot.Team.RED);
         }
 
     }
@@ -122,7 +121,7 @@ public class TwelveBallAuto extends OpMode {
 
         robot.follower.setStartingPose(startingPose);
         robot.follower.setMaxPower(1);
-        if (RobotConstants.getTEAM() == RobotConstants.Team.BLUE){
+        if (Robot.getTEAM() == Robot.Team.BLUE){
             initializeBluePoses();
         } else {
             initializeRedPoses();

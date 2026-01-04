@@ -25,7 +25,6 @@ public class TeleOp extends LinearOpMode {
 
     Robot robot;
     Tasks tasks;
-    RobotConstants constants = new RobotConstants();
     Timer loopTimer;
     double currentTime = 0, lastTime = 0;
     int targetVel = 3600;
@@ -115,17 +114,10 @@ public class TeleOp extends LinearOpMode {
             //robot.shooter.setVelocityTarget(targetVel);
             tasks.update(hasBall, hadBall);
 
-
-            if (showTelemetry){
-
-            }
-
-
-
             robot.follower.update();
 
             if (loopCount % 5 == 0){
-                telemetry.addData("Shooter vel: ", robot.shooter.getVelocity());
+                telemetry.addData("Shooter vel: ", robot.shooter.getVelocityRPM());
                 telemetry.addData("Loop Time", currentTime - lastTime);
                 telemetry.addData("Target Vel", targetVel);
                 telemetry.addData("x: ", robot.follower.getPose().getX());

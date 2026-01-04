@@ -9,7 +9,7 @@ import com.qualcomm.robotcore.hardware.Servo;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
-import org.firstinspires.ftc.teamcode.RobotConstants;
+import org.firstinspires.ftc.teamcode.Robot;
 
 public class IntakeUptake {
 
@@ -111,7 +111,7 @@ public class IntakeUptake {
                 break;
         }
 
-        if (RobotConstants.inComp) {
+        if (Robot.inComp) {
             telemetry.addLine("\nIntake/Uptake Info:");
             telemetry.addData("Intake Power",intakeMotor.getPower());
             telemetry.addData("Uptake Power", uptakeMotor.getPower());
