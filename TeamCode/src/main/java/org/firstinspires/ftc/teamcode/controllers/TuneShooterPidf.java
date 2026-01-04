@@ -10,8 +10,8 @@ import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.teamcode.Hardware;
 
 @Config
-@TeleOp(name = "Velocity PID tuner")
-public class TunePidf extends OpMode {
+@TeleOp(name = "Velocity PIDF tuner")
+public class TuneShooterPidf extends OpMode {
     Hardware robot;
     private Telemetry telemetryA;
     public static double kP, kI, kD, kF, iZone;
