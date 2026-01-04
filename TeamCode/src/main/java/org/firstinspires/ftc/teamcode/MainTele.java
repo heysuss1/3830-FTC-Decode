@@ -21,6 +21,9 @@ public class MainTele extends LinearOpMode {
     TODO: square - open gate
 
     */
+
+    //TODO: REWRITE THIS CLASS TO FIT WITH THE NEW SHOOTER STUFF
+
     Hardware robot;
     Tasks tasks;
     RobotConstants constants = new RobotConstants();

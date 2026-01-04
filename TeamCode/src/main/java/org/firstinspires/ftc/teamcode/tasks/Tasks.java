@@ -14,7 +14,7 @@ public class Tasks {
     private int shotCounter;
     private boolean isAuto;
 
-    //TODO: fix shooter class and then refactor this class
+    //TODO: refactor this class
 
 
     public Tasks(Hardware robot, HardwareMap hardwareMap, boolean isAuto){
@@ -120,7 +120,7 @@ public class Tasks {
                 break;
             case DONE:
                 shotCounter = 0;
-                robot.shooter.stopShooter();
+                robot.shooter.stopShooterSystem();
                 break;
 
         }

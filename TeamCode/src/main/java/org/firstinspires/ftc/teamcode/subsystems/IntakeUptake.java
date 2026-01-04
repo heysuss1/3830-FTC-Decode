@@ -60,7 +60,7 @@ public class IntakeUptake {
         colorSensor3 = hwMap.get(RevColorSensorV3.class, "colorSensor3");
     }
 
-    public boolean isTransferEmpty() {
+    public boolean isUptakeEmpty() {
         return  (colorSensor1.getDistance(DistanceUnit.INCH) > Params.HAS_BALL_1_DISTANCE_THRESHOLD) &&
                 (colorSensor2.getDistance(DistanceUnit.INCH) > Params.HAS_BALL_2_DISTANCE_THRESHOLD) &&
                 (colorSensor3.getDistance(DistanceUnit.INCH) > Params.HAS_BALL_3_DISTANCE_THRESHOLD);
@@ -119,7 +119,7 @@ public class IntakeUptake {
                     colorSensor1.getDistance(DistanceUnit.INCH),
                     colorSensor2.getDistance(DistanceUnit.INCH),
                     colorSensor3.getDistance(DistanceUnit.INCH));
-            telemetry.addData("Number of Balls Stored: ", getNumberOfBallsStored() + ", Transfer Empty: " + isTransferEmpty());
+            telemetry.addData("Number of Balls Stored: ", getNumberOfBallsStored() + ", Transfer Empty: " + isUptakeEmpty());
             telemetry.update();
         }
     }

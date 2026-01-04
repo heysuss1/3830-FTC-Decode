@@ -12,23 +12,23 @@ import org.firstinspires.ftc.teamcode.Hardware;
 @Config
 @TeleOp(name = "Velocity PID tuner")
 public class TunePidf extends OpMode {
-    Hardware robot = Hardware.getInstance();
+    Hardware robot;
     private Telemetry telemetryA;
     public static double kP, kI, kD, kF, iZone;
-    public static int targetRpm;
+    public static Double targetRpm;
     FtcDashboard dashboard = FtcDashboard.getInstance();
 
     public void init() {
         telemetryA = new MultipleTelemetry(this.telemetry, dashboard.getTelemetry());
         robot.shooter.getShooterController().setPidCoefficients(kP, kI, kD, kF, iZone);
-        robot.init(hardwareMap, telemetryA);
+        robot = new Hardware(hardwareMap, telemetry);
     }
 
     public void loop() {
         robot.shooter.getShooterController().setPidCoefficients(kP, kI, kD, kF, iZone);
         robot.shooter.setVelocityTarget(targetRpm);
         telemetryA.addData("Target Velocity (RPM)", targetRpm);
-        telemetryA.addData("Current Velocity (RPM)", robot.shooter.getVelocity());
+        telemetryA.addData("Current Velocity (RPM)", robot.shooter.getVelocityRPM());
         telemetryA.addData("Current Power", 67);
         telemetryA.addData("Current Error", robot.shooter.getShooterController().getError());
     }

@@ -1,6 +1,5 @@
 package org.firstinspires.ftc.teamcode.autos;
 
-import com.pedropathing.follower.Follower;
 import com.pedropathing.geometry.BezierLine;
 import com.pedropathing.geometry.Pose;
 import com.pedropathing.paths.PathChain;
@@ -11,7 +10,6 @@ import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import org.firstinspires.ftc.teamcode.Hardware;
 import org.firstinspires.ftc.teamcode.RobotConstants;
 import org.firstinspires.ftc.teamcode.tasks.Tasks;
-import org.firstinspires.ftc.teamcode.pedroPathing.Constants;
 
 
 @Autonomous (name = "Red Side Auto")
@@ -120,7 +118,7 @@ public class TwelveBallAuto extends OpMode {
         robot = new Hardware(hardwareMap, telemetry);
         task = new Tasks(robot, hardwareMap, true);
         pathTimer = new Timer();
-        hasBall = robot.shooter.hasBall();
+        hasBall = !robot.intakeUptake.isUptakeEmpty();
 
         robot.follower.setStartingPose(startingPose);
         robot.follower.setMaxPower(1);
@@ -328,7 +326,7 @@ public class TwelveBallAuto extends OpMode {
 
     public void loop(){
         hadBall = hasBall;
-        hasBall = robot.shooter.hasBall();
+        hasBall = !robot.intakeUptake.isUptakeEmpty();
         autonomousUpdate();
         actionUpdate();
         task.update(hasBall, hadBall);
@@ -337,7 +335,7 @@ public class TwelveBallAuto extends OpMode {
         telemetry.addData("Current Path State", pathState);
         telemetry.addData("Current Shooter State", shooterState);
         telemetry.addData("follower busy", robot.follower.isBusy());
-        telemetry.addData("shooter velocity", robot.shooter.getVelocity());
+        telemetry.addData("shooter velocity", robot.shooter.getVelocityRPM());
         telemetry.addData("shot number", shotCounter);
         telemetry.update();
     }
