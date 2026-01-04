@@ -50,8 +50,8 @@ public class Robot {
     public static Team getTEAM() {
         return TEAM;
     }
-    static double cameraHeight = 6.7; //Inches
-    static double cameraAngle = 35; //degrees
+    public static double cameraHeight = 6.7; //Inches
+    public static double cameraAngle = 35; //degrees
     public static void setMotif(Motif motif) {
         Robot.MOTIF = motif;
     }

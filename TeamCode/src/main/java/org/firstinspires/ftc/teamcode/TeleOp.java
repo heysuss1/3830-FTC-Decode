@@ -59,7 +59,7 @@ public class TeleOp extends LinearOpMode {
             lastTime = currentTime;
             currentTime = loopTimer.getElapsedTime();
             hadBall = hasBall;
-            hasBall = robot.shooter.hasBall();
+            hasBall = robot.intakeUptake.hasLastBall();
 
             previousGamepad1.copy(currentGamepad1);
             currentGamepad1.copy(gamepad1);
@@ -88,15 +88,6 @@ public class TeleOp extends LinearOpMode {
             else {
                 robot.driveTrain.setSpeed(1);
             }
-
-//            if (currentGamepad1.x) {
-//                if (Alignment.yawAligned(follower.getPose().getX(), follower.getPose().getY(), 142,140.4, follower.getHeading())) {
-//                        systemState = RobotConstants.SystemState.SPEEDING_UP;
-//                } else {
-//                    Alignment.alignYaw(follower.getPose().getX(), follower.getPose().getY(), follower.getHeading(), 142, 140.4);
-//                }
-//            }
-
             if (currentGamepad1.x && !previousGamepad1.x) {
                 tasks.setShooterState(Tasks.ShooterState.SPEEDING_UP);
             }
@@ -111,7 +102,6 @@ public class TeleOp extends LinearOpMode {
                 targetVel -= 100;
             }
 
-            //robot.shooter.setVelocityTarget(targetVel);
             tasks.update(hasBall, hadBall);
 
             robot.follower.update();

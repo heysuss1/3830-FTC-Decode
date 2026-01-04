@@ -5,7 +5,7 @@ import org.firstinspires.ftc.teamcode.subsystems.DriveTrain;
 
 public class Alignment {
 
-    static Robot robot = Robot.getInstance();
+     static Robot robot;
 
     /* NOTE TO THE GOAT RITCHEL JOHN-MARVENS MESIDOR:
     if i put a value in three sets of parenthesis for no reason,

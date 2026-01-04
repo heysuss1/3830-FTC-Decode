@@ -1,6 +1,8 @@
-package org.firstinspires.ftc.teamcode;
+package org.firstinspires.ftc.teamcode.zArchive;
 
 import static java.lang.Math.abs;
+
+import org.firstinspires.ftc.teamcode.Robot;
 
 /*
 Inputs: initial position of ball (position of goal, constant)
@@ -17,8 +19,8 @@ public class kinematics {
 
     //tan(h2-h1) = (a2-a1)/d
     public double getDistanceLimelight(double targetHeight, double angleToObject){
-        double deltaDistance = targetHeight - RobotConstants.cameraHeight;
-        double deltaAngle = angleToObject - RobotConstants.cameraAngle;
+        double deltaDistance = targetHeight - Robot.cameraHeight;
+        double deltaAngle = angleToObject - Robot.cameraAngle;
 
         return deltaDistance/(Math.tan(deltaAngle));
     }
@@ -35,13 +37,13 @@ public class kinematics {
     double x_ball; // get x-pos and y-pos from pp + difference btwn pedro bot center and ball position
     double y_ball; // X AND Y POS OF THE BALL
 
-    public double getDistance(double x_ball, double y_ball, RobotConstants.Team team){
-        double x_goal = team == RobotConstants.Team.BLUE ? 132: 12;
+    public double getDistance(double x_ball, double y_ball, Robot.Team team){
+        double x_goal = team == Robot.Team.BLUE ? 132: 12;
         return Math.sqrt(Math.pow(y_ball-Y_GOAL,2)+Math.pow(x_ball-x_goal,2));
     }
 
-    public static double getYaw(double x_ball, double y_ball, RobotConstants.Team team){
-        double x_goal = team == RobotConstants.Team.BLUE ? 12: 132;
+    public static double getYaw(double x_ball, double y_ball, Robot.Team team){
+        double x_goal = team == Robot.Team.BLUE ? 12: 132;
         return Math.toDegrees(Math.atan2((y_ball-140.8), (x_ball-x_goal)))+180;
 
     }
@@ -54,10 +56,10 @@ public class kinematics {
     //Spin of the cannon relative to the ground
 //    double yaw = Math.atan((y_ball-Y_GOAL)/(x_ball-x_goal));
 
-    public double getPitch(double x_ball, double y_ball, double v0, boolean isHighPath, RobotConstants.Team team) {
+    public double getPitch(double x_ball, double y_ball, double v0, boolean isHighPath, Robot.Team team) {
 
         //If blue team, goal pos = 132, if red it equals 12
-        double x_goal = team == RobotConstants.Team.BLUE ? 132: 12;
+        double x_goal = team == Robot.Team.BLUE ? 132: 12;
 
         double x1 = getDistance(x_ball, y_ball, team);
         double y1 = 35;
