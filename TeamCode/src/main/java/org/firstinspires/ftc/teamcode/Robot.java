@@ -47,9 +47,6 @@ public class Robot {
     static Motif MOTIF;
     public final static boolean inComp = false;
 
-    public static Team getTEAM() {
-        return TEAM;
-    }
     public static double cameraHeight = 6.7; //Inches
     public static double cameraAngle = 35; //degrees
 
@@ -80,6 +77,10 @@ public class Robot {
     }
 
 
+    public static Team getTEAM() {
+        return TEAM;
+    }
+
     public static void setMotif(Motif motif) {
         Robot.MOTIF = motif;
     }
@@ -94,11 +95,7 @@ public class Robot {
     public double getVoltage(){
         return voltageSensor.getVoltage();
     }
-
-    public Follower getFollower() {
-        return follower;
-    }
-
+    
     public AimInfo getAimInfo(){
         double robotX = follower.getPose().getX();
         double robotY = follower.getPose().getY();
