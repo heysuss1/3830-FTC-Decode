@@ -4,8 +4,8 @@ import com.pedropathing.util.Timer;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
 import org.firstinspires.ftc.teamcode.Robot;
-import org.firstinspires.ftc.teamcode.zArchive.VelocityController;
-
+import org.firstinspires.ftc.teamcode.subsystems.IntakeUptake;
+import org.firstinspires.ftc.teamcode.subsystems.Shooter;
 public class Tasks {
 
     private Timer shooterTimer;
@@ -80,32 +80,28 @@ public class Tasks {
 
 
 
-    private void setShooterPower(){
-        robot.shooter.setPower(velController.getPower(Math.abs(robot.shooter.getVelocity()), robot.shooter.getVelocityTarget()));
-
-    }
 
 
     public void updateShooter(boolean hasBall, boolean hadBall){
         switch (shooterState) {
             case SPEEDING_UP:
-                setShooterPower();
-                if (robot.shooter.isReady(100)){
+                robot.shooter.shooterTask();
+                if (robot.shooter.isShooterReady(Shooter.Params.SHOOTER_TOLERANCE_RPM, Shooter.Params.PITCH_TOLERANCE, Shooter.Params.TURRET_TOLERANCE)){
                     setShooterState(ShooterState.SHOOTING);
                 }
                 break;
             case SHOOTING:
-                setShooterPower();
+                robot.shooter.shooterTask();
                 setTransferState(TransferState.FEED);
                 if (hadBall && !hasBall) {
-                    setTransferState(TransferState.OFF);
+                    robot.intakeUptake.setIntakeUptakeMode(IntakeUptake.intakeUptakeStates.OFF);
                     shotCounter++;
                     setShooterState(ShooterState.WAITING);
                     return;
                 }
 
                 if (shotCounter >= 3) {
-                    setTransferState(TransferState.OFF);
+                    robot.intakeUptake.setIntakeUptakeMode(IntakeUptake.intakeUptakeStates.OFF);
                     setShooterState(ShooterState.DONE);
                 }
                 if (shooterTimer.getElapsedTimeSeconds() > 1.5){
@@ -113,7 +109,7 @@ public class Tasks {
                 }
                 break;
             case WAITING:
-                setShooterPower();
+                robot.shooter.shooterTask();
                 if (shooterTimer.getElapsedTimeSeconds() > 0.6){
                     setShooterState(ShooterState.SPEEDING_UP);
                 }
@@ -126,15 +122,11 @@ public class Tasks {
         }
     }
 
-//    public void updateTurret(){
-//        int currentTurretPosition = robot.shooter.getTurretPosition();
-//        int turretTargetPosition = robot.shooter.getTurretTargetPos();
-//        robot.shooter.setTurretPower(TurretController.getPower(currentTurretPosition, turretTargetPosition));
-//    }
+
 //
     public void update(boolean hasBall, boolean hadBall){
         updateShooter(hasBall, hadBall);
-        updateTransfer(hasBall);
+        robot.intakeUptake.intakeUptakeTask();
 //        updateTurret();
     }
 

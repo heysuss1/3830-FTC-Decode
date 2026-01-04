@@ -44,7 +44,6 @@ public class TeleOp extends LinearOpMode {
 
         boolean intakeOn = false;
         boolean orienting = false;
-        boolean showTelemetry = false;
 
         tasks = new Tasks(robot, hardwareMap, false);
 
@@ -52,12 +51,9 @@ public class TeleOp extends LinearOpMode {
 
         waitForStart();
         while (opModeIsActive()) {
-
-//            for (LynxModule hub: hardwareMap.getAll(LynxModule.class)){
-//                hub.clearBulkCache();
-//            }
             lastTime = currentTime;
             currentTime = loopTimer.getElapsedTime();
+
             hadBall = hasBall;
             hasBall = robot.intakeUptake.hasLastBall();
 

@@ -86,7 +86,7 @@ public class Robot {
 
         voltageSensor = hwMap.voltageSensor.iterator().next();
         driveTrain = new DriveTrain(hwMap, telemetry);
-        intakeUptake = new IntakeUptake(hwMap, telemetry);
+        transfer = new IntakeUptake(hwMap, telemetry);
         shooter = new Shooter(hwMap, telemetry, this);
     }
 

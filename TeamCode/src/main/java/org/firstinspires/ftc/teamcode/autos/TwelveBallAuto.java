@@ -325,7 +325,7 @@ public class TwelveBallAuto extends OpMode {
 
     public void loop(){
         hadBall = hasBall;
-        hasBall = !robot.intakeUptake.isUptakeEmpty();
+        hasBall = robot.intakeUptake.hasLastBall();
         autonomousUpdate();
         actionUpdate();
         task.update(hasBall, hadBall);
