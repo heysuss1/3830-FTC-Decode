@@ -9,6 +9,7 @@ import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 
 import org.firstinspires.ftc.teamcode.Robot;
 import org.firstinspires.ftc.teamcode.subsystems.IntakeUptake;
+import org.firstinspires.ftc.teamcode.subsystems.Shooter;
 import org.firstinspires.ftc.teamcode.tasks.ShooterTask;
 
 @Autonomous (name = "Red Side Auto")
@@ -39,7 +40,6 @@ public class TwelveBallAuto extends OpMode {
     int shotCount = 0;
 
     AutoState autoState = AutoState.START;
-    ShooterTask.ShooterState shooterState = ShooterTask.ShooterState.DONE;
 
     //Starting pose wrong
     PathChain driveToShootPreloads, driveToGroup1, driveToShootGroup1, driveToGroup2, driveToShootGroup2, driveToGroup3, driveToShootGroup3,
@@ -62,9 +62,6 @@ public class TwelveBallAuto extends OpMode {
         shooterTask = new ShooterTask(robot);
         pathTimer = new Timer();
 
-        robot.follower.setStartingPose(startingPose);
-        robot.follower.setMaxPower(1);
-
         while (editingAlliance){
             if (gamepad1.dpad_up) {
                 Robot.setTeam(Robot.Team.BLUE);
@@ -78,21 +75,22 @@ public class TwelveBallAuto extends OpMode {
             telemetry.addData("Team", Robot.getTEAM());
             telemetry.update();
         }
+
+        robot.follower.setStartingPose(startingPose);
+        robot.follower.setMaxPower(1);
         buildPaths();
     }
 
     public void loop(){
         autonomousUpdate();
-        shooterTask.update();
-        robot.shooter.shooterTask();
-        robot.intakeUptake.intakeUptakeTask();
-        robot.follower.update();
 
-        telemetry.addData("Current Auto State", autoState);
-        telemetry.addData("Current Shooter State", shooterState);
-        telemetry.addData("follower busy?", robot.follower.isBusy());
-        telemetry.addData("shooter velocity", robot.shooter.getVelocityRPM());
-        telemetry.update();
+        if (!Robot.inComp) {
+            telemetry.addData("Current Auto State", autoState);
+            telemetry.addData("Current Shooter State", shooterTask.getShooterState());
+            telemetry.addData("follower busy?", robot.follower.isBusy());
+            telemetry.addData("shooter velocity", robot.shooter.getVelocityRPM());
+            telemetry.update();
+        }
     }
 
     public void autonomousUpdate() {
@@ -191,6 +189,11 @@ public class TwelveBallAuto extends OpMode {
 
                 /*TODO: make the separate DRIVE_TO_GROUP_n's and SLURPING_GROUP_n's into their own single states*/
         }
+
+        shooterTask.update();
+        robot.shooter.shooterTask();
+        robot.intakeUptake.intakeUptakeTask();
+        robot.follower.update();
     }
 
     public void buildPaths() {
