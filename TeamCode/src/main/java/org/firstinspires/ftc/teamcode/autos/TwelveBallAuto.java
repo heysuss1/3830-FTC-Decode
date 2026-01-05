@@ -19,12 +19,8 @@ public class TwelveBallAuto extends OpMode {
         START,
         DRIVE_TO_SHOOTING_SPOT,
         SHOOTING,
-        DRIVE_TO_GROUP_1,
-        SLURPING_GROUP_1,
-        DRIVE_TO_GROUP_2,
-        SLURPING_GROUP_2,
-        DRIVE_TO_GROUP_3,
-        SLURPING_GROUP_3,
+        DRIVE_TO_GROUP,
+        SLURPING_GROUP,
         DRIVE_TO_PARK, // <-- dunno if we need this but just in case
         DRIVE_TO_GATE, // <--- these are for later when we get more balls than the pre-placed ones
         SLURPING_FROM_GATE,
@@ -113,66 +109,33 @@ public class TwelveBallAuto extends OpMode {
 
                 shooterTask.startShooterTask();
 
-                if (shooterTask.isFinished()) { //maybe this will be broken!
-                    //TODO: fix this to be right idk
+                if (shooterTask.isFinished()) {
                     shotCount++;
-                    if (shotCount == 1) autoState = AutoState.DRIVE_TO_GROUP_1;
-                    if (shotCount == 2) autoState = AutoState.DRIVE_TO_GROUP_2;
-                    if (shotCount == 3) autoState = AutoState.DRIVE_TO_GROUP_3;
+                    if (shotCount <= 3) autoState = AutoState.DRIVE_TO_GROUP;
                     if (shotCount == 4) autoState = AutoState.DRIVE_TO_PARK;
                 }
 
                 break;
-            case DRIVE_TO_GROUP_1:
+            case DRIVE_TO_GROUP:
 
-                robot.follower.followPath(driveToGroup1, true);
+                if (shotCount == 1) robot.follower.followPath(driveToGroup1, true);
+                if (shotCount == 2) robot.follower.followPath(driveToGroup2, true);
+                if (shotCount == 3) robot.follower.followPath(driveToGroup3, true);
 
                 if (!robot.follower.isBusy()) {
-                    autoState = AutoState.SLURPING_GROUP_1;
+                    autoState = AutoState.SLURPING_GROUP;
                 }
 
                 break;
-            case SLURPING_GROUP_1:
+            case SLURPING_GROUP:
 
-                robot.follower.followPath(intakeGroup1, intakePathSpeed, true);
-
-                if (!robot.follower.isBusy()) {
-                    autoState = AutoState.DRIVE_TO_SHOOTING_SPOT;
-                }
-
-                break;
-            case DRIVE_TO_GROUP_2:
-
-                robot.follower.followPath(driveToGroup2, true);
+                robot.intakeUptake.setIntakeUptakeMode(IntakeUptake.intakeUptakeStates.INTAKING);
+                if (shotCount == 1) robot.follower.followPath(intakeGroup1);
+                if (shotCount == 2) robot.follower.followPath(intakeGroup2);
+                if (shotCount == 3) robot.follower.followPath(intakeGroup3);
 
                 if (!robot.follower.isBusy()) {
-                    autoState = AutoState.SLURPING_GROUP_2;
-                }
-
-                break;
-            case SLURPING_GROUP_2:
-
-                robot.follower.followPath(intakeGroup2, intakePathSpeed, true);
-
-                if (!robot.follower.isBusy()) {
-                    autoState = AutoState.DRIVE_TO_SHOOTING_SPOT;
-                }
-
-                break;
-            case DRIVE_TO_GROUP_3:
-
-                robot.follower.followPath(driveToGroup3, true);
-
-                if (!robot.follower.isBusy()) {
-                    autoState = AutoState.SLURPING_GROUP_3;
-                }
-
-                break;
-            case SLURPING_GROUP_3:
-
-                robot.follower.followPath(intakeGroup3, intakePathSpeed, true);
-
-                if (!robot.follower.isBusy()) {
+                    robot.intakeUptake.setIntakeUptakeMode(IntakeUptake.intakeUptakeStates.OFF);
                     autoState = AutoState.DRIVE_TO_SHOOTING_SPOT;
                 }
 
@@ -186,8 +149,6 @@ public class TwelveBallAuto extends OpMode {
                 }
 
                 break;
-
-                /*TODO: make the separate DRIVE_TO_GROUP_n's and SLURPING_GROUP_n's into their own single states*/
         }
 
         shooterTask.update();
