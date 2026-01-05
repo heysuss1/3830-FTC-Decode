@@ -157,6 +157,14 @@ public class Shooter {
         //TODO: test in the TurretTester class
     }
 
+
+    public DcMotorEx getShooterMotor(){
+        return topShooterMotor;
+    }
+
+    public CRServo getPrimaryTurretServo(){
+        return primaryTurretServo;
+    }
     public double getTurretRawPose() {
         return turretEncoder.getVoltage()/3.3;
     }

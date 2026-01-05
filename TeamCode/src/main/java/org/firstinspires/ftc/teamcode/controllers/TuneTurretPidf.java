@@ -20,7 +20,7 @@ public class TuneTurretPidf extends OpMode {
 
     public void init() {
         telemetryA = new MultipleTelemetry(this.telemetry, dashboard.getTelemetry());
-        robot.shooter.getShooterController().setPidCoefficients(kP, kI, kD, kF, iZone);
+        robot.shooter.getTurretController().setPidCoefficients(kP, kI, kD, kF, iZone);
         robot = new Robot(hardwareMap, telemetry);
     }
 
@@ -28,9 +28,10 @@ public class TuneTurretPidf extends OpMode {
         robot.shooter.getTurretController().setPidCoefficients(kP, kI, kD, kF, iZone);
         robot.shooter.setTurretDegrees(targetPos);
         telemetryA.addData("Target Position (degrees)", targetPos);
-        telemetryA.addData("Current Velocity (RPM)", robot.shooter.getVelocityRPM());
-        telemetryA.addData("Current Power", 67);
-        telemetryA.addData("Current Error", robot.shooter.getShooterController().getError());
+        telemetryA.addData("Current Position (degrees)", robot.shooter.getTurretDegrees());
+        telemetryA.addData("Current Power", robot.shooter.getPrimaryTurretServo().getPower());
+        telemetryA.addData("Current Error", robot.shooter.getTurretController().getError());
+        telemetryA.update();
     }
 
 }

@@ -10,7 +10,7 @@ import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.teamcode.Robot;
 
 @Config
-@TeleOp(name = "Velocity PIDF tuner")
+@TeleOp(name = "Shooter PIDF tuner")
 public class TuneShooterPidf extends OpMode {
     Robot robot;
     private Telemetry telemetryA;
@@ -29,7 +29,7 @@ public class TuneShooterPidf extends OpMode {
         robot.shooter.setVelocityTarget(targetRpm);
         telemetryA.addData("Target Velocity (RPM)", targetRpm);
         telemetryA.addData("Current Velocity (RPM)", robot.shooter.getVelocityRPM());
-        telemetryA.addData("Current Power", 67);
+        telemetryA.addData("Current Power", robot.shooter.getShooterMotor().getPower());
         telemetryA.addData("Current Error", robot.shooter.getShooterController().getError());
     }
 
