@@ -29,7 +29,7 @@ public class ShooterTask {
 
     ShooterState shooterState = ShooterState.DONE;
 
-    public void setShooterState(ShooterState state){
+    private void setShooterState(ShooterState state){
         shooterState = state;
         shooterTimer.resetTimer();
     }
@@ -37,12 +37,17 @@ public class ShooterTask {
     public void startShooterTask(){
         setShooterState(ShooterState.START);
     }
+
     public void cancelShooterUpdate(){
         setShooterState(ShooterState.DONE);
     }
 
     public ShooterState getShooterState(){
         return shooterState;
+    }
+
+    public boolean isFinished() {
+        return shooterState == ShooterState.DONE;
     }
 
 
