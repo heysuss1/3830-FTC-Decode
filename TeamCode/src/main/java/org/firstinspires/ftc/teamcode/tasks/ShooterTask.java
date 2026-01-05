@@ -1,12 +1,11 @@
 package org.firstinspires.ftc.teamcode.tasks;
 
 import com.pedropathing.util.Timer;
-import com.qualcomm.robotcore.hardware.HardwareMap;
 
 import org.firstinspires.ftc.teamcode.Robot;
 import org.firstinspires.ftc.teamcode.subsystems.IntakeUptake;
 import org.firstinspires.ftc.teamcode.subsystems.Shooter;
-public class Tasks {
+public class ShooterTask {
 
     private Timer shooterTimer;
     private Robot robot;
@@ -15,17 +14,16 @@ public class Tasks {
     //TODO: refactor this class
 
 
-    public Tasks(Robot robot){
+    public ShooterTask(Robot robot){
         this.robot = robot;
         shooterTimer = new Timer();
         shotCounter = 0;
     }
 
     public enum ShooterState{
-        OPEN_BLOCKING_SERVO,
+        START,
         SPEEDING_UP,
         SHOOTING,
-        WAITING,
         DONE
     }
 
@@ -35,8 +33,12 @@ public class Tasks {
         shooterState = state;
         shooterTimer.resetTimer();
     }
+
+    public void startShooterTask(){
+        setShooterState(ShooterState.START);
+    }
     public void cancelShooterUpdate(){
-        shooterState = ShooterState.DONE;
+        setShooterState(ShooterState.DONE);
     }
 
     public ShooterState getShooterState(){
@@ -44,16 +46,17 @@ public class Tasks {
     }
 
 
-    public void updateShooter(boolean hasBall, boolean hadBall){
+    public void update(){
         switch (shooterState) {
-            case OPEN_BLOCKING_SERVO:
-                robot.intakeUptake.openBlockingServo();
-                robot.shooter.setVelocityTarget(3550.0);
-                setShooterState(ShooterState.SPEEDING_UP);
-                break;
+            case START:
+                //Intentionally falling through;
+
             case SPEEDING_UP:
+                robot.shooter.setVelocityTarget(robot.shooter.getCurrentShooterVelTarget());
                 if (robot.shooter.isShooterReady(Shooter.Params.SHOOTER_TOLERANCE_RPM, Shooter.Params.PITCH_TOLERANCE, Shooter.Params.TURRET_TOLERANCE)){
+                    robot.intakeUptake.openBlockingServo();
                     setShooterState(ShooterState.SHOOTING);
+
                 }
                 break;
             case SHOOTING:
@@ -61,36 +64,16 @@ public class Tasks {
                 TODO: the pitch according to that, and remove has/hadball logic
                  */
                 robot.intakeUptake.setIntakeUptakeMode(IntakeUptake.intakeUptakeStates.UPTAKING);
-                if (hadBall && !hasBall) {
-                    robot.intakeUptake.setIntakeUptakeMode(IntakeUptake.intakeUptakeStates.OFF);
-                    shotCounter++;
-                    setShooterState(ShooterState.WAITING);
-                    return;
-                }
 
-                if (shotCounter >= 3) {
+                if (robot.intakeUptake.isUptakeEmpty()) {
                     robot.intakeUptake.setIntakeUptakeMode(IntakeUptake.intakeUptakeStates.OFF);
-                    setShooterState(ShooterState.DONE);
-                }
-                if (shooterTimer.getElapsedTimeSeconds() > 1.5){
                     setShooterState(ShooterState.DONE);
                 }
                 break;
             case DONE:
-                shotCounter = 0;
-                robot.shooter.stopShooterSystem();
+                robot.shooter.stopShooterMotor();
                 robot.intakeUptake.closeBlockingServo();
                 break;
-
         }
     }
-
-
-//
-    public void update(boolean hasBall, boolean hadBall){
-        updateShooter(hasBall, hadBall);
-        robot.intakeUptake.intakeUptakeTask();
-    }
-
-
 }

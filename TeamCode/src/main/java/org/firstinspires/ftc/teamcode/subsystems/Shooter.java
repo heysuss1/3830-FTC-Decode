@@ -82,6 +82,8 @@ public class Shooter {
     public Double velocityTarget = null;
     public Double pitchTarget = null;
     public Double turretTarget = null;
+    public Double currentShooterVelTarget = null;
+
 
     private double timeout = 0.0;
 
@@ -167,6 +169,10 @@ public class Shooter {
     }
     public double getTurretRawPose() {
         return turretEncoder.getVoltage()/3.3;
+    }
+
+    public Double getCurrentShooterVelTarget(){
+        return currentShooterVelTarget;
     }
 
     public void setVelocityTarget(Double velocityTargetRPM, double timeout) {
@@ -312,19 +318,15 @@ public class Shooter {
         flywheelTask();
         pitchTask();
         turretTask();
+        
+        Robot.AimInfo aimInfo = robot.getAimInfo();
+        ShootParams.Entry shootParams = Shooter.shootParamsTable.get(aimInfo.getDistanceToGoal());
+        setPitchDegrees(shootParams.region.tiltAngle);
+        setTurretDegrees(aimInfo);
 
-        if (alwaysAimShooter) {
-            Robot.AimInfo aimInfo = robot.getAimInfo();
-            ShootParams.Entry shootParams = Shooter.shootParamsTable.get(aimInfo.getDistanceToGoal());
-            setPitchDegrees(shootParams.region.tiltAngle);
-            setTurretDegrees(aimInfo);
-
-            if (alwaysSetVelocity) {
-                setVelocityTarget(shootParams.outputs[0]);
-            }
-
+        currentShooterVelTarget = shootParams.outputs[0];
+        if (alwaysSetVelocity) {
+            setVelocityTarget(shootParams.outputs[0]);
         }
-
     }
-
 }

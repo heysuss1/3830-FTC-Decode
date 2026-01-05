@@ -7,7 +7,7 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.Gamepad;
 
 import org.firstinspires.ftc.teamcode.subsystems.IntakeUptake;
-import org.firstinspires.ftc.teamcode.tasks.Tasks;
+import org.firstinspires.ftc.teamcode.tasks.ShooterTask;
 
 @Config
 @com.qualcomm.robotcore.eventloop.opmode.TeleOp(name = "TeleOp")
@@ -21,7 +21,7 @@ public class TeleOp extends LinearOpMode {
     */
 
     Robot robot;
-    Tasks tasks;
+    ShooterTask shooterTask;
     Timer loopTimer;
     double currentTime = 0, lastTime = 0;
     Gamepad currentGamepad1 = new Gamepad();
@@ -42,7 +42,7 @@ public class TeleOp extends LinearOpMode {
         boolean intakeOn = false;
         boolean orienting = false;
 
-        tasks = new Tasks(robot);
+        shooterTask = new ShooterTask(robot);
 
         loopTimer = new Timer();
 
@@ -76,16 +76,16 @@ public class TeleOp extends LinearOpMode {
             }
 
             if (currentGamepad1.x && !previousGamepad1.x) {
-                tasks.setShooterState(Tasks.ShooterState.OPEN_BLOCKING_SERVO);
+                shooterTask.startShooterTask();
             }
 
             if (currentGamepad1.cross && !previousGamepad1.cross) {
-                tasks.cancelShooterUpdate();
+                shooterTask.cancelShooterUpdate();
                 robot.intakeUptake.setIntakeUptakeMode(IntakeUptake.intakeUptakeStates.OFF);
                 intakeOn = false;
             }
 
-            tasks.update(hasBall, hadBall);
+            shooterTask.update();
             robot.follower.update();
             robot.shooter.shooterTask();
             robot.intakeUptake.intakeUptakeTask();

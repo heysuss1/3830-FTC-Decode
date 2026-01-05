@@ -9,7 +9,7 @@ import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 
 import org.firstinspires.ftc.teamcode.Robot;
 import org.firstinspires.ftc.teamcode.subsystems.IntakeUptake;
-import org.firstinspires.ftc.teamcode.tasks.Tasks;
+import org.firstinspires.ftc.teamcode.tasks.ShooterTask;
 
 
 @Autonomous (name = "Red Side Auto")
@@ -43,14 +43,14 @@ public class TwelveBallAuto extends OpMode {
         SHOOT_TO_GATE,
         STOP,
     }
+
     Robot robot;
     Timer pathTimer;
-    Tasks task;
-    boolean hadBall, hasBall;
+    ShooterTask shooterTask;
     double intakePathSpeed = 0.6;
     PathState pathState = PathState.TO_PRELOAD;
     ActionState actionState = ActionState.SHOOT_PRELOAD;
-    Tasks.ShooterState shooterState = Tasks.ShooterState.DONE;
+    ShooterTask.ShooterState shooterState = ShooterTask.ShooterState.DONE;
     boolean editingAlliance = true;
 
 
@@ -75,9 +75,8 @@ public class TwelveBallAuto extends OpMode {
     public void init() {
 
         robot = new Robot(hardwareMap, telemetry);
-        task = new Tasks(robot);
+        shooterTask = new ShooterTask(robot);
         pathTimer = new Timer();
-        hasBall = !robot.intakeUptake.isUptakeEmpty();
 
         robot.follower.setStartingPose(startingPose);
         robot.follower.setMaxPower(1);
@@ -99,12 +98,13 @@ public class TwelveBallAuto extends OpMode {
     }
 
     public void loop(){
-        hadBall = hasBall;
-        hasBall = robot.intakeUptake.hasLastBall();
         autonomousUpdate();
         actionUpdate();
-        task.update(hasBall, hadBall);
+        shooterTask.update();
+        robot.shooter.shooterTask();
+        robot.intakeUptake.intakeUptakeTask();
         robot.follower.update();
+
         telemetry.addData("Current Action State", actionState);
         telemetry.addData("Current Path State", pathState);
         telemetry.addData("Current Shooter State", shooterState);
@@ -173,12 +173,12 @@ public class TwelveBallAuto extends OpMode {
         switch(actionState){
             case SHOOT_PRELOAD:
                 if (!robot.follower.isBusy()) {
-                    task.setShooterState(Tasks.ShooterState.SPEEDING_UP);
+                    shooterTask.setShooterState(ShooterTask.ShooterState.SPEEDING_UP);
                     setActionState(ActionState.WAITING_FOR_PRELOAD);
                 }
                 break;
             case WAITING_FOR_PRELOAD:
-                if (shooterState == Tasks.ShooterState.DONE){
+                if (shooterState == ShooterTask.ShooterState.DONE){
                     setActionState(ActionState.SLURPING_GROUP_1);
                 }
                 break;
@@ -190,12 +190,12 @@ public class TwelveBallAuto extends OpMode {
                 break;
             case SHOOT_GROUP_1:
                 if (!robot.follower.isBusy()) {
-                    task.setShooterState(Tasks.ShooterState.SPEEDING_UP);
+                    shooterTask.setShooterState(ShooterTask.ShooterState.SPEEDING_UP);
                     setActionState(ActionState.WAITING_FOR_COMPLETION_1);
                 }
                 break;
             case WAITING_FOR_COMPLETION_1:
-                if (shooterState == Tasks.ShooterState.DONE){
+                if (shooterState == ShooterTask.ShooterState.DONE){
                     setActionState(ActionState.SLURPING_GROUP_2);
                 }
                 break;
@@ -207,12 +207,12 @@ public class TwelveBallAuto extends OpMode {
                 break;
             case SHOOT_GROUP_2:
                 if (!robot.follower.isBusy()) {
-                    task.setShooterState(Tasks.ShooterState.SPEEDING_UP);
+                    shooterTask.setShooterState(ShooterTask.ShooterState.SPEEDING_UP);
                     setActionState(ActionState.WAITING_FOR_COMPLETION_2);
                 }
                 break;
             case WAITING_FOR_COMPLETION_2:
-                if (shooterState == Tasks.ShooterState.DONE){
+                if (shooterState == ShooterTask.ShooterState.DONE){
                     setActionState(ActionState.SLURPING_GROUP_3);
                 }
                 break;
@@ -224,12 +224,12 @@ public class TwelveBallAuto extends OpMode {
                 break;
             case SHOOT_GROUP_3:
                 if (!robot.follower.isBusy()) {
-                    task.setShooterState(Tasks.ShooterState.SPEEDING_UP);
+                    shooterTask.setShooterState(ShooterTask.ShooterState.SPEEDING_UP);
                     setActionState(ActionState.WAITING_FOR_COMPLETION_3);
                 }
                 break;
             case WAITING_FOR_COMPLETION_3:
-                if (shooterState == Tasks.ShooterState.DONE){
+                if (shooterState == ShooterTask.ShooterState.DONE){
                     setActionState(ActionState.STOP);
                 }
                 break;

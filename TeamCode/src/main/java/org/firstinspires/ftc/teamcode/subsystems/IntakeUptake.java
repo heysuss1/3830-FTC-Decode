@@ -77,10 +77,6 @@ public class IntakeUptake {
                 ((hasBall1 && hasBall2 && hasBall3) ? 1 : 0);
     }
 
-    public boolean hasLastBall(){
-        return colorSensor3.getDistance(DistanceUnit.INCH) < Params.HAS_BALL_3_DISTANCE_THRESHOLD;
-    }
-
     public void setIntakeUptakeMotorPower(double intakePower, double uptakePower) {
         intakeMotor.setPower(intakePower);
         uptakeMotor.setPower(uptakePower);
