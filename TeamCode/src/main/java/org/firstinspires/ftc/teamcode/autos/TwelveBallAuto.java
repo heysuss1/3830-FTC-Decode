@@ -14,13 +14,6 @@ import org.firstinspires.ftc.teamcode.tasks.Tasks;
 
 @Autonomous (name = "Red Side Auto")
 public class TwelveBallAuto extends OpMode {
-    Robot robot;
-    Timer pathTimer;
-    Tasks task;
-    boolean hadBall, hasBall;
-    double intakePathSpeed = 0.5;
-
-    int shotCounter = 0;
     enum ActionState {
         SHOOT_PRELOAD,
         WAITING_FOR_PRELOAD,
@@ -35,8 +28,7 @@ public class TwelveBallAuto extends OpMode {
         WAITING_FOR_COMPLETION_3,
         STOP,
     }
-
-    int resetCounter = 0;
+    
     enum PathState {
         TO_PRELOAD,
         TO_GROUP_1,
@@ -51,10 +43,21 @@ public class TwelveBallAuto extends OpMode {
         SHOOT_TO_GATE,
         STOP,
     }
+    Robot robot;
+    Timer pathTimer;
+    Tasks task;
+    boolean hadBall, hasBall;
+    double intakePathSpeed = 0.5;
+
+    int shotCounter = 0;
+
+
+    int resetCounter = 0;
+
     PathState pathState = PathState.TO_PRELOAD;
     ActionState actionState = ActionState.SHOOT_PRELOAD;
     Tasks.ShooterState shooterState = Tasks.ShooterState.DONE;
-
+    boolean editingAlliance = true;
 
 
 
@@ -72,12 +75,7 @@ public class TwelveBallAuto extends OpMode {
     //This is where we set the team color;
     //If gamepad1.dpad_up, make it blue, gamepad1.dpad_down, make it red
     public void init_loop(){
-        if (gamepad1.dpad_up) {
-            Robot.setTeam(Robot.Team.BLUE);
-        }
-        if (gamepad1.dpad_down){
-            Robot.setTeam(Robot.Team.RED);
-        }
+
     }
 
     public void initializePoses(Robot.Team team){
@@ -107,8 +105,38 @@ public class TwelveBallAuto extends OpMode {
 
         robot.follower.setStartingPose(startingPose);
         robot.follower.setMaxPower(1);
+
+        while (editingAlliance){
+            if (gamepad1.dpad_up) {
+                Robot.setTeam(Robot.Team.BLUE);
+            }
+            if (gamepad1.dpad_down){
+                Robot.setTeam(Robot.Team.RED);
+            }
+            if (gamepad1.left_bumper){
+                editingAlliance = false;
+            }
+            telemetry.addData("Team", Robot.getTEAM());
+            telemetry.update();
+        }
         initializePoses(Robot.getTEAM());
         buildPaths();
+    }
+
+    public void loop(){
+        hadBall = hasBall;
+        hasBall = robot.intakeUptake.hasLastBall();
+        autonomousUpdate();
+        actionUpdate();
+        task.update(hasBall, hadBall);
+        robot.follower.update();
+        telemetry.addData("Current Action State", actionState);
+        telemetry.addData("Current Path State", pathState);
+        telemetry.addData("Current Shooter State", shooterState);
+        telemetry.addData("follower busy", robot.follower.isBusy());
+        telemetry.addData("shooter velocity", robot.shooter.getVelocityRPM());
+        telemetry.addData("shot number", shotCounter);
+        telemetry.update();
     }
 
     public void buildPaths() {
@@ -303,21 +331,5 @@ public class TwelveBallAuto extends OpMode {
                 }
                 break;
         }
-    }
-
-    public void loop(){
-        hadBall = hasBall;
-        hasBall = robot.intakeUptake.hasLastBall();
-        autonomousUpdate();
-        actionUpdate();
-        task.update(hasBall, hadBall);
-        robot.follower.update();
-        telemetry.addData("Current Action State", actionState);
-        telemetry.addData("Current Path State", pathState);
-        telemetry.addData("Current Shooter State", shooterState);
-        telemetry.addData("follower busy", robot.follower.isBusy());
-        telemetry.addData("shooter velocity", robot.shooter.getVelocityRPM());
-        telemetry.addData("shot number", shotCounter);
-        telemetry.update();
     }
 }
