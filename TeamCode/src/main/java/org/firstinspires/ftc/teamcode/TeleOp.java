@@ -17,7 +17,6 @@ public class TeleOp extends LinearOpMode {
 
     cross - shoot
     right bumper - intake on and off
-    left trigger - aim
     right trigger - slow mode
     circle - outtake
 
@@ -77,7 +76,7 @@ public class TeleOp extends LinearOpMode {
                 );
             }
 
-            if (currentGamepad1.circle) {
+            if (currentGamepad1.circle && !previousGamepad1.circle) {
                 robot.intakeUptake.setIntakeUptakeMode(IntakeUptake.intakeUptakeStates.OUTTAKING);
                 intakeOn = false;
             }
@@ -85,7 +84,7 @@ public class TeleOp extends LinearOpMode {
             if (currentGamepad1.right_trigger > 0.1)
                 robot.driveTrain.setSpeed(0.3);
             else {
-                robot.driveTrain.setSpeed(1);
+                robot.driveTrain.setSpeed(robot.driveTrain.getSpeed());
             }
 
             if (currentGamepad1.x && !previousGamepad1.x) {

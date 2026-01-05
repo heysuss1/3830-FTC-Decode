@@ -20,7 +20,6 @@ public class TwelveBallAuto extends OpMode {
     boolean hadBall, hasBall;
     double intakePathSpeed = 0.5;
 
-    private final static double FIELD_CENTER_X = 72;
     int shotCounter = 0;
     enum ActionState {
         SHOOT_PRELOAD,
@@ -67,9 +66,7 @@ public class TwelveBallAuto extends OpMode {
     PathChain toPreload, toBalls1, toLaunch1, toBalls2, toLaunch2, toBalls3, toLaunch3,
             intakeBalls1, intakeBalls2, intakeBalls3, toGate;
 
-    public double convertRedToBluePosition(double position){
-        return 2 * FIELD_CENTER_X - position;
-    }
+
 
 
     //This is where we set the team color;
@@ -81,39 +78,28 @@ public class TwelveBallAuto extends OpMode {
         if (gamepad1.dpad_down){
             Robot.setTeam(Robot.Team.RED);
         }
+    }
 
+    public void initializePoses(Robot.Team team){
+        startingPose = Robot.convertAlliancePose(new Pose(128, 118, Math.toRadians(40)), team);
+        launchPose = Robot.convertAlliancePose(new Pose(96, 96, Math.toRadians(40)), team);
+        balls1 = Robot.convertAlliancePose(new Pose(99, 83, 0), team);
+        balls2 = Robot.convertAlliancePose(new Pose(99, 61, 0), team);
+        balls3 = Robot.convertAlliancePose(new Pose(100, 35, 0), team);
+        intakeBalls1Pose = Robot.convertAlliancePose(new Pose(127.5, 83, 0), team);
+        intakeBalls2Pose = Robot.convertAlliancePose(new Pose(124, 61, 0), team);
+        intakeBalls3Pose = Robot.convertAlliancePose(new Pose(131, 35, 0), team);
+        gatePose = Robot.convertAlliancePose(new Pose(120, 70, 0), team);
     }
 
 
     //Use the values from redsideauto.java as well, but convert the x values to blue.
 
-    public void initializeBluePoses(){
-        startingPose = new Pose(convertRedToBluePosition(128), 118, Math.toRadians(40));
-        launchPose = new Pose(convertRedToBluePosition(96), 96, Math.toRadians(40));
-        balls1 = new Pose(convertRedToBluePosition(99), 83, 0);
-        balls2 = new Pose(convertRedToBluePosition(99), 61, 0);
-        balls3 = new Pose(convertRedToBluePosition(100), 35, 0);
-        intakeBalls1Pose = new Pose(convertRedToBluePosition(127.5), 83, 0);
-        intakeBalls2Pose = new Pose(convertRedToBluePosition(124), 61, 0);
-        intakeBalls3Pose = new Pose(convertRedToBluePosition(131), 35, 0);
-        gatePose = new Pose(convertRedToBluePosition(120), 70, 0);
-    }
 
-    //Use values from redsideauto.java
-    public void initializeRedPoses(){
-        startingPose = new Pose(128, 118, Math.toRadians(40));
-        launchPose = new Pose(96, 96, Math.toRadians(40));
-        balls1 = new Pose(99, 83, 0);
-        balls2 = new Pose(99, 61, 0);
-        balls3 = new Pose(100, 35, 0);
-        intakeBalls1Pose = new Pose(127.5, 83, 0);
-        intakeBalls2Pose = new Pose(124, 61, 0);
-        intakeBalls3Pose = new Pose(131, 35, 0);
-        gatePose = new Pose(120, 70, 0);
-    }
 
 
     public void init() {
+
         robot = new Robot(hardwareMap, telemetry);
         task = new Tasks(robot);
         pathTimer = new Timer();
@@ -121,11 +107,7 @@ public class TwelveBallAuto extends OpMode {
 
         robot.follower.setStartingPose(startingPose);
         robot.follower.setMaxPower(1);
-        if (Robot.getTEAM() == Robot.Team.BLUE){
-            initializeBluePoses();
-        } else {
-            initializeRedPoses();
-        }
+        initializePoses(Robot.getTEAM());
         buildPaths();
     }
 

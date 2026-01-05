@@ -1,6 +1,7 @@
 package org.firstinspires.ftc.teamcode;
 
 import com.pedropathing.follower.Follower;
+import com.pedropathing.geometry.Pose;
 import com.qualcomm.hardware.lynx.LynxModule;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.VoltageSensor;
@@ -49,6 +50,7 @@ public class Robot {
 
     public static double cameraHeight = 6.7; //Inches
     public static double cameraAngle = 35; //degrees
+    public final static double FIELD_CENTER_X = 72;
 
     public static double ballXOffset = 0, ballYOffset = 0;
     public final static double Y_GOAL = 142;
@@ -77,6 +79,15 @@ public class Robot {
     }
 
 
+    //the team is the alliance you're on for that match
+    public static Pose convertAlliancePose(Pose pose, Team team){
+        Pose newPose;
+        double x = team == Team.BLUE ? 2 * FIELD_CENTER_X - pose.getPose().getX(): pose.getX();
+        double y = pose.getY();
+        double heading = team == Team.BLUE ? 180 - pose.getHeading() : pose.getHeading();
+        newPose = new Pose(x, y, heading);
+        return newPose;
+    }
     public static Team getTEAM() {
         return TEAM;
     }
