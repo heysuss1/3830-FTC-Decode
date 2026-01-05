@@ -14,29 +14,20 @@ import org.firstinspires.ftc.teamcode.tasks.Tasks;
 public class TeleOp extends LinearOpMode {
 
     /*
-
     cross - shoot
     right bumper - intake on and off
     right trigger - slow mode
     circle - outtake
-
-
     */
-
-    //TODO: REWRITE THIS CLASS TO FIT WITH THE NEW SHOOTER STUFF
 
     Robot robot;
     Tasks tasks;
     Timer loopTimer;
     double currentTime = 0, lastTime = 0;
-    boolean hadBall, hasBall;
-
     Gamepad currentGamepad1 = new Gamepad();
     Gamepad previousGamepad1 = new Gamepad();
 
-    int loopCount = 0;
-
-
+    final double MAX_SPEED = 0.8;
     public void runOpMode() {
         robot = new Robot(hardwareMap, telemetry);
 
@@ -46,7 +37,7 @@ public class TeleOp extends LinearOpMode {
             robot.follower.setStartingPose(new Pose(142, 54, Math.PI));
         }
         robot.driveTrain.setBrakeMode();
-        robot.driveTrain.setSpeed(0.8);
+        robot.driveTrain.setSpeed(MAX_SPEED);
 
         boolean intakeOn = false;
         boolean orienting = false;
@@ -59,9 +50,6 @@ public class TeleOp extends LinearOpMode {
         while (opModeIsActive()) {
             lastTime = currentTime;
             currentTime = loopTimer.getElapsedTime();
-
-            hadBall = hasBall;
-            hasBall = robot.intakeUptake.hasLastBall();
 
             previousGamepad1.copy(currentGamepad1);
             currentGamepad1.copy(gamepad1);
@@ -84,11 +72,11 @@ public class TeleOp extends LinearOpMode {
             if (currentGamepad1.right_trigger > 0.1)
                 robot.driveTrain.setSpeed(0.3);
             else {
-                robot.driveTrain.setSpeed(robot.driveTrain.getSpeed());
+                robot.driveTrain.setSpeed(MAX_SPEED);
             }
 
             if (currentGamepad1.x && !previousGamepad1.x) {
-                tasks.setShooterState(Tasks.ShooterState.SPEEDING_UP);
+                tasks.setShooterState(Tasks.ShooterState.OPEN_BLOCKING_SERVO);
             }
 
             if (currentGamepad1.cross && !previousGamepad1.cross) {
@@ -98,12 +86,11 @@ public class TeleOp extends LinearOpMode {
             }
 
             tasks.update(hasBall, hadBall);
-
             robot.follower.update();
             robot.shooter.shooterTask();
             robot.intakeUptake.intakeUptakeTask();
 
-            if (loopCount % 5 == 0){
+            if (!Robot.inComp){
                 telemetry.addData("Shooter vel: ", robot.shooter.getVelocityRPM());
                 telemetry.addData("Loop Time", currentTime - lastTime);
                 telemetry.addData("x: ", robot.follower.getPose().getX());
@@ -111,7 +98,6 @@ public class TeleOp extends LinearOpMode {
                 telemetry.addData("Heading: ", robot.follower.getHeading());
                 telemetry.update();
             }
-            loopCount++;
         }
     }
 }

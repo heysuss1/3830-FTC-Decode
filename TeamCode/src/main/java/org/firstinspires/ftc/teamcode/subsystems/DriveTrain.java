@@ -64,8 +64,8 @@ public class DriveTrain {
 
         forward = -(Math.atan(5 * gamepad1.left_stick_y) / Math.atan(5));
         sideways = (Math.atan(5 * gamepad1.left_stick_x) / Math.atan(5));
-        turning = (Math.atan(5 * gamepad1.right_stick_x) / Math.atan(5)) * 0.5
-        ;
+        turning = (Math.atan(5 * gamepad1.right_stick_x) / Math.atan(5)) * 0.5;
+
         max = Math.max(Math.abs(forward - sideways - turning), Math.max(Math.abs(forward + sideways - turning), Math.max(Math.abs(forward + sideways + turning), Math.abs(forward + turning - sideways))));
         if (max > speed) {
             scaleFactor = speed/max;

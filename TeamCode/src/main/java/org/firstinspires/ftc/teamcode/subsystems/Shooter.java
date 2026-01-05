@@ -260,18 +260,17 @@ public class Shooter {
     }
 
     public void flywheelTask() {
-        double currentVelocity;
-        double output;
+        double output = 0;
         if (velocityTarget != null) {
-            currentVelocity = getVelocityRPM();
+            double currentVelocity = getVelocityRPM();
             output = shooterController.calculate(velocityTarget, currentVelocity);
             topShooterMotor.setPower(output);
             bottomShooterMotor.setPower(topShooterMotor.getPower());
         }
-        if (Robot.inComp) {
+        if (!Robot.inComp) {
             telemetry.addLine("\nFlywheel Info:");
             telemetry.addData("Target Velocity (rpm)", velocityTarget );
-            telemetry.addData("Current Velocity (rpm)", currentVelocity);
+            telemetry.addData("Current Velocity (rpm)", getVelocityRPM());
             telemetry.addData( "Power", output);
             telemetry.addData("Error", shooterController.getError());
             telemetry.update();
@@ -282,7 +281,7 @@ public class Shooter {
         if (pitchTarget != null) {
             pitchServo.setPosition(pitchTarget);
         }
-        if (Robot.inComp) {
+        if (!Robot.inComp) {
             telemetry.addLine("\nPitch Info:");
             telemetry.addData("Pitch Target", pitchTarget);
             telemetry.addData("Current Pitch Degrees", getPitchDegrees());
@@ -291,16 +290,15 @@ public class Shooter {
     }
 
     public void turretTask() {
-        double currentPosition;
-        double output;
+        double output = 0;
         if (turretTarget != null) {
-            currentPosition = getTurretDegrees();
+            double currentPosition = getTurretDegrees();
             output = turretController.calculate(turretTarget, currentPosition);
             primaryTurretServo.setPower(output);
             secondaryTurretServo.setPower(output);
         }
 
-        if (Robot.inComp) {
+        if (!Robot.inComp) {
             telemetry.addLine("\nTurret Info:");
             telemetry.addData("Turret Target", turretTarget);
             telemetry.addData("Current Turret Degrees", getTurretDegrees());
