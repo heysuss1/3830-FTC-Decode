@@ -80,11 +80,11 @@ public class Robot {
 
 
     //the team is the alliance you're on for that match
-    public static Pose convertAlliancePose(Pose pose, Team team){
+    public static Pose convertAlliancePose(Pose pose){
         Pose newPose;
-        double x = team == Team.BLUE ? 2 * FIELD_CENTER_X - pose.getPose().getX(): pose.getX();
+        double x = getTEAM() == Team.BLUE ? 2 * FIELD_CENTER_X - pose.getPose().getX(): pose.getX();
         double y = pose.getY();
-        double heading = team == Team.BLUE ? 180 - pose.getHeading() : pose.getHeading();
+        double heading = getTEAM() == Team.BLUE ? 180 - pose.getHeading() : pose.getHeading();
         newPose = new Pose(x, y, heading);
         return newPose;
     }

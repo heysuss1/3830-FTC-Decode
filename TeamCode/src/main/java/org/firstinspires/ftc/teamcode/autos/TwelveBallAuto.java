@@ -28,7 +28,7 @@ public class TwelveBallAuto extends OpMode {
         WAITING_FOR_COMPLETION_3,
         STOP,
     }
-    
+
     enum PathState {
         TO_PRELOAD,
         TO_GROUP_1,
@@ -47,54 +47,30 @@ public class TwelveBallAuto extends OpMode {
     Timer pathTimer;
     Tasks task;
     boolean hadBall, hasBall;
-    double intakePathSpeed = 0.5;
-
-    int shotCounter = 0;
-
-
-    int resetCounter = 0;
-
+    double intakePathSpeed = 0.6;
     PathState pathState = PathState.TO_PRELOAD;
     ActionState actionState = ActionState.SHOOT_PRELOAD;
     Tasks.ShooterState shooterState = Tasks.ShooterState.DONE;
     boolean editingAlliance = true;
 
 
-
+    Pose startingPose = Robot.convertAlliancePose(new Pose(128, 118, Math.toRadians(40)));
+    Pose launchPose = Robot.convertAlliancePose(new Pose(96, 96, Math.toRadians(40)));
+    Pose balls1 = Robot.convertAlliancePose(new Pose(99, 83, 0));
+    Pose balls2 = Robot.convertAlliancePose(new Pose(99, 61, 0) );
+    Pose balls3 = Robot.convertAlliancePose(new Pose(100, 35, 0) );
+    Pose intakeBalls1Pose = Robot.convertAlliancePose(new Pose(127.5, 83, 0) );
+    Pose intakeBalls2Pose = Robot.convertAlliancePose(new Pose(124, 61, 0) );
+    Pose intakeBalls3Pose = Robot.convertAlliancePose(new Pose(131, 35, 0) );
+    Pose gatePose = Robot.convertAlliancePose(new Pose(120, 70, 0));
 
 
     //Starting pose wrong
-    Pose startingPose, launchPose, balls1, balls2, balls3, intakeBalls1Pose, intakeBalls2Pose, intakeBalls3Pose,
-    gatePose;
     PathChain toPreload, toBalls1, toLaunch1, toBalls2, toLaunch2, toBalls3, toLaunch3,
             intakeBalls1, intakeBalls2, intakeBalls3, toGate;
 
 
-
-
-    //This is where we set the team color;
-    //If gamepad1.dpad_up, make it blue, gamepad1.dpad_down, make it red
-    public void init_loop(){
-
-    }
-
-    public void initializePoses(Robot.Team team){
-        startingPose = Robot.convertAlliancePose(new Pose(128, 118, Math.toRadians(40)), team);
-        launchPose = Robot.convertAlliancePose(new Pose(96, 96, Math.toRadians(40)), team);
-        balls1 = Robot.convertAlliancePose(new Pose(99, 83, 0), team);
-        balls2 = Robot.convertAlliancePose(new Pose(99, 61, 0), team);
-        balls3 = Robot.convertAlliancePose(new Pose(100, 35, 0), team);
-        intakeBalls1Pose = Robot.convertAlliancePose(new Pose(127.5, 83, 0), team);
-        intakeBalls2Pose = Robot.convertAlliancePose(new Pose(124, 61, 0), team);
-        intakeBalls3Pose = Robot.convertAlliancePose(new Pose(131, 35, 0), team);
-        gatePose = Robot.convertAlliancePose(new Pose(120, 70, 0), team);
-    }
-
-
     //Use the values from redsideauto.java as well, but convert the x values to blue.
-
-
-
 
     public void init() {
 
@@ -119,7 +95,6 @@ public class TwelveBallAuto extends OpMode {
             telemetry.addData("Team", Robot.getTEAM());
             telemetry.update();
         }
-        initializePoses(Robot.getTEAM());
         buildPaths();
     }
 
@@ -135,7 +110,6 @@ public class TwelveBallAuto extends OpMode {
         telemetry.addData("Current Shooter State", shooterState);
         telemetry.addData("follower busy", robot.follower.isBusy());
         telemetry.addData("shooter velocity", robot.shooter.getVelocityRPM());
-        telemetry.addData("shot number", shotCounter);
         telemetry.update();
     }
 
@@ -152,7 +126,6 @@ public class TwelveBallAuto extends OpMode {
                 .addPath(new BezierLine(balls1, intakeBalls1Pose))
                 .setConstantHeadingInterpolation(balls1.getHeading())
                 .build();
-
         toLaunch1 = robot.follower.pathBuilder()
                 .addPath(new BezierLine(intakeBalls1Pose, launchPose))
                 .setLinearHeadingInterpolation(balls1.getHeading(), launchPose.getHeading())
@@ -262,8 +235,6 @@ public class TwelveBallAuto extends OpMode {
                 break;
         }
     }
-
-
     public void autonomousUpdate(){
         switch (pathState){
             case TO_PRELOAD:
