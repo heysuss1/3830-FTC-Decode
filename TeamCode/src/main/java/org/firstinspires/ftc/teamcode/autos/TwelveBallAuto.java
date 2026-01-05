@@ -11,66 +11,50 @@ import org.firstinspires.ftc.teamcode.Robot;
 import org.firstinspires.ftc.teamcode.subsystems.IntakeUptake;
 import org.firstinspires.ftc.teamcode.tasks.ShooterTask;
 
-
 @Autonomous (name = "Red Side Auto")
 public class TwelveBallAuto extends OpMode {
-    enum ActionState {
-        SHOOT_PRELOAD,
-        WAITING_FOR_PRELOAD,
-        SLURPING_GROUP_1,
-        SHOOT_GROUP_1,
-        WAITING_FOR_COMPLETION_1,
-        SLURPING_GROUP_2,
-        SHOOT_GROUP_2,
-        WAITING_FOR_COMPLETION_2,
-        SLURPING_GROUP_3,
-        SHOOT_GROUP_3,
-        WAITING_FOR_COMPLETION_3,
-        STOP,
-    }
 
-    enum PathState {
-        TO_PRELOAD,
-        TO_GROUP_1,
+    enum AutoState {
+        START,
+        DRIVE_TO_SHOOTING_SPOT,
+        SHOOTING,
+        DRIVE_TO_GROUP_1,
         SLURPING_GROUP_1,
-        GROUP_1_TO_SHOOT,
-        TO_GROUP_2,
+        DRIVE_TO_GROUP_2,
         SLURPING_GROUP_2,
-        GROUP_2_TO_SHOOT,
-        TO_GROUP_3,
+        DRIVE_TO_GROUP_3,
         SLURPING_GROUP_3,
-        GROUP_3_TO_SHOOT,
-        SHOOT_TO_GATE,
-        STOP,
+        DRIVE_TO_PARK, // <-- dunno if we need this but just in case
+        DRIVE_TO_GATE, // <--- these are for later when we get more balls than the pre-placed ones
+        SLURPING_FROM_GATE,
+        STOP
     }
 
     Robot robot;
     Timer pathTimer;
     ShooterTask shooterTask;
-    double intakePathSpeed = 0.6;
-    PathState pathState = PathState.TO_PRELOAD;
-    ActionState actionState = ActionState.SHOOT_PRELOAD;
-    ShooterTask.ShooterState shooterState = ShooterTask.ShooterState.DONE;
+
     boolean editingAlliance = true;
+    double intakePathSpeed = 0.6;
+    int shotCount = 0;
 
-
-    Pose startingPose = Robot.convertAlliancePose(new Pose(128, 118, Math.toRadians(40)));
-    Pose launchPose = Robot.convertAlliancePose(new Pose(96, 96, Math.toRadians(40)));
-    Pose balls1 = Robot.convertAlliancePose(new Pose(99, 83, 0));
-    Pose balls2 = Robot.convertAlliancePose(new Pose(99, 61, 0) );
-    Pose balls3 = Robot.convertAlliancePose(new Pose(100, 35, 0) );
-    Pose intakeBalls1Pose = Robot.convertAlliancePose(new Pose(127.5, 83, 0) );
-    Pose intakeBalls2Pose = Robot.convertAlliancePose(new Pose(124, 61, 0) );
-    Pose intakeBalls3Pose = Robot.convertAlliancePose(new Pose(131, 35, 0) );
-    Pose gatePose = Robot.convertAlliancePose(new Pose(120, 70, 0));
-
+    AutoState autoState = AutoState.START;
+    ShooterTask.ShooterState shooterState = ShooterTask.ShooterState.DONE;
 
     //Starting pose wrong
-    PathChain toPreload, toBalls1, toLaunch1, toBalls2, toLaunch2, toBalls3, toLaunch3,
-            intakeBalls1, intakeBalls2, intakeBalls3, toGate;
-
-
-    //Use the values from redsideauto.java as well, but convert the x values to blue.
+    PathChain driveToShootPreloads, driveToGroup1, driveToShootGroup1, driveToGroup2, driveToShootGroup2, driveToGroup3, driveToShootGroup3,
+            intakeGroup1, intakeGroup2, intakeGroup3, driveToGate, driveToPark;
+    
+    Pose startingPose = Robot.convertAlliancePose(new Pose(128, 118, Math.toRadians(40)));
+    Pose shootingPose = Robot.convertAlliancePose(new Pose(96, 96, Math.toRadians(40)));
+    Pose group1startPose = Robot.convertAlliancePose(new Pose(99, 83, 0));
+    Pose group2startPose = Robot.convertAlliancePose(new Pose(99, 61, 0) );
+    Pose group3startPose = Robot.convertAlliancePose(new Pose(100, 35, 0) );
+    Pose group1endPose = Robot.convertAlliancePose(new Pose(127.5, 83, 0) );
+    Pose group2endPose = Robot.convertAlliancePose(new Pose(124, 61, 0) );
+    Pose group3endPose = Robot.convertAlliancePose(new Pose(131, 35, 0) );
+    Pose gatePose = Robot.convertAlliancePose(new Pose(120, 70, 0));
+    Pose parkPose = Robot.convertAlliancePose(new Pose(120, 92, Math.PI*3/2));
 
     public void init() {
 
@@ -99,208 +83,164 @@ public class TwelveBallAuto extends OpMode {
 
     public void loop(){
         autonomousUpdate();
-        actionUpdate();
         shooterTask.update();
         robot.shooter.shooterTask();
         robot.intakeUptake.intakeUptakeTask();
         robot.follower.update();
 
-        telemetry.addData("Current Action State", actionState);
-        telemetry.addData("Current Path State", pathState);
+        telemetry.addData("Current Auto State", autoState);
         telemetry.addData("Current Shooter State", shooterState);
-        telemetry.addData("follower busy", robot.follower.isBusy());
+        telemetry.addData("follower busy?", robot.follower.isBusy());
         telemetry.addData("shooter velocity", robot.shooter.getVelocityRPM());
         telemetry.update();
     }
 
+    public void autonomousUpdate() {
+        switch (autoState) {
+            case START:
+                //intentionally fall through
+            case DRIVE_TO_SHOOTING_SPOT:
+
+                if (shotCount == 0) robot.follower.followPath(driveToShootPreloads, true);
+                if (shotCount == 1) robot.follower.followPath(driveToShootGroup1, true);
+                if (shotCount == 2) robot.follower.followPath(driveToShootGroup2, true);
+                if (shotCount == 3) robot.follower.followPath(driveToShootGroup3, true);
+
+                if (!robot.follower.isBusy()) {
+                    autoState = AutoState.SHOOTING;
+                }
+
+                break;
+            case SHOOTING:
+
+                shooterTask.startShooterTask();
+
+                if (shooterTask.isFinished()) { //maybe this will be broken!
+                    //TODO: fix this to be right idk
+                    shotCount++;
+                    if (shotCount == 1) autoState = AutoState.DRIVE_TO_GROUP_1;
+                    if (shotCount == 2) autoState = AutoState.DRIVE_TO_GROUP_2;
+                    if (shotCount == 3) autoState = AutoState.DRIVE_TO_GROUP_3;
+                    if (shotCount == 4) autoState = AutoState.DRIVE_TO_PARK;
+                }
+
+                break;
+            case DRIVE_TO_GROUP_1:
+
+                robot.follower.followPath(driveToGroup1, true);
+
+                if (!robot.follower.isBusy()) {
+                    autoState = AutoState.SLURPING_GROUP_1;
+                }
+
+                break;
+            case SLURPING_GROUP_1:
+
+                robot.follower.followPath(intakeGroup1, intakePathSpeed, true);
+
+                if (!robot.follower.isBusy()) {
+                    autoState = AutoState.DRIVE_TO_SHOOTING_SPOT;
+                }
+
+                break;
+            case DRIVE_TO_GROUP_2:
+
+                robot.follower.followPath(driveToGroup2, true);
+
+                if (!robot.follower.isBusy()) {
+                    autoState = AutoState.SLURPING_GROUP_2;
+                }
+
+                break;
+            case SLURPING_GROUP_2:
+
+                robot.follower.followPath(intakeGroup2, intakePathSpeed, true);
+
+                if (!robot.follower.isBusy()) {
+                    autoState = AutoState.DRIVE_TO_SHOOTING_SPOT;
+                }
+
+                break;
+            case DRIVE_TO_GROUP_3:
+
+                robot.follower.followPath(driveToGroup3, true);
+
+                if (!robot.follower.isBusy()) {
+                    autoState = AutoState.SLURPING_GROUP_3;
+                }
+
+                break;
+            case SLURPING_GROUP_3:
+
+                robot.follower.followPath(intakeGroup3, intakePathSpeed, true);
+
+                if (!robot.follower.isBusy()) {
+                    autoState = AutoState.DRIVE_TO_SHOOTING_SPOT;
+                }
+
+                break;
+            case DRIVE_TO_PARK:
+
+                robot.follower.followPath(driveToPark);
+
+                if (!robot.follower.isBusy()) {
+                    autoState = AutoState.STOP;
+                }
+
+                break;
+
+                /*TODO: make the separate DRIVE_TO_GROUP_n's and SLURPING_GROUP_n's into their own single states*/
+        }
+    }
+
     public void buildPaths() {
-        toPreload = robot.follower.pathBuilder()
-                .addPath(new BezierLine(startingPose, launchPose))
-                .setLinearHeadingInterpolation(startingPose.getHeading(), launchPose.getHeading())
+        driveToShootPreloads = robot.follower.pathBuilder()
+                .addPath(new BezierLine(startingPose, shootingPose))
+                .setLinearHeadingInterpolation(startingPose.getHeading(), shootingPose.getHeading())
                 .build();
-        toBalls1 = robot.follower.pathBuilder()
-                .addPath(new BezierLine(launchPose, balls1))
-                .setLinearHeadingInterpolation(launchPose.getHeading(), balls1.getHeading())
+        driveToGroup1 = robot.follower.pathBuilder()
+                .addPath(new BezierLine(shootingPose, group1startPose))
+                .setLinearHeadingInterpolation(shootingPose.getHeading(), group1startPose.getHeading())
                 .build();
-        intakeBalls1 = robot.follower.pathBuilder()
-                .addPath(new BezierLine(balls1, intakeBalls1Pose))
-                .setConstantHeadingInterpolation(balls1.getHeading())
+        intakeGroup1 = robot.follower.pathBuilder()
+                .addPath(new BezierLine(group1startPose, group1endPose))
+                .setConstantHeadingInterpolation(group1startPose.getHeading())
                 .build();
-        toLaunch1 = robot.follower.pathBuilder()
-                .addPath(new BezierLine(intakeBalls1Pose, launchPose))
-                .setLinearHeadingInterpolation(balls1.getHeading(), launchPose.getHeading())
+        driveToShootGroup1 = robot.follower.pathBuilder()
+                .addPath(new BezierLine(group1endPose, shootingPose))
+                .setLinearHeadingInterpolation(group1startPose.getHeading(), shootingPose.getHeading())
                 .build();
-        toBalls2 = robot.follower.pathBuilder()
-                .addPath(new BezierLine(launchPose, balls2))
-                .setLinearHeadingInterpolation(launchPose.getHeading(), balls2.getHeading())
+        driveToGroup2 = robot.follower.pathBuilder()
+                .addPath(new BezierLine(shootingPose, group2startPose))
+                .setLinearHeadingInterpolation(shootingPose.getHeading(), group2startPose.getHeading())
                 .build();
-        intakeBalls2 = robot.follower.pathBuilder()
-                .addPath(new BezierLine(balls2, intakeBalls2Pose))
-                .setConstantHeadingInterpolation(balls2.getHeading())
+        intakeGroup2 = robot.follower.pathBuilder()
+                .addPath(new BezierLine(group2startPose, group2endPose))
+                .setConstantHeadingInterpolation(group2startPose.getHeading())
                 .build();
-        toLaunch2 = robot.follower.pathBuilder()
-                .addPath(new BezierLine(intakeBalls2Pose, launchPose))
-                .setLinearHeadingInterpolation(balls2.getHeading(), launchPose.getHeading())
+        driveToShootGroup2 = robot.follower.pathBuilder()
+                .addPath(new BezierLine(group2endPose, shootingPose))
+                .setLinearHeadingInterpolation(group2startPose.getHeading(), shootingPose.getHeading())
                 .build();
-        toBalls3 = robot.follower.pathBuilder()
-                .addPath(new BezierLine(launchPose, balls3))
-                .setLinearHeadingInterpolation(launchPose.getHeading(), balls3.getHeading())
+        driveToGroup3 = robot.follower.pathBuilder()
+                .addPath(new BezierLine(shootingPose, group3startPose))
+                .setLinearHeadingInterpolation(shootingPose.getHeading(), group3startPose.getHeading())
                 .build();
-        intakeBalls3 = robot.follower.pathBuilder()
-                .addPath(new BezierLine(balls3, intakeBalls3Pose))
-                .setConstantHeadingInterpolation(balls3.getHeading())
+        intakeGroup3 = robot.follower.pathBuilder()
+                .addPath(new BezierLine(group3startPose, group3endPose))
+                .setConstantHeadingInterpolation(group3startPose.getHeading())
                 .build();
-        toLaunch3 = robot.follower.pathBuilder()
-                .addPath(new BezierLine(intakeBalls3Pose, launchPose))
-                .setLinearHeadingInterpolation(balls3.getHeading(), launchPose.getHeading())
+        driveToShootGroup3 = robot.follower.pathBuilder()
+                .addPath(new BezierLine(group3endPose, shootingPose))
+                .setLinearHeadingInterpolation(group3startPose.getHeading(), shootingPose.getHeading())
                 .build();
-        toGate = robot.follower.pathBuilder()
-                .addPath(new BezierLine(launchPose, gatePose))
-                .setLinearHeadingInterpolation(launchPose.getHeading(), gatePose.getHeading())
+        driveToGate = robot.follower.pathBuilder()
+                .addPath(new BezierLine(shootingPose, gatePose))
+                .setLinearHeadingInterpolation(shootingPose.getHeading(), gatePose.getHeading())
                 .build();
-    }
-
-
-
-    public void setPathState(PathState state){
-        pathState = state;
-        pathTimer.resetTimer();
-    }
-    public void setActionState(ActionState state) {
-        actionState = state;
-    }
-    public void actionUpdate(){
-        switch(actionState){
-            case SHOOT_PRELOAD:
-                if (!robot.follower.isBusy()) {
-                    shooterTask.setShooterState(ShooterTask.ShooterState.SPEEDING_UP);
-                    setActionState(ActionState.WAITING_FOR_PRELOAD);
-                }
-                break;
-            case WAITING_FOR_PRELOAD:
-                if (shooterState == ShooterTask.ShooterState.DONE){
-                    setActionState(ActionState.SLURPING_GROUP_1);
-                }
-                break;
-            case SLURPING_GROUP_1:
-                if (!robot.follower.isBusy() && pathState == PathState.SLURPING_GROUP_1){
-                    robot.intakeUptake.setIntakeUptakeMode(IntakeUptake.intakeUptakeStates.INTAKING);
-                    setActionState(ActionState.SHOOT_GROUP_1);
-                }
-                break;
-            case SHOOT_GROUP_1:
-                if (!robot.follower.isBusy()) {
-                    shooterTask.setShooterState(ShooterTask.ShooterState.SPEEDING_UP);
-                    setActionState(ActionState.WAITING_FOR_COMPLETION_1);
-                }
-                break;
-            case WAITING_FOR_COMPLETION_1:
-                if (shooterState == ShooterTask.ShooterState.DONE){
-                    setActionState(ActionState.SLURPING_GROUP_2);
-                }
-                break;
-            case SLURPING_GROUP_2:
-                if (!robot.follower.isBusy() && pathState == PathState.SLURPING_GROUP_2){
-                    robot.intakeUptake.setIntakeUptakeMode(IntakeUptake.intakeUptakeStates.INTAKING);
-                    setActionState(ActionState.SHOOT_GROUP_2);
-                }
-                break;
-            case SHOOT_GROUP_2:
-                if (!robot.follower.isBusy()) {
-                    shooterTask.setShooterState(ShooterTask.ShooterState.SPEEDING_UP);
-                    setActionState(ActionState.WAITING_FOR_COMPLETION_2);
-                }
-                break;
-            case WAITING_FOR_COMPLETION_2:
-                if (shooterState == ShooterTask.ShooterState.DONE){
-                    setActionState(ActionState.SLURPING_GROUP_3);
-                }
-                break;
-            case SLURPING_GROUP_3:
-                if (!robot.follower.isBusy() && pathState == PathState.SLURPING_GROUP_3){
-                    robot.intakeUptake.setIntakeUptakeMode(IntakeUptake.intakeUptakeStates.INTAKING);
-                    setActionState(ActionState.SHOOT_GROUP_3);
-                }
-                break;
-            case SHOOT_GROUP_3:
-                if (!robot.follower.isBusy()) {
-                    shooterTask.setShooterState(ShooterTask.ShooterState.SPEEDING_UP);
-                    setActionState(ActionState.WAITING_FOR_COMPLETION_3);
-                }
-                break;
-            case WAITING_FOR_COMPLETION_3:
-                if (shooterState == ShooterTask.ShooterState.DONE){
-                    setActionState(ActionState.STOP);
-                }
-                break;
-        }
-    }
-    public void autonomousUpdate(){
-        switch (pathState){
-            case TO_PRELOAD:
-                robot.follower.followPath(toPreload, true);
-                setPathState(PathState.TO_GROUP_1);
-                break;
-            case TO_GROUP_1:
-                if (!robot.follower.isBusy() && actionState == ActionState.SLURPING_GROUP_1){
-                    robot.follower.followPath(toBalls1, true);
-                    setPathState(PathState.SLURPING_GROUP_1);
-                }
-                break;
-            case SLURPING_GROUP_1:
-                if (!robot.follower.isBusy() && actionState == ActionState.SHOOT_GROUP_1){
-                    robot.follower.followPath(intakeBalls1,  intakePathSpeed, true);
-                    setPathState(PathState.GROUP_1_TO_SHOOT);
-                }
-                break;
-            case GROUP_1_TO_SHOOT:
-                if (!robot.follower.isBusy()){
-                    robot.follower.followPath(toLaunch1, true);
-                    setPathState(PathState.TO_GROUP_2);
-                }
-                break;
-            case TO_GROUP_2:
-                if (!robot.follower.isBusy() && actionState == ActionState.SLURPING_GROUP_2){
-                    robot.follower.followPath(toBalls2, true);
-                    setPathState(PathState.SLURPING_GROUP_2);
-                }
-                break;
-            case SLURPING_GROUP_2:
-                if (!robot.follower.isBusy() && actionState == ActionState.SHOOT_GROUP_2){
-                    robot.follower.followPath(intakeBalls2, 0.6, true);
-                    setPathState(PathState.GROUP_2_TO_SHOOT);
-                }
-                break;
-            case GROUP_2_TO_SHOOT:
-                if (!robot.follower.isBusy()){
-                    robot.follower.followPath(toLaunch2, true);
-                    setPathState(PathState.TO_GROUP_3);
-                }
-                break;
-            case TO_GROUP_3:
-                if (!robot.follower.isBusy() && actionState == ActionState.SLURPING_GROUP_3){
-                    robot.follower.followPath(toBalls3, true);
-                    setPathState(PathState.SLURPING_GROUP_3);
-                }
-                break;
-            case SLURPING_GROUP_3:
-                if (!robot.follower.isBusy() && actionState == ActionState.SHOOT_GROUP_3){
-                    robot.follower.followPath(intakeBalls3, intakePathSpeed, true);
-                    setPathState(PathState.GROUP_3_TO_SHOOT);
-                }
-                break;
-            case GROUP_3_TO_SHOOT:
-                if (!robot.follower.isBusy()){
-                    robot.follower.followPath(toLaunch3, true);
-                    setPathState(PathState.SHOOT_TO_GATE);
-                }
-                break;
-            case SHOOT_TO_GATE:
-                if (!robot.follower.isBusy() && actionState == ActionState.STOP){
-                    robot.follower.followPath(toGate);
-                    setPathState(PathState.STOP);
-                }
-                break;
-        }
+        driveToPark = robot.follower.pathBuilder()
+                .addPath(new BezierLine(shootingPose, parkPose))
+                .setLinearHeadingInterpolation(shootingPose.getHeading(), parkPose.getHeading())
+                .build();
     }
 }
