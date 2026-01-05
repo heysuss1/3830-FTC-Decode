@@ -80,7 +80,7 @@ public class TeleOp extends LinearOpMode {
             }
 
             if (currentGamepad1.cross && !previousGamepad1.cross) {
-                tasks.setShooterState(Tasks.ShooterState.DONE);
+                tasks.cancelShooterUpdate();
                 robot.intakeUptake.setIntakeUptakeMode(IntakeUptake.intakeUptakeStates.OFF);
                 intakeOn = false;
             }

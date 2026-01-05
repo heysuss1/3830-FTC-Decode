@@ -35,10 +35,14 @@ public class Tasks {
         shooterState = state;
         shooterTimer.resetTimer();
     }
+    public void cancelShooterUpdate(){
+        shooterState = ShooterState.DONE;
+    }
 
     public ShooterState getShooterState(){
         return shooterState;
     }
+
 
     public void updateShooter(boolean hasBall, boolean hadBall){
         switch (shooterState) {
