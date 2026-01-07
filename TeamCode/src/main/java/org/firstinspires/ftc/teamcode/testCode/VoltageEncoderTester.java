@@ -44,7 +44,6 @@ public class VoltageEncoderTester extends LinearOpMode {
 
         while (opModeIsActive()) {
 
-
             prevPos = currentPos;
             currentPos = getTurretRawPose();
             crossoverCount(currentPos, prevPos, 0.5);
@@ -54,12 +53,9 @@ public class VoltageEncoderTester extends LinearOpMode {
                 turretServo.setPower(0.3);
             } else if (gamepad1.cross) {
                 turretServo.setPower(-0.3);
-            } else{
-                turretServo.setPower(0);
             }
-
             turretServo.setPower(1);
-            Log.i("Robot", "Prev: "+prevPos + " Curr: "+currentPos + " Difference: " + (prevPos - currentPos) + " Crossovers: " + crossovers);
+            Log.i("Robot", "Loop: " + loopCount + ", Prev: "+prevPos + ", Curr: "+currentPos + ", Difference: " + (prevPos - currentPos) + ", Crossovers: " + crossovers);
             telemetry.addData("Current Pos", currentPos);
             telemetry.addData("Previous Pos", prevPos);
             telemetry.addData("Crossovers", crossovers);
