@@ -15,10 +15,10 @@ public class VoltageEncoderTester extends LinearOpMode {
     CRServo turretServo;
     int crossovers;
 
-    private void crossoverCount(double prevValue, double currentValue) {
-        if (prevValue - currentValue > 0.5) { //1 to 0
+    private void crossoverCount(double prevValue, double currentValue, double threshold) {
+        if (prevValue - currentValue > threshold) { //1 to 0
             crossovers++;
-        } else if (currentValue - prevValue > 0.5) {  //0 to 1
+        } else if (currentValue - prevValue > threshold) {  //0 to 1
             crossovers--;
         }
     }
@@ -47,7 +47,7 @@ public class VoltageEncoderTester extends LinearOpMode {
 
             prevPos = currentPos;
             currentPos = getTurretRawPose();
-            crossoverCount(currentPos, prevPos);
+            crossoverCount(currentPos, prevPos, 0.5);
 
 
             if(gamepad1.square){
