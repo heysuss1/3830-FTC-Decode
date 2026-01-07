@@ -160,8 +160,12 @@ public class TestShooter {
         return (Math.abs(topShooterMotor.getVelocity()) * 60)/Params.SHOOTER_TICKS_PER_REV;
     }
 
+    public AnalogInput getPitchEncoder() {
+        return pitchEncoder;
+    }
+
     public double getPitchDegrees() {
-        double rawPitchPos = (pitchEncoder.getVoltage() / 3.3);
+        double rawPitchPos = (pitchEncoder.getVoltage() / pitchEncoder.getMaxVoltage());
         return rawPitchToDegrees(rawPitchPos);
     }
 
@@ -192,7 +196,7 @@ public class TestShooter {
         return primaryTurretServo;
     }
     public double getTurretRawPose() {
-        return turretEncoder.getVoltage()/3.3;
+        return turretEncoder.getVoltage()/turretEncoder.getMaxVoltage();
     }
 
     public Double getCurrentShooterVelTarget(){
@@ -208,9 +212,9 @@ public class TestShooter {
         setVelocityTarget(velocityTargetRPM, 0.0);
     }
 
-    public void setPitchDegrees(Double targetPitchDegrees) {
-        double targetAngle = Range.clip(targetPitchDegrees, Params.MIN_PITCH_DEGREES, Params.MAX_PITCH_DEGREES);
-        double pitchZeroOffset = (targetAngle - Params.PITCH_POSITION_OFFSET) / Params.PITCH_DEGREES_PER_REV;
+    public void setPitchDegrees(Double targetPitchDegrees, double gearRatio) {
+//        double targetAngle = Range.clip(targetPitchDegrees, Params.MIN_PITCH_DEGREES, Params.MAX_PITCH_DEGREES);
+        double pitchZeroOffset = (targetPitchDegrees - Params.PITCH_POSITION_OFFSET) / (gearRatio * 360);
         pitchTarget = pitchZeroOffset + Params.PITCH_ENCODER_ZERO_OFFSET;
     }
 
@@ -320,12 +324,13 @@ public class TestShooter {
 
     public void pitchTask() {
         if (pitchTarget != null) {
-            pitchServo.setPosition(pitchTarget);
+            pitchServo.setPosition(1-pitchTarget);
         }
         if (!Robot.inComp) {
             telemetry.addLine("\nPitch Info:");
             telemetry.addData("Pitch Target", pitchTarget);
             telemetry.addData("Current Pitch Degrees", getPitchDegrees());
+            telemetry.addData("Curent Pitch Raw", (pitchEncoder.getVoltage() / 3.3));
             telemetry.update();
         }
     }
@@ -356,7 +361,7 @@ public class TestShooter {
 
         AimInfo aimInfo = getAimInfo();
         ShootParams.Entry shootParams = Shooter.shootParamsTable.get(aimInfo.getDistanceToGoal());
-        setPitchDegrees(shootParams.region.tiltAngle);
+//        setPitchDegrees(shootParams.region.tiltAngle);
         setTurretDegrees(aimInfo);
 
         currentShooterVelTarget = shootParams.outputs[0];

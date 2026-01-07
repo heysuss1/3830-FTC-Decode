@@ -15,15 +15,15 @@ import org.firstinspires.ftc.teamcode.subsystems.Shooter;
 @Config
 @TeleOp(name = "Pitch Position Test")
 public class PitchTestCode extends LinearOpMode {
-    AnalogInput turretEncoder;
-    Servo turretServo;
+    AnalogInput pitchEncoder;
+    Servo pitchServo;
 
     double servoPosition = 0;
-    public static double PITCH_GEAR_RATIO = .155; //.208 //(15.0/173) * (48.0/20)
+    public static double PITCH_GEAR_RATIO = .177; //.208 //(15.0/173) * (48.0/20)
 
 
     public double getPitchDegrees() {
-        double rawPitchPos = (turretEncoder.getVoltage() / 3.3);
+        double rawPitchPos = (pitchEncoder.getVoltage() / 3.3);
         return rawPitchToDegrees(rawPitchPos);
     }
 
@@ -33,8 +33,8 @@ public class PitchTestCode extends LinearOpMode {
     }
 
     public void runOpMode(){
-        turretEncoder = hardwareMap.get(AnalogInput.class, "pitchEncoder");
-        turretServo = hardwareMap.get(Servo.class, "pitchServo");
+        pitchEncoder = hardwareMap.get(AnalogInput.class, "pitchEncoder");
+        pitchServo = hardwareMap.get(Servo.class, "pitchServo");
         waitForStart();
 
         Gamepad currentGamepad1 = new Gamepad();
@@ -44,20 +44,15 @@ public class PitchTestCode extends LinearOpMode {
             currentGamepad1.copy(gamepad1);
             if (currentGamepad1.dpad_up && !previousGamepad1.dpad_up){
                 servoPosition += 0.1;
-            }
-
-            if (currentGamepad1.dpad_down && !previousGamepad1.dpad_down){
+            } else if (currentGamepad1.dpad_down && !previousGamepad1.dpad_down){
                 servoPosition -= 0.1;
-            }
-
-            if (currentGamepad1.dpad_left && !previousGamepad1.dpad_left){
+            } else if (currentGamepad1.dpad_left && !previousGamepad1.dpad_left){
                 servoPosition -= 0.01;
-            }
-            if (currentGamepad1.dpad_right && !previousGamepad1.dpad_right){
+            } else if (currentGamepad1.dpad_right && !previousGamepad1.dpad_right){
                 servoPosition += 0.01;
             }
-            turretServo.setPosition(servoPosition);
-            telemetry.addData("Servo position", turretEncoder.getVoltage()/3.3);
+            pitchServo.setPosition(servoPosition);
+            telemetry.addData("Servo position", pitchEncoder.getVoltage()/3.3);
             telemetry.addData("pitch degree", getPitchDegrees());
             telemetry.update();
 
