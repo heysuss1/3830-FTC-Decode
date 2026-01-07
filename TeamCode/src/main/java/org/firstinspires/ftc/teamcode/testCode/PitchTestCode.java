@@ -33,8 +33,8 @@ public class PitchTestCode extends LinearOpMode {
     }
 
     public void runOpMode(){
-        turretEncoder = hardwareMap.get(AnalogInput.class, "turretEncoder");
-        turretServo = hardwareMap.get(Servo.class, "turretServo");
+        turretEncoder = hardwareMap.get(AnalogInput.class, "pitchEncoder");
+        turretServo = hardwareMap.get(Servo.class, "pitchServo");
         waitForStart();
 
         Gamepad currentGamepad1 = new Gamepad();

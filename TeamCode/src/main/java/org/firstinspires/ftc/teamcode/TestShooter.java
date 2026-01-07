@@ -1,5 +1,12 @@
-package org.firstinspires.ftc.teamcode.subsystems;
+package org.firstinspires.ftc.teamcode;
 
+import static org.firstinspires.ftc.teamcode.Robot.X_GOAL_BLUE;
+import static org.firstinspires.ftc.teamcode.Robot.X_GOAL_RED;
+import static org.firstinspires.ftc.teamcode.Robot.Y_GOAL;
+
+import org.firstinspires.ftc.teamcode.subsystems.ShootParams;
+
+import com.pedropathing.follower.Follower;
 import com.qualcomm.robotcore.hardware.AnalogInput;
 import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.DcMotor;
@@ -13,9 +20,27 @@ import com.qualcomm.robotcore.util.Range;
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.teamcode.Robot;
 import org.firstinspires.ftc.teamcode.controllers.PidfController;
+import org.firstinspires.ftc.teamcode.subsystems.Shooter;
 
-public class Shooter {
+public class TestShooter {
 
+    public class AimInfo {
+        public double distance;
+        public double angle;
+
+        public AimInfo(double distance, double angle) {
+            this.distance = distance;
+            this.angle = angle;
+        }
+
+        public double getDistanceToGoal() {
+            return distance;
+        }
+
+        public double getAngleToGoal() {
+            return angle;
+        }
+    }
 
     public static final ShootParams.Region[] shootRegions = {
             //Region 1: pitch 25 degrees, y = 3200 + 15x
@@ -37,20 +62,20 @@ public class Shooter {
 
         //Pitch Params
 
-        public static final int MIN_PITCH_DEGREES = 26; //29
-        public static final int MAX_PITCH_DEGREES = 53;
+        public static final double MIN_PITCH_DEGREES = 26; //29
+        public static final double MAX_PITCH_DEGREES = 53;
         public static final double PITCH_GEAR_RATIO = .177 ; //.208 //(15.0/173) * (48.0/20)
-
         public static  final double PITCH_ENCODER_ZERO_OFFSET = 0.49; //0.48
         public static  final double PITCH_POSITION_OFFSET = MIN_PITCH_DEGREES;
         public static final double PITCH_DEGREES_PER_REV = 360 * PITCH_GEAR_RATIO; //360 * PITCH_GEAR_RATIO
-        public static final int PITCH_TOLERANCE = 5;
+        public static final double PITCH_TOLERANCE = 1;
 
         //Turret Params
 
+//        PIDFController pidf = new PIDFController(0.0025, 0, 0, 0.000246, 100);
         public static final double TURRET_KP = (((67))), TURRET_KI = (((67))), TURRET_KD = (((67))), TURRET_KF = (((67))), TURRET_I_ZONE = (((67)));
         public static final int TURRET_TICKS_PER_REV = 67;
-        public static final int TURRET_GEAR_RATIO = 41/88; //Servo gear / turret gear
+        public static final int TURRET_GEAR_RATIO = 43/88; //Servo gear / turret gear
 
         public static final int MIN_TURRET_DEGREES = -90;
         public static final int MAX_TURRET_DEGREES = 90;
@@ -77,12 +102,11 @@ public class Shooter {
     private final PidfController turretController;
 
     private final ElapsedTime timer;
-    public final Robot robot;
-
     public Double velocityTarget = null;
     public Double pitchTarget = null;
     public Double turretTarget = null;
     public Double currentShooterVelTarget = null;
+    public Follower follower;
 
 
     private double timeout = 0.0;
@@ -90,11 +114,11 @@ public class Shooter {
     public static boolean alwaysSetVelocity = false;
     public static boolean alwaysAimShooter = false;
 
-    public Shooter(HardwareMap hwMap, Telemetry telemetry, Robot robot) {
+    public TestShooter(HardwareMap hwMap, Telemetry telemetry, Follower follower) {
 
         this.telemetry = telemetry;
-        this.robot = robot;
         timer = new ElapsedTime();
+        this.follower = follower;
 
         pitchServo = hwMap.get(Servo.class, "pitchServo");
         pitchEncoder = hwMap.get(AnalogInput.class, "pitchEncoder");
@@ -186,7 +210,7 @@ public class Shooter {
 
     public void setPitchDegrees(Double targetPitchDegrees) {
         double targetAngle = Range.clip(targetPitchDegrees, Params.MIN_PITCH_DEGREES, Params.MAX_PITCH_DEGREES);
-        double pitchZeroOffset = (targetAngle - Params.PITCH_ENCODER_ZERO_OFFSET) / Params.PITCH_DEGREES_PER_REV;
+        double pitchZeroOffset = (targetAngle - Params.PITCH_POSITION_OFFSET) / Params.PITCH_DEGREES_PER_REV;
         pitchTarget = pitchZeroOffset + Params.PITCH_ENCODER_ZERO_OFFSET;
     }
 
@@ -194,13 +218,12 @@ public class Shooter {
         turretTarget = targetDegrees;
     }
 
-    public void setTurretDegrees(Robot.AimInfo aimInfo) {
-        double turretTargetRaw = aimInfo.getAngleToGoal() - robot.follower.getHeading();
+    public void setTurretDegrees(AimInfo aimInfo) {
+        double turretTargetRaw = aimInfo.getAngleToGoal() - follower.getHeading();
         double turretTargetModulo = (turretTargetRaw + 180) % 360 - 180;
         //once it can rotate more, add some code to modulo this btwn -180 and 180 (like (n-180)%360+180 or smth)
         turretTarget = Range.clip(turretTargetModulo, Params.MIN_PITCH_DEGREES, Params.MAX_PITCH_DEGREES);
     }
-
     public void resetTimeout() {
         timeout = 0.0;
     }
@@ -224,6 +247,18 @@ public class Shooter {
         if (pitchTarget != null) {
             pitchTarget = null;
         }
+    }
+
+    public AimInfo getAimInfo(){
+        double robotX = follower.getPose().getX();
+        double robotY = follower.getPose().getY();
+
+        double deltaX = Robot.getTEAM() == Robot.Team.BLUE ? robotX - X_GOAL_BLUE: robotX - X_GOAL_RED;
+        double deltaY = robotY - Y_GOAL;
+        double distanceToGoal = Math.hypot(deltaY, deltaX);
+        double angleToGOal = Math.toDegrees(Math.atan2(deltaY, deltaX)) + 180;
+
+        return new AimInfo(distanceToGoal, angleToGOal);
     }
 
     public void stopTurret() {
@@ -318,8 +353,8 @@ public class Shooter {
         flywheelTask();
         pitchTask();
         turretTask();
-        
-        Robot.AimInfo aimInfo = robot.getAimInfo();
+
+        AimInfo aimInfo = getAimInfo();
         ShootParams.Entry shootParams = Shooter.shootParamsTable.get(aimInfo.getDistanceToGoal());
         setPitchDegrees(shootParams.region.tiltAngle);
         setTurretDegrees(aimInfo);
@@ -330,3 +365,5 @@ public class Shooter {
         }
     }
 }
+
+

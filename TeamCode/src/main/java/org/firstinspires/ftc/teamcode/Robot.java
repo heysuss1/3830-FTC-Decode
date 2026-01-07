@@ -44,7 +44,7 @@ public class Robot {
         PGP,
         PPG
     }
-    static Team TEAM;
+    static Team TEAM = Team.RED;
     static Motif MOTIF;
     public final static boolean inComp = false;
 
