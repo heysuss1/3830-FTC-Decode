@@ -37,13 +37,13 @@ public class Shooter {
 
         //Pitch Params
 
-        public static final int MIN_PITCH_DEGREES = 25;
-        public static final int MAX_PITCH_DEGREES = 50;
-        public static final int PITCH_GEAR_RATIO = (15/173) * (48/20); //.208
+        public static final int MIN_PITCH_DEGREES = 29; //29
+        public static final int MAX_PITCH_DEGREES = 53;
+        public static final double PITCH_GEAR_RATIO = .155 ; //.208 //(15.0/173) * (48.0/20)
 
-        public static  final double PITCH_ENCODER_ZERO_OFFSET = 0;
+        public static  final double PITCH_ENCODER_ZERO_OFFSET = 0.48; //0.48
         public static  final double PITCH_POSITION_OFFSET = MIN_PITCH_DEGREES;
-        public static final double PITCH_DEGREES_PER_REV = 360 * PITCH_GEAR_RATIO;
+        public static final double PITCH_DEGREES_PER_REV = 360 * PITCH_GEAR_RATIO; //360 * PITCH_GEAR_RATIO
         public static final int PITCH_TOLERANCE = 5;
 
         //Turret Params
