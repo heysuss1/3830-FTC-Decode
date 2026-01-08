@@ -57,7 +57,7 @@ public class TestShooter {
         public static final double GOBUILDA_5000_CPR = 28.0;
         public static final double SHOOTER_MOTOR_GEAR_RATIO = 1;
         public static final double SHOOTER_TICKS_PER_REV = GOBUILDA_5000_CPR * SHOOTER_MOTOR_GEAR_RATIO;//update gear ratio
-        public static final double SHOOTER_KP = (((67))), SHOOTER_KI = (((67))), SHOOTER_KD = (((67))), SHOOTER_KF = (((67))), SHOOTER_I_ZONE = (((67)));
+        public static final double SHOOTER_KP = 0.001, SHOOTER_KI = 0, SHOOTER_KD = 0, SHOOTER_KF = 0.00024, SHOOTER_I_ZONE = 150;
         public static final int SHOOTER_TOLERANCE_RPM = (((100)));
 
         //Pitch Params
@@ -74,16 +74,16 @@ public class TestShooter {
 
 //        PIDFController pidf = new PIDFController(0.0025, 0, 0, 0.000246, 100);
         public static final double TURRET_KP = (((67))), TURRET_KI = (((67))), TURRET_KD = (((67))), TURRET_KF = (((67))), TURRET_I_ZONE = (((67)));
-        public static final int TURRET_TICKS_PER_REV = 67;
-        public static final int TURRET_GEAR_RATIO = 43/88; //Servo gear / turret gear
+        public static final double TURRET_TICKS_PER_REV = 67;
+        public static final double TURRET_GEAR_RATIO = 0.535; //43.0/88 //Servo gear / turret gear
 
-        public static final int MIN_TURRET_DEGREES = -90;
-        public static final int MAX_TURRET_DEGREES = 90;
+        public static final double MIN_TURRET_DEGREES = -90;
+        public static final double MAX_TURRET_DEGREES = 90;
 
         public static final double TURRET_ENCODER_ZERO_OFFSET = 0;
         public static final double TURRET_POSITION_OFFSET = 0;
         public static final double TURRET_DEGREES_PER_REV = 360 * TURRET_GEAR_RATIO;
-        public static final int TURRET_TOLERANCE = 5;
+        public static final double TURRET_TOLERANCE = 5;
 
     }
 
@@ -174,6 +174,11 @@ public class TestShooter {
         return (encoderOffset * Params.PITCH_DEGREES_PER_REV) + Params.PITCH_POSITION_OFFSET;
     }
 
+    public double degreesToRawPitch(double degrees) {
+        double pitchZeroOffset = (degrees - Params.PITCH_POSITION_OFFSET) / (Params.PITCH_GEAR_RATIO * 360);
+        return pitchZeroOffset + Params.PITCH_ENCODER_ZERO_OFFSET;
+    }
+
     public double getTurretDegrees() {
         return 0;
 
@@ -212,10 +217,9 @@ public class TestShooter {
         setVelocityTarget(velocityTargetRPM, 0.0);
     }
 
-    public void setPitchDegrees(Double targetPitchDegrees, double gearRatio) {
+    public void setPitchDegrees(Double targetPitchDegrees) {
 //        double targetAngle = Range.clip(targetPitchDegrees, Params.MIN_PITCH_DEGREES, Params.MAX_PITCH_DEGREES);
-        double pitchZeroOffset = (targetPitchDegrees - Params.PITCH_POSITION_OFFSET) / (gearRatio * 360);
-        pitchTarget = pitchZeroOffset + Params.PITCH_ENCODER_ZERO_OFFSET;
+        pitchTarget = degreesToRawPitch(targetPitchDegrees);
     }
 
     public void setTurretDegrees(Double targetDegrees) {
@@ -324,7 +328,7 @@ public class TestShooter {
 
     public void pitchTask() {
         if (pitchTarget != null) {
-            pitchServo.setPosition(1-pitchTarget);
+            pitchServo.setPosition((1-degreesToRawPitch((rawPitchToDegrees(pitchTarget)-3)/0.888)));
         }
         if (!Robot.inComp) {
             telemetry.addLine("\nPitch Info:");

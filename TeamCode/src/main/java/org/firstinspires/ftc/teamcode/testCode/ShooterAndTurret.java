@@ -16,7 +16,7 @@ import org.firstinspires.ftc.teamcode.TestShooter;
 public class ShooterAndTurret extends LinearOpMode {
     TestHardware robot;
     public static double pitchTarget;
-    public static double gearRatio;
+
     public void runOpMode(){
         robot = new TestHardware(hardwareMap, telemetry);
         robot.follower.setStartingPose(new Pose(96, 96, 0));
@@ -25,7 +25,7 @@ public class ShooterAndTurret extends LinearOpMode {
 //        robot.shooter.setPitchDegrees(TestShooter.Params.MIN_PITCH_DEGREES);
         while (opModeIsActive()){
 
-            robot.shooter.setPitchDegrees(pitchTarget, gearRatio);
+            robot.shooter.setPitchDegrees(pitchTarget);
             robot.shooter.pitchTask();
             Log.i("Pitch Voltage", "Max Voltage: " + robot.shooter.getPitchEncoder().getMaxVoltage() + ", Curr pos w/ max voltage: " + (robot.shooter.getPitchEncoder().getVoltage()/
                     robot.shooter.getPitchEncoder().getMaxVoltage()) +

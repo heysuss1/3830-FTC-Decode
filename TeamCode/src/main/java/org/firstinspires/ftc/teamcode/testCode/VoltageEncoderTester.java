@@ -36,7 +36,7 @@ public class VoltageEncoderTester extends LinearOpMode {
 
     public void runOpMode(){
         turretEncoder = hardwareMap.get(AnalogInput.class, "turretEncoder");
-        turretServo = hardwareMap.get(CRServo.class, "turretServo");
+        turretServo = hardwareMap.get(CRServo.class, "primaryTurretServo");
 
         waitForStart();
         double currentPos = 0, prevPos = 0;
