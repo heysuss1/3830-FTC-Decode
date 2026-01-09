@@ -263,6 +263,12 @@ public class Shooter {
         };
     }
 
+    public double degreesToRawPitch(double degrees) {
+        double pitchZeroOffset = (degrees - Params.PITCH_POSITION_OFFSET) / (Params.PITCH_GEAR_RATIO * 360);
+        return pitchZeroOffset + Params.PITCH_ENCODER_ZERO_OFFSET;
+    }
+
+
     public boolean isFlywheelOnTarget(double tolerance) {
         boolean isOnTarget = false;
         if (velocityTarget != null) {
@@ -314,7 +320,8 @@ public class Shooter {
 
     public void pitchTask() {
         if (pitchTarget != null) {
-            pitchServo.setPosition(pitchTarget);
+            pitchServo.setPosition((1-degreesToRawPitch((rawPitchToDegrees(pitchTarget)-3)/0.888)));
+
         }
         if (!Robot.inComp) {
             telemetry.addLine("\nPitch Info:");
