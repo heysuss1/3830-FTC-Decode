@@ -1,6 +1,5 @@
 package org.firstinspires.ftc.teamcode.subsystems;
 
-import com.pedropathing.follower.Follower;
 import com.qualcomm.hardware.rev.RevColorSensorV3;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
@@ -23,15 +22,22 @@ public class IntakeUptake {
 
     }
     public static class Params {
-        public static final double HAS_BALL_1_DISTANCE_THRESHOLD = 1.7; //inches
-        public static final double HAS_BALL_2_DISTANCE_THRESHOLD = 1.7;
-        public static final double HAS_BALL_3_DISTANCE_THRESHOLD = 1.7;
+        public static final double HAS_BALL_1_DISTANCE_THRESHOLD = 1.3; //inches
+        public static final double HAS_BALL_2_DISTANCE_THRESHOLD = 1.55;
+        public static final double HAS_BALL_3_DISTANCE_THRESHOLD = 2.7;
+
+        public static final double BLOCKING_SERVO_1_OPEN_POS = 0.63;
+        public static final double BLOCKING_SERVO_1_CLOSE_POS = 0.8;
+
+        public static final double BLOCKING_SERVO_2_OPEN_POS = 0.395;
+        public static final double BLOCKING_SERVO_2_CLOSE_POS = 0.15;
+
 
     }
 
     private final Telemetry telemetry;
 
-    private final Servo blockingServo;
+    private final Servo blockingServo1, blockingServo2;
     private final DcMotorEx intakeMotor, uptakeMotor;
     private final RevColorSensorV3 colorSensor1, colorSensor2, colorSensor3;
 
@@ -40,11 +46,12 @@ public class IntakeUptake {
     public IntakeUptake(HardwareMap hwMap, Telemetry telemetry) {
         this.telemetry = telemetry;
 
-        blockingServo = hwMap.get(Servo.class, "blockingServo");
+        blockingServo1 = hwMap.get(Servo.class, "blockingServo1");
+        blockingServo2 = hwMap.get(Servo.class, "blockingServo2");
 
         intakeMotor = hwMap.get(DcMotorEx.class, "intakeMotor");
         intakeMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        intakeMotor.setDirection(DcMotorSimple.Direction.FORWARD);
+        intakeMotor.setDirection(DcMotorSimple.Direction.REVERSE);
         intakeMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         intakeMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         intakeMotor.setPower(0);
@@ -59,6 +66,7 @@ public class IntakeUptake {
         colorSensor1 = hwMap.get(RevColorSensorV3.class, "colorSensor1");
         colorSensor2 = hwMap.get(RevColorSensorV3.class, "colorSensor2");
         colorSensor3 = hwMap.get(RevColorSensorV3.class, "colorSensor3");
+
     }
 
     public boolean isUptakeEmpty() {
@@ -88,11 +96,13 @@ public class IntakeUptake {
     }
 
     public void openBlockingServo() {
-        blockingServo.setPosition(((1)));
+        blockingServo1.setPosition(Params.BLOCKING_SERVO_1_OPEN_POS);
+        blockingServo2.setPosition(Params.BLOCKING_SERVO_2_OPEN_POS);
     }
 
     public void closeBlockingServo() {
-        blockingServo.setPosition(((0)));
+        blockingServo1.setPosition(Params.BLOCKING_SERVO_1_CLOSE_POS);
+        blockingServo2.setPosition(Params.BLOCKING_SERVO_2_CLOSE_POS);
     }
 
 

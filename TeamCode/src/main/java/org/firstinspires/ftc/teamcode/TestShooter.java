@@ -114,13 +114,12 @@ public class TestShooter {
     public Double pitchTarget = null;
     public Double turretTarget = null;
     public Double currentShooterVelTarget = null;
-
-
     public double currentVoltage = 0;
     public double prevVoltage = 0;
     private int crossovers = 0;
 
     private double timeout = 0.0;
+    public static double zeroOffset = 0;
 
     public static boolean alwaysSetVelocity = false;
     public static boolean alwaysAimShooter = false;
@@ -171,6 +170,10 @@ public class TestShooter {
         return (Math.abs(topShooterMotor.getVelocity()) * 60)/ Shooter.Params.SHOOTER_TICKS_PER_REV;
     }
 
+    public void setZeroOffset(double offset){
+        zeroOffset = offset;
+    }
+
     public double getTurretTarget(){
         return turretTarget;
     }
@@ -191,7 +194,7 @@ public class TestShooter {
 
     public double getTurretDegrees() {
         double rawTurretPos = (1-getTurretRawPose()) + 0.987 * crossovers;
-        double encoderOffset = (rawTurretPos - Params.TURRET_ENCODER_ZERO_OFFSET);
+        double encoderOffset = (rawTurretPos - zeroOffset);
         double unconverted = (encoderOffset * TestShooter.Params.TURRET_DEGREES_PER_REV) + Params.TURRET_POSITION_OFFSET;
         return modularConversion(unconverted);
     }
@@ -247,6 +250,9 @@ public class TestShooter {
     }
     public double getTurretRawPose() {
         return turretEncoder.getVoltage()/3.3;
+    }
+    public double getZeroOffset(){
+        return zeroOffset;
     }
 
     public Double getCurrentShooterVelTarget(){

@@ -45,6 +45,7 @@ public class VoltageEncoderTester extends LinearOpMode {
             telemetry.addData("Current Error", robot.shooter.getTurretController().getError());
             telemetry.addData("Raw position", robot.shooter.getTurretRawPose());
             telemetry.addData("Target", robot.shooter.getTurretTarget());
+            telemetry.addData("zero offset", robot.shooter.getZeroOffset());
             telemetry.update();
         }
     }
