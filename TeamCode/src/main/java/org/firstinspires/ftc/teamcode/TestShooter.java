@@ -57,7 +57,7 @@ public class TestShooter {
         public static final double GOBUILDA_5000_CPR = 28.0;
         public static final double SHOOTER_MOTOR_GEAR_RATIO = 1;
         public static final double SHOOTER_TICKS_PER_REV = GOBUILDA_5000_CPR * SHOOTER_MOTOR_GEAR_RATIO;//update gear ratio
-        public static final double SHOOTER_KP = 0.001, SHOOTER_KI = 0, SHOOTER_KD = 0, SHOOTER_KF = 0.00024, SHOOTER_I_ZONE = 150;
+        public static final double SHOOTER_KP = 0.001, SHOOTER_KI = 0.01, SHOOTER_KD = 0, SHOOTER_KF = 0.0002, SHOOTER_I_ZONE = 150;
         public static final int SHOOTER_TOLERANCE_RPM = (((100)));
 
         //Pitch Params
@@ -78,7 +78,6 @@ public class TestShooter {
         public static final double TURRET_GEAR_RATIO = 0.535; //43.0/88 //Servo gear / turret gear
 
         public static final double MIN_TURRET_DEGREES = -90;
-        public static final double CROSSOVER_THRESHOLD = 0.5;
         public static final double MAX_TURRET_DEGREES = 90;
 
         public static final double TURRET_ENCODER_ZERO_OFFSET = 0;
@@ -184,7 +183,6 @@ public class TestShooter {
 //                crossovers--;
 //            }
 //        }
-
     }
 
     public double rawPitchToDegrees(double rawPitchPos) {
@@ -224,16 +222,13 @@ public class TestShooter {
     public Double getCurrentShooterVelTarget(){
         return currentShooterVelTarget;
     }
-
     public void setVelocityTarget(Double velocityTargetRPM, double timeout) {
         this.velocityTarget = velocityTargetRPM;
         this.timeout = timeout;
     }
-
     public void setVelocityTarget(Double velocityTargetRPM) {
         setVelocityTarget(velocityTargetRPM, 0.0);
     }
-
     public void setPitchDegrees(Double targetPitchDegrees) {
 //        double targetAngle = Range.clip(targetPitchDegrees, Params.MIN_PITCH_DEGREES, Params.MAX_PITCH_DEGREES);
         pitchTarget = degreesToRawPitch(targetPitchDegrees);
@@ -242,7 +237,6 @@ public class TestShooter {
     public void setTurretDegrees(Double targetDegrees) {
         turretTarget = targetDegrees;
     }
-
     public void setTurretDegrees(AimInfo aimInfo) {
         double turretTargetRaw = aimInfo.getAngleToGoal() - follower.getHeading();
         double turretTargetModulo = (turretTargetRaw + 180) % 360 - 180;
