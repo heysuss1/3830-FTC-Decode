@@ -8,29 +8,33 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.teamcode.Robot;
+import org.firstinspires.ftc.teamcode.TestHardware;
 
 @Config
 @TeleOp(name = "Shooter PIDF tuner")
 public class TuneShooterPidf extends OpMode {
-    Robot robot;
+    TestHardware robot;
     private Telemetry telemetryA;
     public static double kP, kI, kD, kF, iZone;
-    public static Double targetRpm;
+    public static double targetRpm;
     FtcDashboard dashboard = FtcDashboard.getInstance();
 
     public void init() {
         telemetryA = new MultipleTelemetry(this.telemetry, dashboard.getTelemetry());
+        robot = new TestHardware(hardwareMap, telemetry);
         robot.shooter.getShooterController().setPidCoefficients(kP, kI, kD, kF, iZone);
-        robot = new Robot(hardwareMap, telemetry);
+
     }
 
     public void loop() {
         robot.shooter.getShooterController().setPidCoefficients(kP, kI, kD, kF, iZone);
         robot.shooter.setVelocityTarget(targetRpm);
+        robot.shooter.flywheelTask();
         telemetryA.addData("Target Velocity (RPM)", targetRpm);
         telemetryA.addData("Current Velocity (RPM)", robot.shooter.getVelocityRPM());
         telemetryA.addData("Current Power", robot.shooter.getShooterMotor().getPower());
         telemetryA.addData("Current Error", robot.shooter.getShooterController().getError());
+        telemetryA.update();
     }
 
 }
