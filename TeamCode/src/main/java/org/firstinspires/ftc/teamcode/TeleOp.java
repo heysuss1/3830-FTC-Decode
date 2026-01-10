@@ -9,7 +9,6 @@ import com.qualcomm.robotcore.hardware.Gamepad;
 import org.firstinspires.ftc.teamcode.subsystems.IntakeUptake;
 import org.firstinspires.ftc.teamcode.tasks.ShooterTask;
 
-@Config
 @com.qualcomm.robotcore.eventloop.opmode.TeleOp(name = "TeleOp")
 public class TeleOp extends LinearOpMode {
 
@@ -26,6 +25,9 @@ public class TeleOp extends LinearOpMode {
     double currentTime = 0, lastTime = 0;
     Gamepad currentGamepad1 = new Gamepad();
     Gamepad previousGamepad1 = new Gamepad();
+
+
+
 
     final double MAX_SPEED = 0.8;
     public void runOpMode() {

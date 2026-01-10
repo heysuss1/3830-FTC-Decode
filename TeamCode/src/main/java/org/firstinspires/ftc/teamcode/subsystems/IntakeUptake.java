@@ -19,7 +19,6 @@ public class IntakeUptake {
         INTAKING,
         UPTAKING,
         OUTTAKING;
-
     }
     public static class Params {
         public static final double HAS_BALL_1_DISTANCE_THRESHOLD = 1.3; //inches
@@ -31,8 +30,6 @@ public class IntakeUptake {
 
         public static final double BLOCKING_SERVO_2_OPEN_POS = 0.395;
         public static final double BLOCKING_SERVO_2_CLOSE_POS = 0.15;
-
-
     }
 
     private final Telemetry telemetry;
@@ -112,7 +109,7 @@ public class IntakeUptake {
                 setIntakeUptakeMotorPower(0,0);
                 break;
             case INTAKING:
-                setIntakeUptakeMotorPower(1, 0.8);  // <----- change these values to the correct ones!!111!11!!!!
+                setIntakeUptakeMotorPower(1, 1);  // <----- change these values to the correct ones!!111!11!!!!
                 break;
             case UPTAKING:
                 setIntakeUptakeMotorPower(1, 1);

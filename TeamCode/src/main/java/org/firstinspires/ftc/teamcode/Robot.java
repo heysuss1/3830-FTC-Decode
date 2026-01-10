@@ -15,7 +15,7 @@ import org.firstinspires.ftc.teamcode.subsystems.Shooter;
 
 public class Robot {
 
-    public class AimInfo {
+    public static class AimInfo {
         public double distance;
         public double angle;
 
@@ -45,34 +45,27 @@ public class Robot {
         PPG
     }
     static Team TEAM = Team.RED;
-    static Motif MOTIF;
-    public final static boolean inComp = false;
+    static Motif MOTIF = Motif.GPP;
+    public final static boolean inComp = true;
 
     public static double cameraHeight = 6.7; //Inches
     public static double cameraAngle = 35; //degrees
     public final static double FIELD_CENTER_X = 72;
 
     public static double ballXOffset = 0, ballYOffset = 0;
-    public final static double Y_GOAL = 142;
-    public final static double X_GOAL_RED = 142;
-    public final static double X_GOAL_BLUE = 2;
+    public final static double Y_GOAL = 144;
+    public final static double X_GOAL_RED = 144;
+    public final static double X_GOAL_BLUE = 0;
     public final DriveTrain driveTrain;
-    public final Shooter shooter;
-    public final Follower follower;
+    public  Shooter shooter;
+    public  Follower follower;
     public final Telemetry telemetry;
     public final IntakeUptake intakeUptake;
-    public final VoltageSensor voltageSensor;
 
     public Robot(HardwareMap hwMap, Telemetry telemetry){
-
-        for (LynxModule hub: hwMap.getAll(LynxModule.class)) {
-            hub.setBulkCachingMode(LynxModule.BulkCachingMode.AUTO);
-        }
-
         follower = Constants.createFollower(hwMap);
         this.telemetry = telemetry;
 
-        voltageSensor = hwMap.voltageSensor.iterator().next();
         driveTrain = new DriveTrain(hwMap, telemetry);
         intakeUptake = new IntakeUptake(hwMap, telemetry);
         shooter = new Shooter(hwMap, telemetry, this);
@@ -82,7 +75,7 @@ public class Robot {
     //the team is the alliance you're on for that match
     public static Pose convertAlliancePose(Pose pose){
         Pose newPose;
-        double x = getTEAM() == Team.BLUE ? 2 * FIELD_CENTER_X - pose.getPose().getX(): pose.getX();
+        double x = getTEAM() == Team.BLUE ? 2 * FIELD_CENTER_X - pose.getX(): pose.getX();
         double y = pose.getY();
         double heading = getTEAM() == Team.BLUE ? 180 - pose.getHeading() : pose.getHeading();
         newPose = new Pose(x, y, heading);
@@ -102,9 +95,6 @@ public class Robot {
 
     public static void setTeam(Team team){
         TEAM = team;
-    }
-    public double getVoltage(){
-        return voltageSensor.getVoltage();
     }
 
     public AimInfo getAimInfo(){

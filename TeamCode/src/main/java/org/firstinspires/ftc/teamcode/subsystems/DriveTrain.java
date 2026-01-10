@@ -28,6 +28,7 @@ public class DriveTrain {
         lf.setPower(0);
 
         rf = hwMap.get(DcMotorEx.class, "rf");
+        rf.setDirection(DcMotorSimple.Direction.FORWARD);
         rf.setPower(0);
 
         lb = hwMap.get(DcMotorEx.class, "lb");
@@ -35,6 +36,7 @@ public class DriveTrain {
         lb.setPower(0);
 
         rb = hwMap.get(DcMotorEx.class, "rb");
+        rb.setDirection(DcMotorSimple.Direction.REVERSE);
         rb.setPower(0);
     }
 
