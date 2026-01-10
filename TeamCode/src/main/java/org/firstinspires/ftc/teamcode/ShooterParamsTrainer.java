@@ -22,7 +22,7 @@ public class ShooterParamsTrainer extends LinearOpMode {
     public void runOpMode(){
         robot = new Robot(hardwareMap, telemetry);
         task = new ShooterTask(robot);
-        robot.follower.setStartingPose(new Pose(116.5, 122.0, .74));
+        robot.follower.setStartingPose(new Pose(143-20, 143-16.5, .74));
         waitForStart();
         while(opModeIsActive()){
 
@@ -55,16 +55,18 @@ public class ShooterParamsTrainer extends LinearOpMode {
                 robot.intakeUptake.setIntakeUptakeMode(IntakeUptake.intakeUptakeStates.OUTTAKING);
             }
 
+//            robot.shooter.turretTask();
+//            robot.shooter.setTurretDegrees(((robot.getAimInfo().angle - Math.toDegrees(robot.follower.getHeading())) * -1 ));
             robot.intakeUptake.intakeUptakeTask();
             telemetry.addData("Current RPM", robot.shooter.getVelocityRPM());
             telemetry.addData("Current Pitch", robot.shooter.getPitchDegrees());
             telemetry.addData("Distance To Goal", robot.getAimInfo().distance);
-            telemetry.addData("Angle To Goal", robot.getAimInfo().angle);
+            telemetry.addData("Angle To Goal", (robot.getAimInfo().angle - Math.toDegrees(robot.follower.getHeading())) * -1);
             telemetry.addData("Current position", robot.follower.getPose());
             telemetry.addData("Target", robot.shooter.getPitchTarget());
+            telemetry.addData("Current turret degrees", robot.shooter.getTurretDegrees());
             telemetry.addData("Current servo pos raw", robot.shooter.getRawPitchPos());
             telemetry.addData("Task state", task.getShooterState());
-            telemetry.addData("shooter is ready", robot.shooter.isShooterReady(Shooter.Params.SHOOTER_TOLERANCE_RPM, Shooter.Params.PITCH_TOLERANCE));
             telemetry.addData("Is Flywheel on target: ", robot.shooter.isFlywheelOnTarget(Shooter.Params.SHOOTER_TOLERANCE_RPM) + ", Is pitch on target: " + robot.shooter.isPitchOnTarget(Shooter.Params.PITCH_TOLERANCE));
             telemetry.update();
         }

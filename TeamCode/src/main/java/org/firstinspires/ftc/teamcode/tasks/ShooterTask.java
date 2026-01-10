@@ -7,7 +7,8 @@ import org.firstinspires.ftc.teamcode.subsystems.IntakeUptake;
 import org.firstinspires.ftc.teamcode.subsystems.Shooter;
 public class ShooterTask {
 
-    private Timer shooterTimer;
+    private Timer shotTimer;
+    private Timer totalShooterTime;
     private Robot robot;
     private int shotCounter;
 
@@ -16,7 +17,8 @@ public class ShooterTask {
 
     public ShooterTask(Robot robot){
         this.robot = robot;
-        shooterTimer = new Timer();
+        shotTimer = new Timer();
+        totalShooterTime = new Timer();
         shotCounter = 0;
     }
 
@@ -24,6 +26,7 @@ public class ShooterTask {
         START,
         SPEEDING_UP,
         SHOOTING,
+        WAITING,
         DONE
     }
 
@@ -31,7 +34,7 @@ public class ShooterTask {
 
     private void setShooterState(ShooterState state){
         shooterState = state;
-        shooterTimer.resetTimer();
+        shotTimer.resetTimer();
     }
 
     public void startShooterTask(){
@@ -59,6 +62,7 @@ public class ShooterTask {
             case SPEEDING_UP:
                 robot.shooter.setVelocityTarget(velTarget);
                 if (robot.shooter.isShooterReady(Shooter.Params.SHOOTER_TOLERANCE_RPM, Shooter.Params.PITCH_TOLERANCE)){
+                    totalShooterTime.resetTimer();
                     robot.intakeUptake.openBlockingServo();
                     setShooterState(ShooterState.SHOOTING);
                 }
@@ -69,9 +73,63 @@ public class ShooterTask {
                  */
                 robot.intakeUptake.setIntakeUptakeMode(IntakeUptake.intakeUptakeStates.UPTAKING);
 
-                if (shooterTimer.getElapsedTimeSeconds() > 2.5) {
+                if (shotTimer.getElapsedTimeSeconds() > 0.3){
+                    robot.intakeUptake.closeBlockingServo();
+                    setShooterState(ShooterState.WAITING);
+                }
+                if (totalShooterTime.getElapsedTimeSeconds() > 2.7) {
                     robot.intakeUptake.setIntakeUptakeMode(IntakeUptake.intakeUptakeStates.OFF);
                     setShooterState(ShooterState.DONE);
+                }
+                break;
+            case WAITING:
+                if (shotTimer.getElapsedTimeSeconds() > 0.3){
+                    robot.intakeUptake.openBlockingServo();
+                }
+                if (shotTimer.getElapsedTimeSeconds() > 0.6){
+                    setShooterState(ShooterState.SHOOTING);
+                }
+                break;
+            case DONE:
+                robot.shooter.stopShooterMotor();
+                robot.intakeUptake.closeBlockingServo();
+                break;
+        }
+    }
+    public void update(){
+        switch (shooterState) {
+            case START:
+                //Intentionally falling through;
+
+            case SPEEDING_UP:
+                robot.shooter.setVelocityTarget(robot.shooter.getCurrentShooterVelTarget());
+                if (robot.shooter.isShooterReady(Shooter.Params.SHOOTER_TOLERANCE_RPM, Shooter.Params.PITCH_TOLERANCE)){
+                    robot.intakeUptake.openBlockingServo();
+                    totalShooterTime.resetTimer();
+                    setShooterState(ShooterState.SHOOTING);
+                }
+                break;
+            case SHOOTING:
+                /*TODO: check how much the velocity has dropped compared to the target velocity and change
+                TODO: the pitch according to that, and remove has/hadball logic
+                 */
+                robot.intakeUptake.setIntakeUptakeMode(IntakeUptake.intakeUptakeStates.UPTAKING);
+
+                if (shotTimer.getElapsedTimeSeconds() > 0.3){
+                    robot.intakeUptake.closeBlockingServo();
+                    setShooterState(ShooterState.WAITING);
+                }
+                if (totalShooterTime.getElapsedTimeSeconds() > 3) {
+                    robot.intakeUptake.setIntakeUptakeMode(IntakeUptake.intakeUptakeStates.OFF);
+                    setShooterState(ShooterState.DONE);
+                }
+                break;
+            case WAITING:
+                if (shotTimer.getElapsedTimeSeconds() > 0.3){
+                    robot.intakeUptake.openBlockingServo();
+                }
+                if (shotTimer.getElapsedTimeSeconds() > 0.6){
+                    setShooterState(ShooterState.SHOOTING);
                 }
                 break;
             case DONE:

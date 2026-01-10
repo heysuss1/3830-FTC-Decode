@@ -31,26 +31,28 @@ public class TwelveBallAuto extends OpMode {
     Timer pathTimer;
     ShooterTask shooterTask;
 
+    boolean isFirstTimePath = true;
+
     boolean editingAlliance = true;
     double intakePathSpeed = 0.6;
     int shotCount = 0;
 
-    AutoState autoState = AutoState.START;
+    AutoState autoState = AutoState.DRIVE_TO_SHOOTING_SPOT;
 
     //Starting pose wrong
     PathChain driveToShootPreloads, driveToGroup1, driveToShootGroup1, driveToGroup2, driveToShootGroup2, driveToGroup3, driveToShootGroup3,
             intakeGroup1, intakeGroup2, intakeGroup3, driveToGate, driveToPark;
-    
-    Pose startingPose = Robot.convertAlliancePose(new Pose(128, 118, Math.toRadians(40)));
-    Pose shootingPose = Robot.convertAlliancePose(new Pose(96, 96, Math.toRadians(40)));
-    Pose group1startPose = Robot.convertAlliancePose(new Pose(99, 83, 0));
-    Pose group2startPose = Robot.convertAlliancePose(new Pose(99, 61, 0) );
-    Pose group3startPose = Robot.convertAlliancePose(new Pose(100, 35, 0) );
-    Pose group1endPose = Robot.convertAlliancePose(new Pose(127.5, 83, 0) );
-    Pose group2endPose = Robot.convertAlliancePose(new Pose(124, 61, 0) );
-    Pose group3endPose = Robot.convertAlliancePose(new Pose(131, 35, 0) );
-    Pose gatePose = Robot.convertAlliancePose(new Pose(120, 70, 0));
-    Pose parkPose = Robot.convertAlliancePose(new Pose(120, 92, Math.PI*3/2));
+
+    Pose startingPose =(new Pose(120.5, 132, Math.toRadians(45)));
+    Pose shootingPose = (new Pose(96, 96, Math.toRadians(45)));
+    Pose group1startPose = (new Pose(99, 85, 0));
+    Pose group2startPose =(new Pose(99, 61, 0) );
+    Pose group3startPose = (new Pose(100, 35, 0) );
+    Pose group1endPose =(new Pose(127.5, 85, 0) );
+    Pose group2endPose = (new Pose(127, 61, 0) );
+    Pose group3endPose = (new Pose(131, 35, 0) );
+    Pose gatePose = (new Pose(120, 70, 0));
+    Pose parkPose = (new Pose(120, 92, Math.PI*3/2));
 
     public void init() {
 
@@ -58,36 +60,59 @@ public class TwelveBallAuto extends OpMode {
         shooterTask = new ShooterTask(robot);
         pathTimer = new Timer();
 
-        while (editingAlliance){
-            if (gamepad1.dpad_up) {
-                Robot.setTeam(Robot.Team.BLUE);
-            }
-            if (gamepad1.dpad_down){
-                Robot.setTeam(Robot.Team.RED);
-            }
-            if (gamepad1.left_bumper){
-                editingAlliance = false;
-            }
-            telemetry.addData("Team", Robot.getTEAM());
-            telemetry.update();
-        }
 
         robot.follower.setStartingPose(startingPose);
         robot.follower.setMaxPower(1);
+        robot.shooter.setPitchDegrees(31.0);
+        robot.shooter.setTurretDegrees(0.0);
+        robot.intakeUptake.closeBlockingServo();
         buildPaths();
     }
 
+
+    public void init_loop(){
+        if (gamepad1.dpad_up) {
+            Robot.setTeam(Robot.Team.BLUE);
+        }
+        if (gamepad1.dpad_down){
+            Robot.setTeam(Robot.Team.RED);
+        }
+        if (gamepad1.left_bumper){
+            editingAlliance = false;
+        }
+        telemetry.addData("Team", Robot.getTEAM());
+        telemetry.update();
+    }
+
+    public void start(){
+         startingPose = Robot.convertAlliancePose(startingPose);
+         shootingPose = Robot.convertAlliancePose(shootingPose);
+         group1startPose = Robot.convertAlliancePose(group1startPose);
+         group2startPose = Robot.convertAlliancePose(group2startPose );
+         group3startPose = Robot.convertAlliancePose(group3startPose);
+         group1endPose = Robot.convertAlliancePose(group1endPose );
+         group2endPose = Robot.convertAlliancePose(group2endPose);
+         group3endPose = Robot.convertAlliancePose(group3endPose);
+         gatePose = Robot.convertAlliancePose(gatePose);
+         parkPose = Robot.convertAlliancePose(parkPose);
+
+
+    }
+
+
+//TODO: CHANGE
     public void loop(){
         autonomousUpdate();
-
-        if (!Robot.inComp) {
             telemetry.addData("Current Auto State", autoState);
             telemetry.addData("Current Shooter State", shooterTask.getShooterState());
             telemetry.addData("follower busy?", robot.follower.isBusy());
             telemetry.addData("shooter velocity", robot.shooter.getVelocityRPM());
-            telemetry.update();
-        }
+        telemetry.addData("Is Flywheel on target: ", robot.shooter.isFlywheelOnTarget(Shooter.Params.SHOOTER_TOLERANCE_RPM) + ", Is pitch on target: " + robot.shooter.isPitchOnTarget(Shooter.Params.PITCH_TOLERANCE));
+        telemetry.update();
+
     }
+
+
 
     public void autonomousUpdate() {
         switch (autoState) {
@@ -95,21 +120,31 @@ public class TwelveBallAuto extends OpMode {
                 //intentionally fall through
             case DRIVE_TO_SHOOTING_SPOT:
 
-                if (shotCount == 0) robot.follower.followPath(driveToShootPreloads, true);
-                if (shotCount == 1) robot.follower.followPath(driveToShootGroup1, true);
-                if (shotCount == 2) robot.follower.followPath(driveToShootGroup2, true);
-                if (shotCount == 3) robot.follower.followPath(driveToShootGroup3, true);
-
+                if (shotCount == 0 && isFirstTimePath )
+                {
+                    robot.follower.followPath(driveToShootPreloads, true);
+                    isFirstTimePath = false;
+                }
+                if (shotCount == 1 && isFirstTimePath) { robot.follower.followPath(driveToShootGroup1, true); isFirstTimePath = false;}
+                if (shotCount == 2 && isFirstTimePath) {robot.follower.followPath(driveToShootGroup2, true); isFirstTimePath = false;}
+                if (shotCount == 3 && isFirstTimePath) {robot.follower.followPath(driveToShootGroup3, true); isFirstTimePath = false;}
                 if (!robot.follower.isBusy()) {
+                    isFirstTimePath = true;
                     autoState = AutoState.SHOOTING;
                 }
 
                 break;
             case SHOOTING:
 
-                shooterTask.startShooterTask();
+                //TODO: RENAME VARIABLE NAME
+                if (isFirstTimePath){
+                    shooterTask.startShooterTask();
+                    isFirstTimePath = false;
+
+                }
 
                 if (shooterTask.isFinished()) {
+                    isFirstTimePath = true;
                     shotCount++;
                     if (shotCount <= 3) autoState = AutoState.DRIVE_TO_GROUP;
                     if (shotCount == 4) autoState = AutoState.DRIVE_TO_PARK;
@@ -118,11 +153,12 @@ public class TwelveBallAuto extends OpMode {
                 break;
             case DRIVE_TO_GROUP:
 
-                if (shotCount == 1) robot.follower.followPath(driveToGroup1, true);
-                if (shotCount == 2) robot.follower.followPath(driveToGroup2, true);
-                if (shotCount == 3) robot.follower.followPath(driveToGroup3, true);
+                if (shotCount == 1 && isFirstTimePath) {robot.follower.followPath(driveToGroup1, true); isFirstTimePath = false;}
+                if (shotCount == 2 && isFirstTimePath) {robot.follower.followPath(driveToGroup2, true); isFirstTimePath = false;}
+                if (shotCount == 3 && isFirstTimePath) {robot.follower.followPath(driveToGroup3, true); isFirstTimePath = false;}
 
                 if (!robot.follower.isBusy()) {
+                    isFirstTimePath = true;
                     autoState = AutoState.SLURPING_GROUP;
                 }
 
@@ -130,28 +166,28 @@ public class TwelveBallAuto extends OpMode {
             case SLURPING_GROUP:
 
                 robot.intakeUptake.setIntakeUptakeMode(IntakeUptake.intakeUptakeStates.INTAKING);
-                if (shotCount == 1) robot.follower.followPath(intakeGroup1);
-                if (shotCount == 2) robot.follower.followPath(intakeGroup2);
-                if (shotCount == 3) robot.follower.followPath(intakeGroup3);
+                if (shotCount == 1 && isFirstTimePath) {robot.follower.followPath(intakeGroup1, intakePathSpeed, true); isFirstTimePath = false;}
+                if (shotCount == 2 && isFirstTimePath) {robot.follower.followPath(intakeGroup2, intakePathSpeed, true); isFirstTimePath = false;}
+                if (shotCount == 3 && isFirstTimePath) {robot.follower.followPath(intakeGroup3, intakePathSpeed, true); isFirstTimePath = false;}
 
                 if (!robot.follower.isBusy()) {
+                    isFirstTimePath = true;
                     robot.intakeUptake.setIntakeUptakeMode(IntakeUptake.intakeUptakeStates.OFF);
                     autoState = AutoState.DRIVE_TO_SHOOTING_SPOT;
                 }
-
                 break;
             case DRIVE_TO_PARK:
-
-                robot.follower.followPath(driveToPark);
-
+                if (isFirstTimePath){
+                    robot.follower.followPath(driveToPark);
+                    isFirstTimePath = false;
+                }
                 if (!robot.follower.isBusy()) {
                     autoState = AutoState.STOP;
                 }
-
                 break;
         }
 
-        shooterTask.update(1000);
+        shooterTask.update(4300);
         robot.shooter.shooterTask();
         robot.intakeUptake.intakeUptakeTask();
         robot.follower.update();

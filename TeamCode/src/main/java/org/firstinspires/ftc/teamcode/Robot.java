@@ -29,7 +29,7 @@ public class Robot {
         }
 
         public double getAngleToGoal() {
-            return angle;
+            return angle * -1;
         }
     }
 
@@ -53,8 +53,8 @@ public class Robot {
     public final static double FIELD_CENTER_X = 72;
 
     public static double ballXOffset = 0, ballYOffset = 0;
-    public final static double Y_GOAL = 144;
-    public final static double X_GOAL_RED = 144;
+    public final static double Y_GOAL = 143;
+    public final static double X_GOAL_RED = 143;
     public final static double X_GOAL_BLUE = 0;
     public final DriveTrain driveTrain;
     public  Shooter shooter;

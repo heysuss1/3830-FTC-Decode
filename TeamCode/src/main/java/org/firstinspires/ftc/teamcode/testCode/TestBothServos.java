@@ -33,14 +33,22 @@ public class TestBothServos extends LinearOpMode {
         while(opModeIsActive()){
 
 
-            Shooter.Params.TURRET_DEGREES_PER_REV = 360 * gearRatio;
+//            Shooter.Params.TURRET_DEGREES_PER_REV = 360 * gearRatio;
             if (gamepad1.square){
                 robot.shooter.getPrimaryTurretServo().setPower(0.5);
             } else if(gamepad1.circle){
                 robot.shooter.getPrimaryTurretServo().setPower(-0.5);
 
+            } else if (gamepad1.triangle){
+                robot.shooter.getSecondaryTurretServo().setPower(0.5);
+            } else if (gamepad1.cross){
+                robot.shooter.getSecondaryTurretServo().setPower(-0.5);
+
             }else {
                 robot.shooter.getPrimaryTurretServo().setPower(0);
+                robot.shooter.getSecondaryTurretServo().setPower(0);
+
+
 
             }
 

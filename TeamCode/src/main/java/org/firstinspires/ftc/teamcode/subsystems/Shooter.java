@@ -12,11 +12,9 @@ import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
-import com.qualcomm.robotcore.util.Range;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.teamcode.Robot;
-import org.firstinspires.ftc.teamcode.TestShooter;
 import org.firstinspires.ftc.teamcode.controllers.PidfController;
 
 public class Shooter {
@@ -24,13 +22,24 @@ public class Shooter {
 
     public static final ShootParams.Region[] shootRegions = {
             //Region 1: pitch 25 degrees, y = 3200 + 15x
-            new ShootParams.Region(25.0, new double[][] {{3200.0, 15.0}}),
+            new ShootParams.Region(28.0, new double[][] {{3718.987, 4.966}}),
+            //Region 2:
+            new ShootParams.Region(30.0, new double[][] {{2899.984, 20}}),
+            //Region 3:
+            new ShootParams.Region(35.0, new double[][] {{2800, 20}}),
 
     };
 
     public static final ShootParams shootParamsTable = new ShootParams()
-            .addEntry("target_2ft", 24, shootRegions[0], 3500)
-            .addEntry("target_67ft", 67, shootRegions[0], 4000);
+            .addEntry("target_50in", 49.9, shootRegions[0], 3950)
+            .addEntry("target_60in", 59.9, shootRegions[0], 4050)
+            .addEntry("target_70in", 70, shootRegions[0], 4050)
+            .addEntry("target_70in", 70.00001, shootRegions[1], 4300)
+            .addEntry("target_80in", 80, shootRegions[1], 4500)
+            .addEntry("target_80in", 80.00001, shootRegions[2], 4500)
+            .addEntry("target_90in", 90, shootRegions[2], 4500)
+            .addEntry("target_100in", 100, shootRegions[2], 4700)
+            .addEntry("target_110in", 110, shootRegions[2], 5050);
 
     public static final class Params {
 
@@ -42,11 +51,11 @@ public class Shooter {
         public static final double SHOOTER_KP = 0.001, SHOOTER_KI = 0.01, SHOOTER_KD = 0, SHOOTER_KF = 0.0002, SHOOTER_I_ZONE = 150;
         public static final double SHOOTER_TOLERANCE_RPM = (100);
 
-        //Pitch Params
+
 
         public static final double MIN_PITCH_DEGREES = 26; //29
         public static final double MAX_PITCH_DEGREES = 53;
-        public static final double PITCH_GEAR_RATIO = .506 ;
+        public static final double PITCH_GEAR_RATIO = .177 ;
         public static  final double PITCH_ENCODER_ZERO_OFFSET = .5; //0.48
         public static  final double PITCH_POSITION_OFFSET = MIN_PITCH_DEGREES;
         public static final double PITCH_DEGREES_PER_REV = 360 * PITCH_GEAR_RATIO; //360 * PITCH_GEAR_RATIO
@@ -55,18 +64,18 @@ public class Shooter {
         //Turret Params
 
         //        PIDFController pidf = new PIDFController(0.0025, 0, 0, 0.000246, 100);
-        public static final double TURRET_KP = (((67))), TURRET_KI = (((67))), TURRET_KD = (((67))), TURRET_KF = (((67))), TURRET_I_ZONE = (((67)));
+        public static final double TURRET_KP = 0.016, TURRET_KI = (.01), TURRET_KD = (.00003), TURRET_KF = (0), TURRET_I_ZONE = (5);
         public static final double TURRET_TICKS_PER_REV = 67;
-        public static final double TURRET_GEAR_RATIO = 0.5; //Servo gear / turret gear
+        public static final double TURRET_GEAR_RATIO = -0.506; //Servo gear / turret gear
         public static final double MIN_TURRET_DEGREES = -90;
         public static final double CROSSOVER_THRESHOLD = 0.5;
         public static final double MAX_TURRET_DEGREES = 90;
 
         public static final double TURRET_ENCODER_ZERO_OFFSET = 0;
         public static final double TURRET_POSITION_OFFSET = 0;
-        public static double TURRET_DEGREES_PER_REV = 360 * TURRET_GEAR_RATIO;
+        public static final double TURRET_DEGREES_PER_REV = 360 * TURRET_GEAR_RATIO;
 
-        public static final double TURRET_TOLERANCE = 10000000;
+        public static final double TURRET_TOLERANCE = 3;
 
 
     }
@@ -127,6 +136,7 @@ public class Shooter {
 
         primaryTurretServo = hwMap.get(CRServo.class, "primaryTurretServo");
         secondaryTurretServo = hwMap.get(CRServo.class, "secondaryTurretServo");
+        secondaryTurretServo.setDirection(DcMotorSimple.Direction.FORWARD);
         turretEncoder = hwMap.get(AnalogInput.class, "turretEncoder");
 
         shooterController = new PidfController(Params.SHOOTER_KP, Params.SHOOTER_KI, Params.SHOOTER_KD, Params.SHOOTER_KF, Params.SHOOTER_I_ZONE);
@@ -142,6 +152,10 @@ public class Shooter {
 
     public Double getVelocityTarget(){
         return velocityTarget;
+    }
+
+    public CRServo getSecondaryTurretServo() {
+        return secondaryTurretServo;
     }
 
     public Double getVelocityRPM() {
@@ -317,7 +331,7 @@ public class Shooter {
     public boolean isShooterReady(double flywheelTolerance, double pitchTolerance) {
         return (velocityTarget == null || isFlywheelOnTarget(flywheelTolerance))
                 && (pitchTarget == null || isPitchOnTarget(pitchTolerance));
-//                && (turretTarget == null || isTurretOnTarget(turretTolerance));
+                //&& (turretTarget == null || isTurretOnTarget(turretTolerance));
     }
 
     public void flywheelTask() {
@@ -354,7 +368,7 @@ public class Shooter {
 
         if (turretTarget != null) {
             double currentPosition = getTurretDegrees();
-            output = turretController.calculate(turretTarget, currentPosition);
+            output = turretController.calculate(turretTarget, currentPosition) + 0.0004;
             primaryTurretServo.setPower(output);
             secondaryTurretServo.setPower(output);
 
@@ -377,7 +391,10 @@ public class Shooter {
         Robot.AimInfo aimInfo = robot.getAimInfo();
         ShootParams.Entry shootParams = Shooter.shootParamsTable.get(aimInfo.getDistanceToGoal());
         setPitchDegrees(shootParams.region.tiltAngle);
-        setTurretDegrees(aimInfo);
+
+        if (alwaysAimShooter){
+            setTurretDegrees(aimInfo);
+        }
 
         currentShooterVelTarget = shootParams.outputs[0];
         if (alwaysSetVelocity) {
