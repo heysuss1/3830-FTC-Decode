@@ -35,7 +35,7 @@ public class ShooterTask {
     }
 
     public void startShooterTask(){
-        setShooterState(ShooterState.START);
+        setShooterState(ShooterState.SPEEDING_UP);
     }
 
     public void cancelShooterUpdate(){
@@ -51,17 +51,16 @@ public class ShooterTask {
     }
 
 
-    public void update(){
+    public void update(double velTarget){
         switch (shooterState) {
             case START:
                 //Intentionally falling through;
 
             case SPEEDING_UP:
-                robot.shooter.setVelocityTarget(robot.shooter.getCurrentShooterVelTarget());
-                if (robot.shooter.isShooterReady(Shooter.Params.SHOOTER_TOLERANCE_RPM, Shooter.Params.PITCH_TOLERANCE, Shooter.Params.TURRET_TOLERANCE)){
+                robot.shooter.setVelocityTarget(velTarget);
+                if (robot.shooter.isShooterReady(Shooter.Params.SHOOTER_TOLERANCE_RPM, Shooter.Params.PITCH_TOLERANCE)){
                     robot.intakeUptake.openBlockingServo();
                     setShooterState(ShooterState.SHOOTING);
-
                 }
                 break;
             case SHOOTING:
@@ -70,7 +69,7 @@ public class ShooterTask {
                  */
                 robot.intakeUptake.setIntakeUptakeMode(IntakeUptake.intakeUptakeStates.UPTAKING);
 
-                if (robot.intakeUptake.isUptakeEmpty()) {
+                if (shooterTimer.getElapsedTimeSeconds() > 2.5) {
                     robot.intakeUptake.setIntakeUptakeMode(IntakeUptake.intakeUptakeStates.OFF);
                     setShooterState(ShooterState.DONE);
                 }

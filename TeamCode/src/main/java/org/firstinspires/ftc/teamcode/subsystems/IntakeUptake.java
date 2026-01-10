@@ -119,7 +119,7 @@ public class IntakeUptake {
                 break;
         }
 
-        if (Robot.inComp) {
+        if (!Robot.inComp) {
             telemetry.addLine("\nIntake/Uptake Info:");
             telemetry.addData("Intake Power",intakeMotor.getPower());
             telemetry.addData("Uptake Power", uptakeMotor.getPower());

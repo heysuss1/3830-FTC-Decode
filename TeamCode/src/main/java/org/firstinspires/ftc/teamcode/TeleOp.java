@@ -87,7 +87,7 @@ public class TeleOp extends LinearOpMode {
                 intakeOn = false;
             }
 
-            shooterTask.update();
+            shooterTask.update(1000);
             robot.follower.update();
             robot.shooter.shooterTask();
             robot.intakeUptake.intakeUptakeTask();

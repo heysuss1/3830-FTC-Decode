@@ -151,7 +151,7 @@ public class TwelveBallAuto extends OpMode {
                 break;
         }
 
-        shooterTask.update();
+        shooterTask.update(1000);
         robot.shooter.shooterTask();
         robot.intakeUptake.intakeUptakeTask();
         robot.follower.update();

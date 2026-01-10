@@ -6,6 +6,7 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.AnalogInput;
 import com.qualcomm.robotcore.hardware.CRServo;
 
+import org.firstinspires.ftc.teamcode.Robot;
 import org.firstinspires.ftc.teamcode.TestHardware;
 import org.firstinspires.ftc.teamcode.TestShooter;
 import org.firstinspires.ftc.teamcode.subsystems.Shooter;
@@ -16,53 +17,38 @@ import org.firstinspires.ftc.teamcode.subsystems.Shooter;
 @TeleOp (name="Spin Both Servos")
 public class TestBothServos extends LinearOpMode {
 
-    CRServo primaryTurretServo;
-    CRServo secondaryTurretServo;
-    AnalogInput turretEncoder;
+   Robot robot;
     public static double gearRatio = .535;
 
     double zeroOffset;
 
 
-//    double currentDegrees = (encoderOffset * TestShooter.Params.TURRET_DEGREES_PER_REV) + TestShooter.Params.TURRET_POSITION_OFFSET;
-
-    public double getTurretDegrees(double rawTurretPos) {
-        double encoderOffset = (rawTurretPos - zeroOffset);
-        double currentDegrees = (encoderOffset * (gearRatio * 360)) + TestShooter.Params.TURRET_POSITION_OFFSET;
-        return currentDegrees; //+ crossovers * Shooter.Params.TURRET_DEGREES_PER_REV;
-
-
-        //TODO: test in the TurretTester class
-    }
-
-
 
 
     public void runOpMode(){
-        primaryTurretServo = hardwareMap.get(CRServo.class, "primaryTurretServo");
-        secondaryTurretServo = hardwareMap.get(CRServo.class, "secondaryTurretServo");
-        turretEncoder = hardwareMap.get(AnalogInput.class, "turretEncoder");
+        robot = new Robot(hardwareMap, telemetry);
 
         waitForStart();
-
-        zeroOffset = (turretEncoder.getVoltage()/3.3);
 
         while(opModeIsActive()){
 
 
+            Shooter.Params.TURRET_DEGREES_PER_REV = 360 * gearRatio;
             if (gamepad1.square){
-                primaryTurretServo.setPower(1);
-                secondaryTurretServo.setPower(primaryTurretServo.getPower());
+                robot.shooter.getPrimaryTurretServo().setPower(0.5);
             } else if(gamepad1.circle){
-                primaryTurretServo.setPower(-1);
-                secondaryTurretServo.setPower(primaryTurretServo.getPower());
+                robot.shooter.getPrimaryTurretServo().setPower(-0.5);
+
             }else {
-                primaryTurretServo.setPower(0);
-                secondaryTurretServo.setPower(primaryTurretServo.getPower());
+                robot.shooter.getPrimaryTurretServo().setPower(0);
+
             }
-            telemetry.addData("Raw Turret Position", (turretEncoder.getVoltage()/ turretEncoder.getMaxVoltage() - zeroOffset));
-            telemetry.addData("Turret In Degrees", getTurretDegrees(turretEncoder.getVoltage()/ turretEncoder.getMaxVoltage()));
+
+            robot.shooter.turretTask();
+            telemetry.addData("Raw Turret Position", robot.shooter.getTurretRawPose());
+            telemetry.addData("Turret In Degrees", robot.shooter.getTurretDegrees());
             telemetry.addData("Zero Offset", zeroOffset);
+            telemetry.addData("Crossovers", robot.shooter.getCrossovers());
             telemetry.update();
         }
     }
