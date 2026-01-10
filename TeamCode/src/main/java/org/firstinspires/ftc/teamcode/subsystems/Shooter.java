@@ -176,6 +176,10 @@ public class Shooter {
         return (encoderOffset * (Shooter.Params.PITCH_GEAR_RATIO * 360)) + Shooter.Params.PITCH_POSITION_OFFSET;
     }
 
+    public void setAlwaysAimShooter(boolean condition){
+        alwaysAimShooter = condition;
+    }
+
     public DcMotorEx getBottomShooterMotor(){
         return bottomShooterMotor;
     }
@@ -253,7 +257,7 @@ public class Shooter {
 
 
     public void setTurretDegrees(Robot.AimInfo aimInfo) {
-        double turretTargetRaw = aimInfo.getAngleToGoal() - robot.follower.getHeading();
+        double turretTargetRaw = (aimInfo.getAngleToGoal() - Math.toDegrees(robot.follower.getHeading())) * -1;
         double turretTargetModulo = modularConversion(turretTargetRaw);
         //once it can rotate more, add some code to modulo this btwn -180 and 180 (like (n-180)%360+180 or smth)
         turretTarget = turretTargetModulo;
@@ -361,7 +365,6 @@ public class Shooter {
             telemetry.addData("Current Pitch Degrees", getPitchDegrees());
         }
     }
-
     public void turretTask() {
         double output = 0;
         countCrossovers();
@@ -394,6 +397,8 @@ public class Shooter {
 
         if (alwaysAimShooter){
             setTurretDegrees(aimInfo);
+        } else {
+            setTurretDegrees(0.0);
         }
 
         currentShooterVelTarget = shootParams.outputs[0];

@@ -4,6 +4,7 @@ import com.acmerobotics.dashboard.config.Config;
 import com.pedropathing.geometry.Pose;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+import com.qualcomm.robotcore.util.Range;
 
 import org.firstinspires.ftc.teamcode.subsystems.IntakeUptake;
 import org.firstinspires.ftc.teamcode.subsystems.Shooter;
@@ -55,8 +56,14 @@ public class ShooterParamsTrainer extends LinearOpMode {
                 robot.intakeUptake.setIntakeUptakeMode(IntakeUptake.intakeUptakeStates.OUTTAKING);
             }
 
-//            robot.shooter.turretTask();
-//            robot.shooter.setTurretDegrees(((robot.getAimInfo().angle - Math.toDegrees(robot.follower.getHeading())) * -1 ));
+            robot.shooter.turretTask();
+            if (gamepad1.circle){
+                robot.shooter.setTurretDegrees((Double)null);
+            } else {
+                robot.shooter.setTurretDegrees(Range.clip(
+                        robot.shooter.modularConversion((robot.getAimInfo().angle - Math.toDegrees(robot.follower.getHeading()) * -1) + 180),
+                        -160, 160));
+            }
             robot.intakeUptake.intakeUptakeTask();
             telemetry.addData("Current RPM", robot.shooter.getVelocityRPM());
             telemetry.addData("Current Pitch", robot.shooter.getPitchDegrees());
@@ -66,6 +73,7 @@ public class ShooterParamsTrainer extends LinearOpMode {
             telemetry.addData("Target", robot.shooter.getPitchTarget());
             telemetry.addData("Current turret degrees", robot.shooter.getTurretDegrees());
             telemetry.addData("Current servo pos raw", robot.shooter.getRawPitchPos());
+            telemetry.addData("Crossovers", robot.shooter.getCrossovers());
             telemetry.addData("Task state", task.getShooterState());
             telemetry.addData("Is Flywheel on target: ", robot.shooter.isFlywheelOnTarget(Shooter.Params.SHOOTER_TOLERANCE_RPM) + ", Is pitch on target: " + robot.shooter.isPitchOnTarget(Shooter.Params.PITCH_TOLERANCE));
             telemetry.update();

@@ -1,10 +1,13 @@
 package org.firstinspires.ftc.teamcode.autos;
 
+import static org.firstinspires.ftc.robotcore.external.BlocksOpModeCompanion.telemetry;
+
 import com.pedropathing.geometry.BezierLine;
 import com.pedropathing.geometry.Pose;
 import com.pedropathing.paths.PathChain;
 import com.pedropathing.util.Timer;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 
 import org.firstinspires.ftc.teamcode.Robot;
@@ -12,8 +15,10 @@ import org.firstinspires.ftc.teamcode.subsystems.IntakeUptake;
 import org.firstinspires.ftc.teamcode.subsystems.Shooter;
 import org.firstinspires.ftc.teamcode.tasks.ShooterTask;
 
-@Autonomous (name = "Red Side Auto")
-public class TwelveBallAuto extends OpMode {
+
+@Autonomous (name = "Blue side auto")
+public class BlueSideTwelve extends OpMode {
+
 
     enum AutoState {
         START,
@@ -43,16 +48,17 @@ public class TwelveBallAuto extends OpMode {
     PathChain driveToShootPreloads, driveToGroup1, driveToShootGroup1, driveToGroup2, driveToShootGroup2, driveToGroup3, driveToShootGroup3,
             intakeGroup1, intakeGroup2, intakeGroup3, driveToGate, driveToPark;
 
-    Pose startingPose =(new Pose(120.5, 132, Math.toRadians(45)));
-    Pose shootingPose = (new Pose(96, 96, Math.toRadians(45)));
-    Pose group1startPose = (new Pose(99, 85, 0));
-    Pose group2startPose =(new Pose(99, 61, 0) );
-    Pose group3startPose = (new Pose(100, 35, 0) );
-    Pose group1endPose =(new Pose(127.5, 85, 0) );
-    Pose group2endPose = (new Pose(127, 61, 0) );
-    Pose group3endPose = (new Pose(131, 35, 0) );
-    Pose gatePose = (new Pose(120, 70, 0));
-    Pose parkPose = (new Pose(120, 92, Math.PI*3/2));
+    Pose startingPose =(new Pose(23.5, 132, Math.toRadians(135)));
+    Pose shootingPose = (new Pose(48, 96, Math.toRadians(135)));
+    Pose group1startPose = (new Pose(45, 85, Math.toRadians(180)));
+    Pose group2startPose =(new Pose(42, 61, Math.toRadians(180)) );
+    Pose group3startPose = (new Pose(42, 35, Math.toRadians(180)) );
+    Pose group1endPose =(new Pose(16.5, 85, Math.toRadians(180)) );
+    Pose group2endPose = (new Pose(17, 61, Math.toRadians(180)) );
+    Pose group3endPose = (new Pose(10, 35, Math.toRadians(180)) );
+    Pose gatePose = (new Pose(24, 70, 0));
+    Pose parkPose = (new Pose(24, 92, Math.PI*3/2));
+
 
     public void init() {
 
@@ -67,38 +73,14 @@ public class TwelveBallAuto extends OpMode {
         robot.shooter.setTurretDegrees(0.0);
         robot.intakeUptake.closeBlockingServo();
 //        robot.shooter.setAlwaysAimShooter(false);
+
+        Robot.setTeam(Robot.Team.BLUE);
+
+        telemetry.addData("Team", Robot.getTEAM());
         buildPaths();
     }
 
 
-    public void init_loop(){
-        if (gamepad1.dpad_up) {
-            Robot.setTeam(Robot.Team.BLUE);
-        }
-        if (gamepad1.dpad_down){
-            Robot.setTeam(Robot.Team.RED);
-        }
-        if (gamepad1.left_bumper){
-            editingAlliance = false;
-        }
-        telemetry.addData("Team", Robot.getTEAM());
-        telemetry.update();
-    }
-
-    public void start(){
-         startingPose = Robot.convertAlliancePose(startingPose);
-         shootingPose = Robot.convertAlliancePose(shootingPose);
-         group1startPose = Robot.convertAlliancePose(group1startPose);
-         group2startPose = Robot.convertAlliancePose(group2startPose );
-         group3startPose = Robot.convertAlliancePose(group3startPose);
-         group1endPose = Robot.convertAlliancePose(group1endPose );
-         group2endPose = Robot.convertAlliancePose(group2endPose);
-         group3endPose = Robot.convertAlliancePose(group3endPose);
-         gatePose = Robot.convertAlliancePose(gatePose);
-         parkPose = Robot.convertAlliancePose(parkPose);
-
-
-    }
 
     public void stop(){
         Robot.setTeleOpStartPose(robot.follower.getPose());

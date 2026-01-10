@@ -35,11 +35,21 @@ public class TeleOp extends LinearOpMode {
 
         //I did this because the robots positions should be stored after auto, and it would only need to be manually
         //set if doing driver practice and thus not in comp.
-        robot.follower.setStartingPose(new Pose(143-20, 143-16.5, Math.toRadians(36)));
+//        robot.follower.setStartingPose(new Pose(143-20, 143-16.5, Math.toRadians(-36)));
 
 
         robot.driveTrain.setBrakeMode();
         robot.driveTrain.setSpeed(MAX_SPEED);
+
+
+//        robot.follower.setStartingPose(new Pose(80, 8, Math.toDegrees(90)));
+
+
+        if (Robot.getTeleOpStartPose() == null) {
+            robot.follower.setStartingPose(new Pose(143-20, 143-16.5, Math.toRadians(36))); //red goal spot
+        } else {
+            robot.follower.setStartingPose(Robot.getTeleOpStartPose());
+        }
 
         boolean intakeOn = false;
         boolean orienting = false;
@@ -48,7 +58,11 @@ public class TeleOp extends LinearOpMode {
 
         loopTimer = new Timer();
 
-        waitForStart();
+        robot.shooter.setAlwaysAimShooter(true);
+//        robot.shooter.setTurretDegrees(0.0);
+        robot.shooter.setPitchDegrees(32.0);
+
+                waitForStart();
         while (opModeIsActive()) {
             lastTime = currentTime;
             currentTime = loopTimer.getElapsedTime();
