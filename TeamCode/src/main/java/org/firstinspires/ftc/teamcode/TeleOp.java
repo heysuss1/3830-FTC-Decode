@@ -30,6 +30,9 @@ public class TeleOp extends LinearOpMode {
 
 
     final double MAX_SPEED = 0.8;
+
+
+
     public void runOpMode() {
         robot = new Robot(hardwareMap, telemetry);
 
@@ -45,14 +48,9 @@ public class TeleOp extends LinearOpMode {
 //        robot.follower.setStartingPose(new Pose(80, 8, Math.toDegrees(90)));
 
 
-        if (Robot.getTeleOpStartPose() == null) {
-            robot.follower.setStartingPose(new Pose(143-20, 143-16.5, Math.toRadians(36))); //red goal spot
-        } else {
-            robot.follower.setStartingPose(Robot.getTeleOpStartPose());
-        }
-
         boolean intakeOn = false;
         boolean orienting = false;
+        int startingPoseIndex = 0;
 
         shooterTask = new ShooterTask(robot);
 
@@ -62,7 +60,31 @@ public class TeleOp extends LinearOpMode {
         robot.shooter.setTurretDegrees(0.0);
         robot.shooter.setPitchDegrees(32.0);
 
-                waitForStart();
+        while (opModeInInit()) {
+            previousGamepad1.copy(currentGamepad1);
+            currentGamepad1.copy(gamepad1);
+
+            if (currentGamepad1.dpad_right && !previousGamepad1.dpad_right) {
+                startingPoseIndex = Math.floorMod(startingPoseIndex + 1, 4);
+            }
+
+            if (currentGamepad1.dpad_left && !previousGamepad1.dpad_left) {
+                startingPoseIndex = Math.floorMod(startingPoseIndex + 1, 4);
+
+            }
+
+            telemetry.addData("Starting Pose", Robot.POSE_NAME_LIST[startingPoseIndex]);
+            telemetry.update();
+        }
+
+        if (Robot.getTeleOpStartPose() == null) {
+            robot.follower.setStartingPose(Robot.POSE_LIST[startingPoseIndex]);
+        } else {
+            robot.follower.setStartingPose(Robot.getTeleOpStartPose());
+        }
+
+        waitForStart();
+
         while (opModeIsActive()) {
             lastTime = currentTime;
             currentTime = loopTimer.getElapsedTime();

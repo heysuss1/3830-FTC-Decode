@@ -66,14 +66,14 @@ public class Shooter {
         //        PIDFController pidf = new PIDFController(0.0025, 0, 0, 0.000246, 100);
         public static final double TURRET_KP = 0.016, TURRET_KI = (.01), TURRET_KD = (.00003), TURRET_KF = (0), TURRET_I_ZONE = (5);
         public static final double TURRET_TICKS_PER_REV = 67;
-        public static final double TURRET_GEAR_RATIO = -0.506; //Servo gear / turret gear
+        public static final double TURRET_GEAR_RATIO = 0.506; //Servo gear / turret gear
         public static final double MIN_TURRET_DEGREES = -90;
         public static final double CROSSOVER_THRESHOLD = 0.5;
         public static final double MAX_TURRET_DEGREES = 90;
 
         public static final double TURRET_ENCODER_ZERO_OFFSET = 0;
         public static final double TURRET_POSITION_OFFSET = 0;
-        public static final double TURRET_DEGREES_PER_REV = 360 * TURRET_GEAR_RATIO;
+        public static final double TURRET_DEGREES_PER_REV = -360 * TURRET_GEAR_RATIO;
 
         public static final double TURRET_TOLERANCE = 3;
 
@@ -188,7 +188,7 @@ public class Shooter {
     }
 
     public double getTurretDegrees() {
-        double rawTurretPos = (getTurretRawPose()) + 0.987 * crossovers;
+        double rawTurretPos = getTurretRawPose() + 0.987 * crossovers;
         double encoderOffset = (rawTurretPos - Params.TURRET_ENCODER_ZERO_OFFSET);
         double unconverted = (encoderOffset * Params.TURRET_DEGREES_PER_REV) + Params.TURRET_POSITION_OFFSET;
         return modularConversion(unconverted);
@@ -375,6 +375,7 @@ public class Shooter {
             secondaryTurretServo.setPower(output);
 
         }
+
         if (!Robot.inComp) {
             telemetry.addLine("\nTurret Info:");
             telemetry.addData("Turret Target", turretTarget);
