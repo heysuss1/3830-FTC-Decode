@@ -48,10 +48,13 @@ public class Robot {
 
     public static Pose teleOpStartPose;
 
-    public static Pose RED_GOAL_SPOT = new Pose(143-20, 143-16.5, Math.toRadians(36));
-    public static Pose BLUE_GOAL_SPOT = Robot.convertAlliancePose(RED_GOAL_SPOT);
-    //public static Pose RED_FAR_SPOT = new Pose();
-    //public static Pose BLUE_FAR_SPOT = Robot.convertAlliancePose(RED_FAR_SPOT);
+    public static Pose RED_GOAL_POSE = new Pose(123, 126.5, Math.toRadians(36));
+    public static Pose BLUE_GOAL_POSE = Robot.convertAlliancePose(RED_GOAL_POSE);
+    public static Pose RED_FAR_POSE = new Pose(60, 8, Math.toRadians(90));
+    public static Pose BLUE_FAR_POSE = Robot.convertAlliancePose(RED_FAR_POSE);
+
+    public static String[] POSE_NAME_LIST = {"Red Goal", "Blue Goal", "Red Far Zone", "Blue Far Zone"};
+    public static Pose[] POSE_LIST = {RED_GOAL_POSE, BLUE_GOAL_POSE, RED_FAR_POSE, BLUE_FAR_POSE};
 
     public static double cameraHeight = 6.7; //Inches
     public static double cameraAngle = 35; //degrees
@@ -116,7 +119,7 @@ public class Robot {
         double robotX = follower.getPose().getX();
         double robotY = follower.getPose().getY();
 
-        double x_goal = X_GOAL_RED;
+        double x_goal;
 
         if (Robot.getTEAM() == Robot.Team.BLUE) {
             x_goal = X_GOAL_BLUE;

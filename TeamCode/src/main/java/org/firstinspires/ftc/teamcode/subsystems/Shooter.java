@@ -189,7 +189,7 @@ public class Shooter {
     }
 
     public double getTurretDegrees() {
-        double rawTurretPos = (getTurretRawPose()) + 0.987 * crossovers;
+        double rawTurretPos = getTurretRawPose() + 0.987 * crossovers;
         double encoderOffset = (rawTurretPos - Params.TURRET_ENCODER_ZERO_OFFSET);
         double unconverted = (encoderOffset * Params.TURRET_DEGREES_PER_REV) + Params.TURRET_POSITION_OFFSET;
         return modularConversion(unconverted);
@@ -366,6 +366,7 @@ public class Shooter {
             secondaryTurretServo.setPower(output);
 
         }
+
         if (!Robot.inComp) {
             telemetry.addLine("\nTurret Info:");
             telemetry.addData("Turret Target", turretTarget);
