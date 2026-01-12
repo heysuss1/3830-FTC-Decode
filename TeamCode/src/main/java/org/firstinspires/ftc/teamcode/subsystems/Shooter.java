@@ -12,6 +12,7 @@ import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
+import com.qualcomm.robotcore.util.Range;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.teamcode.Robot;
@@ -66,14 +67,14 @@ public class Shooter {
         //        PIDFController pidf = new PIDFController(0.0025, 0, 0, 0.000246, 100);
         public static final double TURRET_KP = 0.016, TURRET_KI = (.01), TURRET_KD = (.00003), TURRET_KF = (0), TURRET_I_ZONE = (5);
         public static final double TURRET_TICKS_PER_REV = 67;
-        public static final double TURRET_GEAR_RATIO = -0.506; //Servo gear / turret gear
+        public static final double TURRET_GEAR_RATIO = 0.506; //Servo gear / turret gear
         public static final double MIN_TURRET_DEGREES = -90;
         public static final double CROSSOVER_THRESHOLD = 0.5;
         public static final double MAX_TURRET_DEGREES = 90;
 
         public static final double TURRET_ENCODER_ZERO_OFFSET = 0;
         public static final double TURRET_POSITION_OFFSET = 0;
-        public static final double TURRET_DEGREES_PER_REV = 360 * TURRET_GEAR_RATIO;
+        public static final double TURRET_DEGREES_PER_REV = -360 * TURRET_GEAR_RATIO;
 
         public static final double TURRET_TOLERANCE = 3;
 
@@ -213,11 +214,7 @@ public class Shooter {
     }
 
     public double modularConversion(double n) {
-        if (n >= 0) {
-            return (n + 180) % 360 - 180;
-        } else {
-            return -modularConversion(-n);
-        }
+        return (double) (Math.floorMod((long)(n + 180), 360) - 180);
     }
 
 
@@ -250,17 +247,11 @@ public class Shooter {
         pitchTarget = degreesToRawPitch(targetPitchDegrees);
     }
     public void setTurretDegrees(Double targetDegrees) {
-        turretTarget = targetDegrees;
-    }
-
-
-
-
-    public void setTurretDegrees(Robot.AimInfo aimInfo) {
-        double turretTargetRaw = (aimInfo.getAngleToGoal() - Math.toDegrees(robot.follower.getHeading())) * -1;
-        double turretTargetModulo = modularConversion(turretTargetRaw);
+        double turretTargetRaw = (targetDegrees - Math.toDegrees(robot.follower.getHeading())) * -1;
+        double turretTargetModulo = robot.shooter.modularConversion(turretTargetRaw);
+        double turretTargetClipped = Range.clip(turretTargetModulo, -160, 160);
         //once it can rotate more, add some code to modulo this btwn -180 and 180 (like (n-180)%360+180 or smth)
-        turretTarget = turretTargetModulo;
+        turretTarget = turretTargetClipped;
     }
     public void resetTimeout() {
         timeout = 0.0;
@@ -395,7 +386,7 @@ public class Shooter {
         setPitchDegrees(shootParams.region.tiltAngle);
 
         if (alwaysAimShooter){
-            setTurretDegrees(aimInfo);
+            setTurretDegrees(aimInfo.getAngleToGoal());
         } else {
             setTurretDegrees(0.0);
         }
@@ -412,7 +403,7 @@ public class Shooter {
         double deltaX = Robot.getTEAM() == Robot.Team.BLUE ? robotX - X_GOAL_BLUE: robotX - X_GOAL_RED;
         double deltaY = robotY - Y_GOAL;
         double distanceToGoal = Math.hypot(deltaY, deltaX);
-        double angleToGOal = Math.toDegrees(Math.atan2(deltaY, deltaX)) + 180;
+        double angleToGOal = Math.toDegrees(Math.atan2(-deltaY, -deltaX));
 
         return new Robot.AimInfo(distanceToGoal, angleToGOal);
 

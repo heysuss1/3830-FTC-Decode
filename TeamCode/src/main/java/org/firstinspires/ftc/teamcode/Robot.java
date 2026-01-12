@@ -27,7 +27,7 @@ public class Robot {
         }
 
         public double getAngleToGoal() {
-            return angle * -1;
+            return angle;
         }
     }
 

@@ -60,9 +60,7 @@ public class ShooterParamsTrainer extends LinearOpMode {
             if (gamepad1.circle){
                 robot.shooter.setTurretDegrees((Double)null);
             } else {
-                robot.shooter.setTurretDegrees(Range.clip(
-                        robot.shooter.modularConversion((robot.getAimInfo().angle - Math.toDegrees(robot.follower.getHeading()) * -1) + 180),
-                        -160, 160));
+                robot.shooter.setTurretDegrees(robot.getAimInfo().angle);
             }
             robot.intakeUptake.intakeUptakeTask();
             telemetry.addData("Current RPM", robot.shooter.getVelocityRPM());
@@ -73,7 +71,6 @@ public class ShooterParamsTrainer extends LinearOpMode {
             telemetry.addData("Target", robot.shooter.getPitchTarget());
             telemetry.addData("Current turret degrees", robot.shooter.getTurretDegrees());
             telemetry.addData("Current servo pos raw", robot.shooter.getRawPitchPos());
-            telemetry.addData("Crossovers", robot.shooter.getCrossovers());
             telemetry.addData("Task state", task.getShooterState());
             telemetry.addData("Is Flywheel on target: ", robot.shooter.isFlywheelOnTarget(Shooter.Params.SHOOTER_TOLERANCE_RPM) + ", Is pitch on target: " + robot.shooter.isPitchOnTarget(Shooter.Params.PITCH_TOLERANCE));
             telemetry.update();
