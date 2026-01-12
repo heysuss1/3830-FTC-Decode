@@ -42,7 +42,6 @@ public class Constants {
             .useBrakeModeInTeleOp(true);
     public static PathConstraints pathConstraints = new PathConstraints(0.99, 100, 1, 1);
 
-
     public static PinpointConstants localizerConstants = new PinpointConstants()
             .forwardPodY(-1.875)
             .strafePodX(-4.875)

@@ -58,8 +58,8 @@ public class TeleOp extends LinearOpMode {
 
         loopTimer = new Timer();
 
-        robot.shooter.setAlwaysAimShooter(true);
-//        robot.shooter.setTurretDegrees(0.0);
+        robot.shooter.setAlwaysAimShooter(false);
+        robot.shooter.setTurretDegrees(0.0);
         robot.shooter.setPitchDegrees(32.0);
 
                 waitForStart();

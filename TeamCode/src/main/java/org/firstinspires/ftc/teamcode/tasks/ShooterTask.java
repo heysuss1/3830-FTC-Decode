@@ -61,7 +61,7 @@ public class ShooterTask {
 
             case SPEEDING_UP:
                 robot.shooter.setVelocityTarget(velTarget);
-                if (robot.shooter.isShooterReady(Shooter.Params.SHOOTER_TOLERANCE_RPM, Shooter.Params.PITCH_TOLERANCE)){
+                if (robot.shooter.isShooterReady(Shooter.Params.SHOOTER_TOLERANCE_RPM)){
                     totalShooterTime.resetTimer();
                     robot.intakeUptake.openBlockingServo();
                     setShooterState(ShooterState.SHOOTING);
@@ -103,7 +103,7 @@ public class ShooterTask {
 
             case SPEEDING_UP:
                 robot.shooter.setVelocityTarget(robot.shooter.getCurrentShooterVelTarget());
-                if (robot.shooter.isShooterReady(Shooter.Params.SHOOTER_TOLERANCE_RPM, Shooter.Params.PITCH_TOLERANCE)){
+                if (robot.shooter.isShooterReady(Shooter.Params.SHOOTER_TOLERANCE_RPM)){
                     robot.intakeUptake.openBlockingServo();
                     totalShooterTime.resetTimer();
                     setShooterState(ShooterState.SHOOTING);

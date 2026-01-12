@@ -48,6 +48,11 @@ public class Robot {
 
     public static Pose teleOpStartPose;
 
+    public static Pose RED_GOAL_SPOT = new Pose(143-20, 143-16.5, Math.toRadians(36));
+    public static Pose BLUE_GOAL_SPOT = Robot.convertAlliancePose(RED_GOAL_SPOT);
+    //public static Pose RED_FAR_SPOT = new Pose();
+    //public static Pose BLUE_FAR_SPOT = Robot.convertAlliancePose(RED_FAR_SPOT);
+
     public static double cameraHeight = 6.7; //Inches
     public static double cameraAngle = 35; //degrees
     public final static double FIELD_CENTER_X = 72;

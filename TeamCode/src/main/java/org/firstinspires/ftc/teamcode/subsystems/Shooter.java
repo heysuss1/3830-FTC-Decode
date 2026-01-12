@@ -332,9 +332,8 @@ public class Shooter {
 
     //TODO I REMOVED THE TURRET IS READY
 
-    public boolean isShooterReady(double flywheelTolerance, double pitchTolerance) {
-        return (velocityTarget == null || isFlywheelOnTarget(flywheelTolerance))
-                && (pitchTarget == null || isPitchOnTarget(pitchTolerance));
+    public boolean isShooterReady(double flywheelTolerance) {
+        return (velocityTarget == null || isFlywheelOnTarget(flywheelTolerance));
                 //&& (turretTarget == null || isTurretOnTarget(turretTolerance));
     }
 
