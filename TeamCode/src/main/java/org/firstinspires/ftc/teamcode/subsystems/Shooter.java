@@ -247,6 +247,10 @@ public class Shooter {
         pitchTarget = degreesToRawPitch(targetPitchDegrees);
     }
     public void setTurretDegrees(Double targetDegrees) {
+        if (targetDegrees == null){
+            turretTarget = null;
+            return;
+        }
         double turretTargetRaw = (targetDegrees - Math.toDegrees(robot.follower.getHeading())) * -1;
         double turretTargetModulo = robot.shooter.modularConversion(turretTargetRaw);
         double turretTargetClipped = Range.clip(turretTargetModulo, -160, 160);

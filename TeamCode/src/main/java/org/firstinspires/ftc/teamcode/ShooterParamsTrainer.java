@@ -56,9 +56,9 @@ public class ShooterParamsTrainer extends LinearOpMode {
                 robot.intakeUptake.setIntakeUptakeMode(IntakeUptake.intakeUptakeStates.OUTTAKING);
             }
 
-            robot.shooter.turretTask();
+            robot.shooter.shooterTask();
             if (gamepad1.circle){
-                robot.shooter.setTurretDegrees((Double)null);
+                robot.shooter.setTurretDegrees(null);
             } else {
                 robot.shooter.setTurretDegrees(robot.getAimInfo().angle);
             }

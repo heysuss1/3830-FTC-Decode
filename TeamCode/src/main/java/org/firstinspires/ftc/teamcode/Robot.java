@@ -87,7 +87,7 @@ public class Robot {
         double heading = pose.getHeading();
 
         if (getTEAM() == Team.BLUE) {
-            x = 2 * FIELD_CENTER_X - x;
+            x = 141.5 - x;
             heading = Math.PI/2 - heading;
         }
 
@@ -116,8 +116,8 @@ public class Robot {
     }
 
     public AimInfo getAimInfo(){
-        double robotX = follower.getPose().getX();
-        double robotY = follower.getPose().getY();
+        double robotX = follower.getPose().getX() + 3.5*Math.cos(follower.getHeading());
+        double robotY = follower.getPose().getY() + 3.5*Math.sin(follower.getHeading());
 
         double x_goal;
 
