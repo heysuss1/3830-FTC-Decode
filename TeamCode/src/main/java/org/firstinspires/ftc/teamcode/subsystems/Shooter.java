@@ -180,7 +180,7 @@ public class Shooter {
     public void setAlwaysAimShooter(boolean condition){
         alwaysAimShooter = condition;
     }
-
+    public void setAlwaysSetVelocity(boolean condition){alwaysSetVelocity = condition;}
     public DcMotorEx getBottomShooterMotor(){
         return bottomShooterMotor;
     }
@@ -399,6 +399,9 @@ public class Shooter {
         currentShooterVelTarget = shootParams.outputs[0];
         if (alwaysSetVelocity) {
             setVelocityTarget(shootParams.outputs[0]);
+        } else {
+            setVelocityTarget(3750.0);
+            setPitchDegrees(27.0);
         }
     }
     public Robot.AimInfo getAimInfo(){

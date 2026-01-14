@@ -50,15 +50,17 @@ public class TeleOp extends LinearOpMode {
 
         boolean intakeOn = false;
         boolean orienting = false;
+        boolean lockTurret = true;
+        boolean alwaysSetVelocity = true;
         int startingPoseIndex = 0;
 
         shooterTask = new ShooterTask(robot);
 
         loopTimer = new Timer();
 
-        robot.shooter.setAlwaysAimShooter(true);
-        robot.shooter.setPitchDegrees(32.0);
-
+        robot.shooter.setAlwaysAimShooter(lockTurret);
+        robot.shooter.setAlwaysSetVelocity(alwaysSetVelocity);
+        
         while (opModeInInit()) {
             previousGamepad1.copy(currentGamepad1);
             currentGamepad1.copy(gamepad1);
@@ -100,6 +102,18 @@ public class TeleOp extends LinearOpMode {
                                 : IntakeUptake.intakeUptakeStates.OFF
                 );
             }
+
+            if (currentGamepad1.left_bumper && !previousGamepad1.left_bumper){
+                lockTurret = !lockTurret;  // Toggle the boolean
+                robot.shooter.setAlwaysAimShooter(lockTurret);
+            }
+
+
+            if (currentGamepad1.back && !previousGamepad1.back){
+                alwaysSetVelocity = !alwaysSetVelocity;
+                robot.shooter.setAlwaysSetVelocity(alwaysSetVelocity);
+            }
+
 
             if (currentGamepad1.circle && !previousGamepad1.circle) {
                 robot.intakeUptake.setIntakeUptakeMode(IntakeUptake.intakeUptakeStates.OUTTAKING);
