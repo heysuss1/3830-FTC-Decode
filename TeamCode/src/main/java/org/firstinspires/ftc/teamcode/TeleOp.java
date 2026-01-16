@@ -147,7 +147,13 @@ public class TeleOp extends LinearOpMode {
                 telemetry.addData("y: ", robot.follower.getPose().getY());
                 telemetry.addData("Heading: ", robot.follower.getHeading());
                 telemetry.addData("Shooter param rpm", robot.shooter.getCurrentShooterVelTarget());
-                telemetry.update();
+                telemetry.addData("Current Turret Degrees", robot.shooter.getTurretDegrees());
+                telemetry.addData("Color Sensor 1 Distance", robot.intakeUptake.getColorSensor1Distance());
+                telemetry.addData("Color Sensor 2 Distance", robot.intakeUptake.getColorSensor2Distance());
+                telemetry.addData("Color Sensor 3 Distance", robot.intakeUptake.getColorSensor3Distance());
+                telemetry.addData("Number of big BLACK balls", robot.intakeUptake.getNumberOfBallsStored());
+
+            telemetry.update();
             }
         }
     }

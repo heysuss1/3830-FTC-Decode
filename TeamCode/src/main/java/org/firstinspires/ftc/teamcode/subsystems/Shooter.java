@@ -250,6 +250,9 @@ public class Shooter {
         if (targetDegrees == null){
             turretTarget = null;
             return;
+        } else if (targetDegrees == 0){
+            turretTarget = 0.0;
+            return;
         }
         double turretTargetRaw = (targetDegrees - Math.toDegrees(robot.follower.getHeading())) * -1;
         double turretTargetModulo = robot.shooter.modularConversion(turretTargetRaw);

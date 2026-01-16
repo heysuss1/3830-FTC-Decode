@@ -102,7 +102,7 @@ public class ShooterTask {
                 //Intentionally falling through;
 
             case SPEEDING_UP:
-                robot.shooter.setVelocityTarget(robot.shooter.getCurrentShooterVelTarget());
+                robot.shooter.setVelocityTarget(robot.shooter.getVelocityTarget());
                 if (robot.shooter.isShooterReady(Shooter.Params.SHOOTER_TOLERANCE_RPM)){
                     robot.intakeUptake.openBlockingServo();
                     totalShooterTime.resetTimer();
