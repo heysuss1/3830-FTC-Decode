@@ -21,9 +21,9 @@ public class IntakeUptake {
         OUTTAKING;
     }
     public static class Params {
-        public static final double HAS_BALL_1_DISTANCE_THRESHOLD = 1.3; //inches
-        public static final double HAS_BALL_2_DISTANCE_THRESHOLD = 1.55;
-        public static final double HAS_BALL_3_DISTANCE_THRESHOLD = 2.7;
+        public static final double HAS_BALL_1_DISTANCE_THRESHOLD = 2.45; //inches
+        public static final double HAS_BALL_2_DISTANCE_THRESHOLD = 1.4;
+        public static final double HAS_BALL_3_DISTANCE_THRESHOLD = 1.235;
 
         public static final double BLOCKING_SERVO_1_OPEN_POS = 0.63;
         public static final double BLOCKING_SERVO_1_CLOSE_POS = 0.8;
@@ -70,7 +70,26 @@ public class IntakeUptake {
         return  (colorSensor1.getDistance(DistanceUnit.INCH) > Params.HAS_BALL_1_DISTANCE_THRESHOLD) &&
                 (colorSensor2.getDistance(DistanceUnit.INCH) > Params.HAS_BALL_2_DISTANCE_THRESHOLD) &&
                 (colorSensor3.getDistance(DistanceUnit.INCH) > Params.HAS_BALL_3_DISTANCE_THRESHOLD);
+    }
 
+    public boolean hasBall1(){
+        return colorSensor1.getDistance(DistanceUnit.INCH) < Params.HAS_BALL_1_DISTANCE_THRESHOLD;
+    }
+    public boolean hasBall2(){
+        return colorSensor2.getDistance(DistanceUnit.INCH) < Params.HAS_BALL_2_DISTANCE_THRESHOLD;
+    }
+    public boolean hasBall3(){
+        return colorSensor2.getDistance(DistanceUnit.INCH) < Params.HAS_BALL_3_DISTANCE_THRESHOLD;
+    }
+
+    public double getColorSensor1Distance(){
+        return colorSensor1.getDistance(DistanceUnit.INCH);
+    }
+    public double getColorSensor2Distance(){
+        return colorSensor2.getDistance(DistanceUnit.INCH);
+    }
+    public double getColorSensor3Distance(){
+        return colorSensor3.getDistance(DistanceUnit.INCH);
     }
 
     public double getNumberOfBallsStored() {
