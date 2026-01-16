@@ -3,14 +3,8 @@ package org.firstinspires.ftc.teamcode.testCode;
 import com.acmerobotics.dashboard.config.Config;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
-import com.qualcomm.robotcore.hardware.AnalogInput;
-import com.qualcomm.robotcore.hardware.CRServo;
 
 import org.firstinspires.ftc.teamcode.Robot;
-import org.firstinspires.ftc.teamcode.TestHardware;
-import org.firstinspires.ftc.teamcode.TestShooter;
-import org.firstinspires.ftc.teamcode.subsystems.Shooter;
-
 
 
 @Config

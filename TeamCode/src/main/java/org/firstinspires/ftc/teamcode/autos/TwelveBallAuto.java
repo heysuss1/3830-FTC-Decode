@@ -15,6 +15,8 @@ import org.firstinspires.ftc.teamcode.tasks.ShooterTask;
 @Autonomous (name = "Red Side Auto")
 public class TwelveBallAuto extends OpMode {
 
+
+    final double AUTO_RPM = 4000;
     enum AutoState {
         START,
         DRIVE_TO_SHOOTING_SPOT,
@@ -63,7 +65,7 @@ public class TwelveBallAuto extends OpMode {
 
         robot.follower.setStartingPose(startingPose);
         robot.follower.setMaxPower(1);
-        robot.shooter.setPitchDegrees(31.0);
+        robot.shooter.setPitchDegrees(27.5);
         robot.shooter.setTurretDegrees(0.0);
         robot.intakeUptake.closeBlockingServo();
 //        robot.shooter.setAlwaysAimShooter(false);
@@ -126,6 +128,8 @@ public class TwelveBallAuto extends OpMode {
                 //intentionally fall through
             case DRIVE_TO_SHOOTING_SPOT:
 
+                shooterTask.revUpShooterMotor(AUTO_RPM);
+
                 if (shotCount == 0 && isFirstTimePath )
                 {
                     robot.follower.followPath(driveToShootPreloads, true);
@@ -142,11 +146,9 @@ public class TwelveBallAuto extends OpMode {
                 break;
             case SHOOTING:
 
-                //TODO: RENAME VARIABLE NAME
                 if (isFirstTimePath){
                     shooterTask.startShooterTask();
                     isFirstTimePath = false;
-
                 }
 
                 if (shooterTask.isFinished()) {
@@ -193,7 +195,7 @@ public class TwelveBallAuto extends OpMode {
                 break;
         }
 
-        shooterTask.update(4300);
+        shooterTask.update(AUTO_RPM);
         robot.shooter.shooterTask();
         robot.intakeUptake.intakeUptakeTask();
         robot.follower.update();

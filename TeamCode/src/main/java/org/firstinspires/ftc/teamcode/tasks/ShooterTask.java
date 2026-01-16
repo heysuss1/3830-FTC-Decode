@@ -54,6 +54,11 @@ public class ShooterTask {
     }
 
 
+    public void revUpShooterMotor(double velTarget){
+        robot.shooter.setVelocityTarget(velTarget);
+    }
+
+
     public void update(double velTarget){
         switch (shooterState) {
             case START:
@@ -103,7 +108,7 @@ public class ShooterTask {
 
             case SPEEDING_UP:
                 robot.shooter.setVelocityTarget(robot.shooter.getCurrentShooterVelTarget());
-                if (robot.shooter.isShooterReady(Shooter.Params.SHOOTER_TOLERANCE_RPM)){
+                if (robot.shooter.isShooterReady(Shooter.Params.SHOOTER_TOLERANCE_RPM) ){
                     robot.intakeUptake.openBlockingServo();
                     totalShooterTime.resetTimer();
                     setShooterState(ShooterState.SHOOTING);

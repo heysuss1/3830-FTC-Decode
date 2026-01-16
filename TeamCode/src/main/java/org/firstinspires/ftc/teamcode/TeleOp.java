@@ -60,7 +60,7 @@ public class TeleOp extends LinearOpMode {
 
         robot.shooter.setAlwaysAimShooter(lockTurret);
         robot.shooter.setAlwaysSetVelocity(alwaysSetVelocity);
-        
+
         while (opModeInInit()) {
             previousGamepad1.copy(currentGamepad1);
             currentGamepad1.copy(gamepad1);
@@ -73,7 +73,6 @@ public class TeleOp extends LinearOpMode {
                 startingPoseIndex = Math.floorMod(startingPoseIndex + 1, 4);
 
             }
-
             telemetry.addData("Starting Pose", Robot.POSE_NAME_LIST[startingPoseIndex]);
             telemetry.update();
         }
@@ -124,6 +123,9 @@ public class TeleOp extends LinearOpMode {
                 robot.driveTrain.setSpeed(0.3);
             else {
                 robot.driveTrain.setSpeed(MAX_SPEED);
+            }
+            if (currentGamepad1.dpad_up && !previousGamepad1.dpad_up){
+                shooterTask.revUpShooterMotor(3000);
             }
 
             if (currentGamepad1.x && !previousGamepad1.x) {

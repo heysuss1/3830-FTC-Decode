@@ -8,12 +8,11 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.teamcode.Robot;
-import org.firstinspires.ftc.teamcode.TestHardware;
 
 @Config
 @TeleOp(name = "Shooter PIDF tuner")
 public class TuneShooterPidf extends OpMode {
-    TestHardware robot;
+    Robot robot;
     private Telemetry telemetryA;
     public static double kP, kI, kD, kF, iZone;
     public static double targetRpm;
@@ -21,7 +20,7 @@ public class TuneShooterPidf extends OpMode {
 
     public void init() {
         telemetryA = new MultipleTelemetry(this.telemetry, dashboard.getTelemetry());
-        robot = new TestHardware(hardwareMap, telemetry);
+        robot = new Robot(hardwareMap, telemetry);
         robot.shooter.getShooterController().setPidCoefficients(kP, kI, kD, kF, iZone);
 
     }
