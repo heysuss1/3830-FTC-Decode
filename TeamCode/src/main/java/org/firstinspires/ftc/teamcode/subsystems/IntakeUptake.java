@@ -5,6 +5,7 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
+import com.qualcomm.robotcore.hardware.LED;
 import com.qualcomm.robotcore.hardware.Servo;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
@@ -13,6 +14,9 @@ import org.firstinspires.ftc.teamcode.Robot;
 
 public class IntakeUptake {
 
+
+    LED redLED;
+    LED greenLED;
 
     public enum intakeUptakeStates {
         OFF,
@@ -42,6 +46,11 @@ public class IntakeUptake {
 
     public IntakeUptake(HardwareMap hwMap, Telemetry telemetry) {
         this.telemetry = telemetry;
+
+        redLED = hwMap.get(LED.class, "red");
+        greenLED = hwMap.get(LED.class, "green");
+
+        //Lower port number is green, higher port number is red
 
         blockingServo1 = hwMap.get(Servo.class, "blockingServo1");
         blockingServo2 = hwMap.get(Servo.class, "blockingServo2");
@@ -97,9 +106,9 @@ public class IntakeUptake {
         boolean hasBall2 = (colorSensor2.getDistance(DistanceUnit.INCH) < Params.HAS_BALL_2_DISTANCE_THRESHOLD);
         boolean hasBall3 = (colorSensor3.getDistance(DistanceUnit.INCH) < Params.HAS_BALL_3_DISTANCE_THRESHOLD);
 
-        return  (hasBall1 ? 1 : 0) +
-                ((hasBall1 && hasBall2) ? 1 : 0) +
-                ((hasBall1 && hasBall2 && hasBall3) ? 1 : 0);
+        return  (hasBall3 ? 1 : 0) +
+                ((hasBall3 && hasBall2) ? 1 : 0) +
+                ((hasBall3 && hasBall2 && hasBall1) ? 1 : 0);
     }
 
     public void setIntakeUptakeMotorPower(double intakePower, double uptakePower) {
@@ -122,6 +131,20 @@ public class IntakeUptake {
     }
 
 
+    public void toggleGreenRedLight(){
+        if (getNumberOfBallsStored() == 3){
+            greenLED.on();
+            redLED.off();
+        } else if(getNumberOfBallsStored() == 2){
+            greenLED.on();
+            redLED.on();
+        } else {
+            redLED.on();
+            greenLED.off();
+        }
+    }
+
+
     public void intakeUptakeTask() {
         switch (intakeUptakeState) {
             case OFF:
@@ -137,7 +160,8 @@ public class IntakeUptake {
                 setIntakeUptakeMotorPower(-1, -1);
                 break;
         }
-
+        toggleGreenRedLight();
+        
         if (!Robot.inComp) {
             telemetry.addLine("\nIntake/Uptake Info:");
             telemetry.addData("Intake Power",intakeMotor.getPower());

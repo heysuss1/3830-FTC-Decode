@@ -93,6 +93,8 @@ public class Robot {
 
         return new Pose(x, y, heading);
     }
+
+
     public static Team getTEAM() {
         return TEAM;
     }
@@ -134,6 +136,21 @@ public class Robot {
 
         return new AimInfo(distanceToGoal, angleToGoal);
 
+    }
+    public boolean isInRevUpZone(){
+        double x = follower.getPose().getX();
+        double y = follower.getPose().getY();
+        double multiplier = 141.5/144;
+        boolean isAboveRightLine = y > x;
+        boolean isAboveLeftLine = y > -x + 144 * multiplier;
+
+        boolean isInClozeZone = isAboveLeftLine && isAboveRightLine;
+
+        isAboveLeftLine = y < x - 48 * multiplier;
+        isAboveRightLine = y < x *-1 + 102 * multiplier;
+
+        boolean isInFarZone = (isAboveLeftLine && isAboveRightLine);
+        return (isInClozeZone || isInFarZone);
     }
 
 }

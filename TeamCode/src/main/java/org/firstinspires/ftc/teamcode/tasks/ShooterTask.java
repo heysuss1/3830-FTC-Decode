@@ -76,6 +76,7 @@ public class ShooterTask {
                 /*TODO: check how much the velocity has dropped compared to the target velocity and change
                 TODO: the pitch according to that, and remove has/hadball logic
                  */
+
                 robot.intakeUptake.setIntakeUptakeMode(IntakeUptake.intakeUptakeStates.UPTAKING);
 
                 if (shotTimer.getElapsedTimeSeconds() > 0.3){
@@ -124,7 +125,7 @@ public class ShooterTask {
                     robot.intakeUptake.closeBlockingServo();
                     setShooterState(ShooterState.WAITING);
                 }
-                if (totalShooterTime.getElapsedTimeSeconds() > 3) {
+                if (totalShooterTime.getElapsedTimeSeconds() > 3 || robot.intakeUptake.isUptakeEmpty()) {
                     robot.intakeUptake.setIntakeUptakeMode(IntakeUptake.intakeUptakeStates.OFF);
                     setShooterState(ShooterState.DONE);
                 }

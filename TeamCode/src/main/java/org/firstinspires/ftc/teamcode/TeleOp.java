@@ -1,7 +1,5 @@
 package org.firstinspires.ftc.teamcode;
 
-import com.acmerobotics.dashboard.config.Config;
-import com.pedropathing.geometry.Pose;
 import com.pedropathing.util.Timer;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.Gamepad;
@@ -143,9 +141,7 @@ public class TeleOp extends LinearOpMode {
                 robot.driveTrain.setSpeed(MAX_SPEED);
             }
 
-            if (currentGamepad1.left_trigger > 0.1 && !(previousGamepad1.left_trigger > 0.1)){
-                shooterTask.revUpShooterMotor(3500);
-            }
+
 
             if (currentGamepad1.x && !previousGamepad1.x) {
                 shooterTask.startShooterTask();
@@ -161,6 +157,9 @@ public class TeleOp extends LinearOpMode {
             robot.follower.update();
             robot.shooter.shooterTask();
             robot.intakeUptake.intakeUptakeTask();
+            if (robot.isInRevUpZone()){
+                shooterTask.revUpShooterMotor(robot.shooter.getCurrentShooterVelTarget());
+            }
 
                 telemetry.addData("Shooter vel: ", robot.shooter.getVelocityRPM());
                 telemetry.addData("Loop Time", currentTime - lastTime);

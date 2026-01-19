@@ -384,13 +384,7 @@ public class Shooter {
         }
     }
 
-    public boolean robotInRevUpZone(){
-        boolean isAboveRightLine = robot.follower.getPose().getY() > robot.follower.getPose().getX();
-        boolean isAboveLeftLine = robot.follower.getPose().getY() > (robot.follower.getPose().getX() * -1 + 144);
 
-        boolean isCloseZone =  isAboveLeftLine && isAboveRightLine;
-
-    }
 
     public void shooterTask() {
         flywheelTask();
