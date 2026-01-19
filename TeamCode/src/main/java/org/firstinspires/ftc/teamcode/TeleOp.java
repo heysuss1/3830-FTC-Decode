@@ -86,14 +86,25 @@ public class TeleOp extends LinearOpMode {
         waitForStart();
 
         while (opModeIsActive()) {
+
+            //tracks loop times
             lastTime = currentTime;
             currentTime = loopTimer.getElapsedTime();
 
+
+            //Copying our game
             previousGamepad1.copy(currentGamepad1);
             currentGamepad1.copy(gamepad1);
 
+
+
+
             robot.driveTrain.moveRobot(currentGamepad1, robot.follower, orienting);
 
+
+            /*
+            When right bumper is pressed, intake toggles between on and off states.
+             */
             if (currentGamepad1.right_bumper && !previousGamepad1.right_bumper) {
                 intakeOn = !intakeOn;  // Toggle the boolean
                 robot.intakeUptake.setIntakeUptakeMode(
@@ -105,12 +116,19 @@ public class TeleOp extends LinearOpMode {
             if (currentGamepad1.left_bumper && !previousGamepad1.left_bumper){
                 lockTurret = !lockTurret;  // Toggle the boolean
                 robot.shooter.setAlwaysAimShooter(lockTurret);
+                if (!lockTurret){
+                    robot.shooter.setTurretDegrees(0.0);
+                }
             }
 
 
             if (currentGamepad1.back && !previousGamepad1.back){
                 alwaysSetVelocity = !alwaysSetVelocity;
                 robot.shooter.setAlwaysSetVelocity(alwaysSetVelocity);
+                if (!alwaysSetVelocity){
+                    robot.shooter.setVelocityTarget(3750.0);
+                    robot.shooter.setPitchDegrees(27.0);
+                }
             }
 
 
@@ -124,8 +142,9 @@ public class TeleOp extends LinearOpMode {
             else {
                 robot.driveTrain.setSpeed(MAX_SPEED);
             }
-            if (currentGamepad1.dpad_up && !previousGamepad1.dpad_up){
-                shooterTask.revUpShooterMotor(3000);
+
+            if (currentGamepad1.left_trigger > 0.1 && !(previousGamepad1.left_trigger > 0.1)){
+                shooterTask.revUpShooterMotor(3500);
             }
 
             if (currentGamepad1.x && !previousGamepad1.x) {

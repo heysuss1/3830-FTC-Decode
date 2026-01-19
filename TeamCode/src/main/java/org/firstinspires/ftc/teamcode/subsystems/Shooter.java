@@ -384,39 +384,45 @@ public class Shooter {
         }
     }
 
+    public boolean robotInRevUpZone(){
+        boolean isAboveRightLine = robot.follower.getPose().getY() > robot.follower.getPose().getX();
+        boolean isAboveLeftLine = robot.follower.getPose().getY() > (robot.follower.getPose().getX() * -1 + 144);
+
+        boolean isCloseZone =  isAboveLeftLine && isAboveRightLine;
+
+    }
+
     public void shooterTask() {
         flywheelTask();
         pitchTask();
         turretTask();
         
         Robot.AimInfo aimInfo = robot.getAimInfo();
+
+        //Finds the rpm needed by providing distance from the goal as input.
         ShootParams.Entry shootParams = Shooter.shootParamsTable.get(aimInfo.getDistanceToGoal());
+
+        //tilt angle calculated by finding distance from the goal
         setPitchDegrees(shootParams.region.tiltAngle);
 
+
+        /*If alwaysaimshooter is true, use atan calculation of turret angle, else set it to the current target
+
+        For teleop if alwaysaimshooter is off, the target is set to zero. */
         if (alwaysAimShooter){
             setTurretDegrees(aimInfo.getAngleToGoal());
         } else {
-            setTurretDegrees(0.0);
+            setTurretDegrees(turretTarget);
         }
 
+        //Uses values from the shooter rpm regression if always set velocity, otherwise set the velocity and
+        //pitch to velocity and pitch of the targets.
         currentShooterVelTarget = shootParams.outputs[0];
         if (alwaysSetVelocity) {
             setVelocityTarget(shootParams.outputs[0]);
         } else {
-            setVelocityTarget(3750.0);
-            setPitchDegrees(27.0);
+            setVelocityTarget(velocityTarget);
+            setPitchDegrees(pitchTarget);
         }
-    }
-    public Robot.AimInfo getAimInfo(){
-        double robotX = robot.follower.getPose().getX();
-        double robotY = robot.follower.getPose().getY();
-
-        double deltaX = Robot.getTEAM() == Robot.Team.BLUE ? robotX - X_GOAL_BLUE: robotX - X_GOAL_RED;
-        double deltaY = robotY - Y_GOAL;
-        double distanceToGoal = Math.hypot(deltaY, deltaX);
-        double angleToGOal = Math.toDegrees(Math.atan2(-deltaY, -deltaX));
-
-        return new Robot.AimInfo(distanceToGoal, angleToGOal);
-
     }
 }

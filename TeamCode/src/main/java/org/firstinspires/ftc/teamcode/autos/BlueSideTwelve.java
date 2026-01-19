@@ -48,7 +48,7 @@ public class BlueSideTwelve extends OpMode {
     PathChain driveToShootPreloads, driveToGroup1, driveToShootGroup1, driveToGroup2, driveToShootGroup2, driveToGroup3, driveToShootGroup3,
             intakeGroup1, intakeGroup2, intakeGroup3, driveToGate, driveToPark;
 
-    Pose startingPose =(new Pose(23.5, 132, Math.toRadians(135)));
+    Pose startingPose = (new Pose(23.5, 132, Math.toRadians(135)));
     Pose shootingPose = (new Pose(48, 96, Math.toRadians(135)));
     Pose group1startPose = (new Pose(45, 85, Math.toRadians(180)));
     Pose group2startPose =(new Pose(42, 61, Math.toRadians(180)) );
