@@ -10,6 +10,7 @@ import org.firstinspires.ftc.teamcode.tasks.ShooterTask;
 @com.qualcomm.robotcore.eventloop.opmode.TeleOp(name = "TeleOp")
 public class TeleOp extends LinearOpMode {
 
+    //TODO: a button to relocalize robot in our human player zone.
     /*
     cross - shoot
     right bumper - intake on and off

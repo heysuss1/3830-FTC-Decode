@@ -48,7 +48,7 @@ public class FarZoneAuto extends  OpMode{
     PathChain driveToShootPreloads, driveToGroup1, driveToShootGroup1, driveToGroup2, driveToShootGroup2, driveToGroup3, driveToShootGroup3,
             intakeGroup1, intakeGroup2, intakeGroup3, driveToGate, driveToPark;
 
-    Pose startingPose =(new Pose(120.5, 132, Math.toRadians(45)));
+    Pose startingPose = (new Pose(120.5, 132, Math.toRadians(45)));
     Pose shootingPose = (new Pose(96, 96, Math.toRadians(45)));
     Pose group1startPose = (new Pose(99, 85, 0));
     Pose group2startPose =(new Pose(99, 61, 0) );

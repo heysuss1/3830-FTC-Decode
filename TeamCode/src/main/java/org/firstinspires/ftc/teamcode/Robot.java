@@ -9,6 +9,7 @@ import org.firstinspires.ftc.teamcode.pedroPathing.Constants;
 import org.firstinspires.ftc.teamcode.subsystems.DriveTrain;
 import org.firstinspires.ftc.teamcode.subsystems.IntakeUptake;
 import org.firstinspires.ftc.teamcode.subsystems.Shooter;
+import org.firstinspires.ftc.teamcode.tasks.ShooterTask;
 
 
 public class Robot {
@@ -32,26 +33,22 @@ public class Robot {
     }
 
 
-    public enum Team{
-        RED,
-        BLUE,
-    }
     public enum Motif{
         NULL,
         GPP,
         PGP,
         PPG
     }
-    static Team TEAM = Team.RED;
+    static Auto.Team TEAM;
     static Motif MOTIF = Motif.GPP;
     public final static boolean inComp = true;
 
     public static Pose teleOpStartPose;
 
     public static Pose RED_GOAL_POSE = new Pose(123, 126.5, Math.toRadians(36));
-    public static Pose BLUE_GOAL_POSE = Robot.convertAlliancePose(RED_GOAL_POSE);
+//    public static Pose BLUE_GOAL_POSE = Robot.convertAlliancePose(RED_GOAL_POSE);
     public static Pose RED_FAR_POSE = new Pose(60, 8, Math.toRadians(90));
-    public static Pose BLUE_FAR_POSE = Robot.convertAlliancePose(RED_FAR_POSE);
+//    public static Pose BLUE_FAR_POSE = Robot.convertAlliancePose(RED_FAR_POSE);
 
     public static String[] POSE_NAME_LIST = {"Red Goal", "Blue Goal", "Red Far Zone", "Blue Far Zone"};
     public static Pose[] POSE_LIST = {RED_GOAL_POSE, BLUE_GOAL_POSE, RED_FAR_POSE, BLUE_FAR_POSE};
@@ -61,11 +58,14 @@ public class Robot {
     public final static double FIELD_CENTER_X = 72;
 
     public static double ballXOffset = 0, ballYOffset = 0;
-    public final static double Y_GOAL = 143;
-    public final static double X_GOAL_RED = 143;
+    public final static double Y_GOAL = 141.5;
+    public final static double X_GOAL_RED = 141.5;
+    public final static double FIELD_LENGTH = 141.5;
+
     public final static double X_GOAL_BLUE = 0;
     public final DriveTrain driveTrain;
     public  Shooter shooter;
+    public ShooterTask shooterTask;
     public  Follower follower;
     public final Telemetry telemetry;
     public final IntakeUptake intakeUptake;
@@ -77,25 +77,15 @@ public class Robot {
         driveTrain = new DriveTrain(hwMap, telemetry);
         intakeUptake = new IntakeUptake(hwMap, telemetry);
         shooter = new Shooter(hwMap, telemetry, this);
+
+        shooterTask = new ShooterTask(this);
     }
 
 
     //the team is the alliance you're on for that match
-    public static Pose convertAlliancePose(Pose pose) {
-        double x = pose.getX();
-        double y = pose.getY();
-        double heading = pose.getHeading();
-
-        if (getTEAM() == Team.BLUE) {
-            x = 141.5 - x;
-            heading = Math.PI/2 - heading;
-        }
-
-        return new Pose(x, y, heading);
-    }
 
 
-    public static Team getTEAM() {
+    public static Auto.Team getTEAM() {
         return TEAM;
     }
 
@@ -107,7 +97,7 @@ public class Robot {
         return MOTIF;
     }
 
-    public static void setTeam(Team team){
+    public static void setTeam(Auto.Team team){
         TEAM = team;
     }
     public static Pose getTeleOpStartPose(){
