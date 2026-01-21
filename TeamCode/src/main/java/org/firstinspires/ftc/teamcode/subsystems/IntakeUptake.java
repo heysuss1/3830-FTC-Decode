@@ -135,11 +135,14 @@ public class IntakeUptake {
         if (getNumberOfBallsStored() == 3){
             greenLED.on();
             redLED.off();
-        } else if(getNumberOfBallsStored() == 2){
+        } else if (getNumberOfBallsStored() == 2){
             greenLED.on();
             redLED.on();
-        } else {
+        } else if (getNumberOfBallsStored() == 1){
             redLED.on();
+            greenLED.off();
+        } else {
+            redLED.off();
             greenLED.off();
         }
     }
