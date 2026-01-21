@@ -95,11 +95,12 @@ public class Auto extends LinearOpMode {
             telemetry.update();
         }
 
-        if (autoType == AutoType.CLOSE_ZONE){
+        if (autoType == AutoType.CLOSE_ZONE) {
             autoCommand = new CmdCloseZoneAuto(robot, team, startDelay);
-        } else {
-            autoCommand = new CmdFarZoneAuto(robot, team, startDelay);
         }
+//        } else {
+//            autoCommand = new CmdFarZoneAuto(robot, team, startDelay);
+//        }
 
         robot.shooter.setPitchDegrees(27.5);
         robot.shooter.setTurretDegrees(0.0);

@@ -10,6 +10,7 @@ import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 
+import org.firstinspires.ftc.teamcode.Auto;
 import org.firstinspires.ftc.teamcode.Robot;
 import org.firstinspires.ftc.teamcode.subsystems.IntakeUptake;
 import org.firstinspires.ftc.teamcode.subsystems.Shooter;
@@ -74,7 +75,7 @@ public class BlueSideTwelve extends OpMode {
         robot.intakeUptake.closeBlockingServo();
 //        robot.shooter.setAlwaysAimShooter(false);
 
-        Robot.setTeam(Robot.Team.BLUE);
+        Robot.setTeam(Auto.Team.BLUE);
 
         telemetry.addData("Team", Robot.getTEAM());
         buildPaths();

@@ -88,16 +88,16 @@ public class TwelveBallAuto extends OpMode {
     }
 
     public void start(){
-         startingPose = Robot.convertAlliancePose(startingPose);
-         shootingPose = Robot.convertAlliancePose(shootingPose);
-         group1startPose = Robot.convertAlliancePose(group1startPose);
-         group2startPose = Robot.convertAlliancePose(group2startPose );
-         group3startPose = Robot.convertAlliancePose(group3startPose);
-         group1endPose = Robot.convertAlliancePose(group1endPose );
-         group2endPose = Robot.convertAlliancePose(group2endPose);
-         group3endPose = Robot.convertAlliancePose(group3endPose);
-         gatePose = Robot.convertAlliancePose(gatePose);
-         parkPose = Robot.convertAlliancePose(parkPose);
+//         startingPose = Robot.convertAlliancePose(startingPose);
+//         shootingPose = Robot.convertAlliancePose(shootingPose);
+//         group1startPose = Robot.convertAlliancePose(group1startPose);
+//         group2startPose = Robot.convertAlliancePose(group2startPose );
+//         group3startPose = Robot.convertAlliancePose(group3startPose);
+//         group1endPose = Robot.convertAlliancePose(group1endPose );
+//         group2endPose = Robot.convertAlliancePose(group2endPose);
+//         group3endPose = Robot.convertAlliancePose(group3endPose);
+//         gatePose = Robot.convertAlliancePose(gatePose);
+//         parkPose = Robot.convertAlliancePose(parkPose);
     }
 
     public void stop(){

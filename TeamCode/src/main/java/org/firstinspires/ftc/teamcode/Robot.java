@@ -46,9 +46,9 @@ public class Robot {
     public static Pose teleOpStartPose;
 
     public static Pose RED_GOAL_POSE = new Pose(123, 126.5, Math.toRadians(36));
-//    public static Pose BLUE_GOAL_POSE = Robot.convertAlliancePose(RED_GOAL_POSE);
+    public static Pose BLUE_GOAL_POSE = (RED_GOAL_POSE); //TODO I HAVE TO CONVERT
     public static Pose RED_FAR_POSE = new Pose(60, 8, Math.toRadians(90));
-//    public static Pose BLUE_FAR_POSE = Robot.convertAlliancePose(RED_FAR_POSE);
+    public static Pose BLUE_FAR_POSE = (RED_FAR_POSE); //I REMOVED CONVERSION
 
     public static String[] POSE_NAME_LIST = {"Red Goal", "Blue Goal", "Red Far Zone", "Blue Far Zone"};
     public static Pose[] POSE_LIST = {RED_GOAL_POSE, BLUE_GOAL_POSE, RED_FAR_POSE, BLUE_FAR_POSE};
@@ -113,7 +113,7 @@ public class Robot {
 
         double x_goal;
 
-        if (Robot.getTEAM() == Robot.Team.BLUE) {
+        if (Robot.getTEAM() == Auto.Team.BLUE) {
             x_goal = X_GOAL_BLUE;
         } else {
             x_goal = X_GOAL_RED;

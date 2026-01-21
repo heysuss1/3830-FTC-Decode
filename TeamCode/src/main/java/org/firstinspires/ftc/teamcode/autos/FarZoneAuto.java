@@ -76,31 +76,31 @@ public class FarZoneAuto extends  OpMode{
     }
 
 
-    public void init_loop(){
-        if (gamepad1.dpad_up) {
-            Robot.setTeam(Robot.Team.BLUE);
-        }
-        if (gamepad1.dpad_down){
-            Robot.setTeam(Robot.Team.RED);
-        }
-        if (gamepad1.left_bumper){
-            editingAlliance = false;
-        }
-        telemetry.addData("Team", Robot.getTEAM());
-        telemetry.update();
-    }
+//    public void init_loop(){
+//        if (gamepad1.dpad_up) {
+//            Robot.setTeam(Robot.Team.BLUE);
+//        }
+//        if (gamepad1.dpad_down){
+//            Robot.setTeam(Robot.Team.RED);
+//        }
+//        if (gamepad1.left_bumper){
+//            editingAlliance = false;
+//        }
+//        telemetry.addData("Team", Robot.getTEAM());
+//        telemetry.update();
+//    }
 
     public void start(){
-         startingPose = Robot.convertAlliancePose(startingPose);
-         shootingPose = Robot.convertAlliancePose(shootingPose);
-         group1startPose = Robot.convertAlliancePose(group1startPose);
-         group2startPose = Robot.convertAlliancePose(group2startPose );
-         group3startPose = Robot.convertAlliancePose(group3startPose);
-         group1endPose = Robot.convertAlliancePose(group1endPose );
-         group2endPose = Robot.convertAlliancePose(group2endPose);
-         group3endPose = Robot.convertAlliancePose(group3endPose);
-         gatePose = Robot.convertAlliancePose(gatePose);
-         parkPose = Robot.convertAlliancePose(parkPose);
+//         startingPose = Robot.convertAlliancePose(startingPose);
+//         shootingPose = Robot.convertAlliancePose(shootingPose);
+//         group1startPose = Robot.convertAlliancePose(group1startPose);
+//         group2startPose = Robot.convertAlliancePose(group2startPose );
+//         group3startPose = Robot.convertAlliancePose(group3startPose);
+//         group1endPose = Robot.convertAlliancePose(group1endPose );
+//         group2endPose = Robot.convertAlliancePose(group2endPose);
+//         group3endPose = Robot.convertAlliancePose(group3endPose);
+//         gatePose = Robot.convertAlliancePose(gatePose);
+//         parkPose = Robot.convertAlliancePose(parkPose);
 
 
     }
