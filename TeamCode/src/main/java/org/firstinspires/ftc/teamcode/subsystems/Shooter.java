@@ -338,6 +338,12 @@ public class Shooter {
             topShooterMotor.setPower(output);
             bottomShooterMotor.setPower(topShooterMotor.getPower());
         }
+        else
+        {
+            //Have the shooter idle down to zero instead of wasting power.
+            topShooterMotor.setPower(0);
+            bottomShooterMotor.setPower(topShooterMotor.getPower());
+        }
         if (!Robot.inComp) {
             telemetry.addLine("\nFlywheel Info:");
             telemetry.addData("Target Velocity (rpm)", velocityTarget );
