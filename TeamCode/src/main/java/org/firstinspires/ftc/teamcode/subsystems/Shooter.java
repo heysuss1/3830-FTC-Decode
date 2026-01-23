@@ -218,8 +218,8 @@ public class Shooter {
         //TODO: Why are you only clipping to 160 and not 180? This seems like a band-aid.
     }
 
-    public void setAlwaysAimShooter(boolean condition) {
-        alwaysAimShooter = condition;
+    public void setAlwaysAimTurret(boolean condition) {
+        alwaysAimTurret = condition;
     }
 
     public void setAlwaysSetVelocity(boolean condition) {

@@ -7,6 +7,7 @@ import com.pedropathing.util.Timer;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 
+import org.firstinspires.ftc.teamcode.Auto;
 import org.firstinspires.ftc.teamcode.Robot;
 import org.firstinspires.ftc.teamcode.subsystems.IntakeUptake;
 import org.firstinspires.ftc.teamcode.subsystems.Shooter;
@@ -75,10 +76,10 @@ public class TwelveBallAuto extends OpMode {
 
     public void init_loop(){
         if (gamepad1.dpad_up) {
-            Robot.setTeam(Robot.Team.BLUE);
+            Robot.setTeam(Auto.Team.BLUE);
         }
         if (gamepad1.dpad_down){
-            Robot.setTeam(Robot.Team.RED);
+            Robot.setTeam(Auto.Team.RED);
         }
         if (gamepad1.left_bumper){
             editingAlliance = false;
