@@ -1,9 +1,5 @@
 package org.firstinspires.ftc.teamcode.subsystems;
 
-import static org.firstinspires.ftc.teamcode.Robot.X_GOAL_BLUE;
-import static org.firstinspires.ftc.teamcode.Robot.X_GOAL_RED;
-import static org.firstinspires.ftc.teamcode.Robot.Y_GOAL;
-
 import com.qualcomm.robotcore.hardware.AnalogInput;
 import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.DcMotor;
@@ -11,7 +7,6 @@ import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
-import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.util.Range;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
@@ -20,9 +15,8 @@ import org.firstinspires.ftc.teamcode.controllers.PidfController;
 
 public class Shooter {
 
-
     public static final ShootParams.Region[] shootRegions = {
-            //Region 1: pitch 25 degrees, y = 3200 + 15x
+            //Region 1: pitch 25 degrees, y = 3718.987 + 4.966x
             new ShootParams.Region(28.0, new double[][] {{3718.987, 4.966}}),
             //Region 2:
             new ShootParams.Region(30.0, new double[][] {{2899.984, 20}}),
@@ -45,40 +39,32 @@ public class Shooter {
     public static final class Params {
 
         //Shooter Params
-
         public static final double GOBUILDA_5000_CPR = 28.0;
         public static final double SHOOTER_MOTOR_GEAR_RATIO = 1;
-        public static final double SHOOTER_TICKS_PER_REV = GOBUILDA_5000_CPR * SHOOTER_MOTOR_GEAR_RATIO;//update gear ratio
+        public static final double SHOOTER_TICKS_PER_REV = GOBUILDA_5000_CPR * SHOOTER_MOTOR_GEAR_RATIO;
         public static final double SHOOTER_KP = 0.001, SHOOTER_KI = 0.01, SHOOTER_KD = 0, SHOOTER_KF = 0.0002, SHOOTER_I_ZONE = 150;
-        public static final double SHOOTER_TOLERANCE_RPM = (100);
+        public static final double SHOOTER_TOLERANCE_RPM = 100;
 
-
-
-        public static final double MIN_PITCH_DEGREES = 26; //29
+        //Pitch Params
+        public static final double MIN_PITCH_DEGREES = 26;
         public static final double MAX_PITCH_DEGREES = 53;
         public static final double PITCH_GEAR_RATIO = .177 ;
-        public static  final double PITCH_ENCODER_ZERO_OFFSET = .5; //0.48
+        public static  final double PITCH_ENCODER_ZERO_OFFSET = .5;
         public static  final double PITCH_POSITION_OFFSET = MIN_PITCH_DEGREES;
-        public static final double PITCH_DEGREES_PER_REV = 360 * PITCH_GEAR_RATIO; //360 * PITCH_GEAR_RATIO
+        public static final double PITCH_DEGREES_PER_REV = 360 * PITCH_GEAR_RATIO;
         public static final double PITCH_TOLERANCE = 2;
+        public static final double VEL_DROP_PITCH_SCALE = 0;
 
         //Turret Params
-
-        //        PIDFController pidf = new PIDFController(0.0025, 0, 0, 0.000246, 100);
         public static final double TURRET_KP = 0.016, TURRET_KI = (.01), TURRET_KD = (.00003), TURRET_KF = (0), TURRET_I_ZONE = (5);
-        public static final double TURRET_TICKS_PER_REV = 67;
-        public static final double TURRET_GEAR_RATIO = 0.506; //Servo gear / turret gear
+        public static final double TURRET_GEAR_RATIO = 0.506;
         public static final double MIN_TURRET_DEGREES = -90;
         public static final double CROSSOVER_THRESHOLD = 0.5;
         public static final double MAX_TURRET_DEGREES = 90;
-
         public static final double TURRET_ENCODER_ZERO_OFFSET = 0;
         public static final double TURRET_POSITION_OFFSET = 0;
         public static final double TURRET_DEGREES_PER_REV = -360 * TURRET_GEAR_RATIO;
-
         public static final double TURRET_TOLERANCE = 3;
-
-
     }
 
     private final DcMotorEx bottomShooterMotor;
@@ -94,29 +80,25 @@ public class Shooter {
     private final PidfController shooterController;
     private final PidfController turretController;
 
-    private final ElapsedTime timer;
     public final Robot robot;
 
     public Double velocityTarget = null;
     public Double pitchTarget = null;
     public Double turretTarget = null;
-    public Double currentShooterVelTarget = null;
-
 
     public double currentVoltage = 0;
     public double prevVoltage = 0;
     private int crossovers = 0;
 
-    private double timeout = 0.0;
-
-    public static boolean alwaysSetVelocity = false;
-    public static boolean alwaysAimShooter = false;
+    private static boolean alwaysSetVelocity = false;
+    private static boolean alwaysAimTurret = false;
+    private static boolean alwaysAimPitch = false;
+    private static boolean compensateForVelDropWithPitch = false;
 
     public Shooter(HardwareMap hwMap, Telemetry telemetry, Robot robot) {
 
         this.telemetry = telemetry;
         this.robot = robot;
-        timer = new ElapsedTime();
 
         pitchServo = hwMap.get(Servo.class, "pitchServo");
         pitchEncoder = hwMap.get(AnalogInput.class, "pitchEncoder");
@@ -144,48 +126,65 @@ public class Shooter {
         turretController = new PidfController(Params.TURRET_KP, Params.TURRET_KI, Params.TURRET_KD, Params.TURRET_KF, Params.TURRET_I_ZONE);
     }
 
+    public boolean getAlwaysAimTurret() {
+        return alwaysAimTurret;
+    }
+
+    public boolean getAlwaysSetVelocity() {
+        return alwaysSetVelocity;
+    }
+
+    public boolean getAlwaysAimPitch() {
+        return alwaysAimPitch;
+    }
+
     public PidfController getShooterController() {
         return shooterController;
     }
+
     public PidfController getTurretController() {
         return turretController;
     }
 
-    public Double getVelocityTarget(){
+    public DcMotorEx getShooterMotor() {
+        return topShooterMotor;
+    }
+
+    public CRServo getTurretServo() {
+        return primaryTurretServo;
+    }
+
+    public Servo getPitchServo() {
+        return pitchServo;
+    }
+
+    public Double getVelocityTarget() {
         return velocityTarget;
     }
 
-    public CRServo getSecondaryTurretServo() {
-        return secondaryTurretServo;
+    public double getPitchTarget(){
+        return pitchTarget;
+    }
+
+    public double getTurretTarget(){
+        return turretTarget;
+    }
+
+    public double getRawPitchPos() {
+        return (pitchEncoder.getVoltage()/pitchEncoder.getMaxVoltage());
+    }
+
+    public double getTurretRawPose() {
+        return turretEncoder.getVoltage()/turretEncoder.getMaxVoltage();
     }
 
     public Double getVelocityRPM() {
         return (Math.abs(topShooterMotor.getVelocity()) * 60)/Params.SHOOTER_TICKS_PER_REV;
     }
 
-
-    public double getRawPitchPos(){
-        return (pitchEncoder.getVoltage()/pitchEncoder.getMaxVoltage());
-    }
     public double getPitchDegrees() {
         double rawPitchPos = (pitchEncoder.getVoltage() / pitchEncoder.getMaxVoltage());
         return rawPitchToDegrees(rawPitchPos);
-    }
-
-    public double rawPitchToDegrees(double rawPitchPos) {
-        double encoderOffset = (rawPitchPos - Shooter.Params.PITCH_ENCODER_ZERO_OFFSET);
-        return (encoderOffset * (Shooter.Params.PITCH_GEAR_RATIO * 360)) + Shooter.Params.PITCH_POSITION_OFFSET;
-    }
-
-    public void setAlwaysAimShooter(boolean condition){
-        alwaysAimShooter = condition;
-    }
-    public void setAlwaysSetVelocity(boolean condition){alwaysSetVelocity = condition;}
-    public DcMotorEx getBottomShooterMotor(){
-        return bottomShooterMotor;
-    }
-    public DcMotorEx getTopShooterMotor(){
-        return topShooterMotor;
     }
 
     public double getTurretDegrees() {
@@ -195,9 +194,60 @@ public class Shooter {
         return modularConversion(unconverted);
     }
 
-    public int getCrossovers(){
+    public int getCrossovers() {
         return crossovers;
     }
+
+    public double rawPitchToDegrees(double rawPitchPos) {
+        double encoderOffset = (rawPitchPos - Shooter.Params.PITCH_ENCODER_ZERO_OFFSET);
+        return (encoderOffset * Params.PITCH_DEGREES_PER_REV) + Shooter.Params.PITCH_POSITION_OFFSET;
+    }
+
+    public double degreesToRawPitch(double degrees) {
+        //TODO: Why did you remove this safety. double clippedDegrees = Range.clip(degrees, Params.MIN_PITCH_DEGREES, Params.MAX_PITCH_DEGREES);
+        double pitchZeroOffset = (degrees - Params.PITCH_POSITION_OFFSET) / (Params.PITCH_DEGREES_PER_REV);
+        return pitchZeroOffset + Params.PITCH_ENCODER_ZERO_OFFSET;
+    }
+
+    public void setVelocityTarget(Double velocityTargetRPM) {
+        this.velocityTarget = velocityTargetRPM;
+    }
+
+    public void setPitchDegrees(Double targetPitchDegrees) {
+        pitchTarget = degreesToRawPitch(targetPitchDegrees);
+    }
+
+    public void setTurretDegrees(Double targetDegrees) {
+        if (targetDegrees == null){
+            turretTarget = null;
+            return;
+        } else if (targetDegrees == 0){
+            turretTarget = 0.0;
+            return;
+        }
+
+        double turretTargetRaw = (targetDegrees - Math.toDegrees(robot.follower.getHeading())) * -1;
+        double turretTargetModulo = robot.shooter.modularConversion(turretTargetRaw);
+        turretTarget = Range.clip(turretTargetModulo, -160, 160);
+        //TODO: Why are you only clipping to 160 and not 180? This seems like a band-aid.
+    }
+
+    public void setAlwaysAimTurret(boolean condition) {
+        alwaysAimTurret = condition;
+    }
+
+    public void setAlwaysSetVelocity(boolean condition) {
+        alwaysSetVelocity = condition;
+    }
+
+    public void setAlwaysAimPitch(boolean condition) {
+        alwaysAimPitch = condition;
+    }
+
+    public double modularConversion(double n) {
+        return (Math.floorMod((long)(n + 180), 360) - 180);
+    }
+
     public void countCrossovers() {
 
         prevVoltage = currentVoltage;
@@ -213,71 +263,14 @@ public class Shooter {
         }
     }
 
-    public double modularConversion(double n) {
-        return (double) (Math.floorMod((long)(n + 180), 360) - 180);
-    }
-
-
-
-    public DcMotorEx getShooterMotor(){
-        return topShooterMotor;
-    }
-
-    public CRServo getPrimaryTurretServo(){
-        return primaryTurretServo;
-    }
-    public double getTurretRawPose() {
-        return turretEncoder.getVoltage()/3.3;
-    }
-
-    public Double getCurrentShooterVelTarget(){
-        return currentShooterVelTarget;
-    }
-
-    public void setVelocityTarget(Double velocityTargetRPM, double timeout) {
-        this.velocityTarget = velocityTargetRPM;
-        this.timeout = timeout;
-    }
-
-    public void setVelocityTarget(Double velocityTargetRPM) {
-        setVelocityTarget(velocityTargetRPM, 0.0);
-    }
-
-    public void setPitchDegrees(Double targetPitchDegrees) {
-        pitchTarget = degreesToRawPitch(targetPitchDegrees);
-    }
-    public void setTurretDegrees(Double targetDegrees) {
-        if (targetDegrees == null){
-            turretTarget = null;
-            return;
-        } else if (targetDegrees == 0){
-            turretTarget = 0.0;
-            return;
-        }
-        double turretTargetRaw = (targetDegrees - Math.toDegrees(robot.follower.getHeading())) * -1;
-        double turretTargetModulo = robot.shooter.modularConversion(turretTargetRaw);
-        double turretTargetClipped = Range.clip(turretTargetModulo, -160, 160);
-        //once it can rotate more, add some code to modulo this btwn -180 and 180 (like (n-180)%360+180 or smth)
-        turretTarget = turretTargetClipped;
-    }
-    public void resetTimeout() {
-        timeout = 0.0;
-    }
-
-    public double getPitchTarget(){
-        return pitchTarget;
-    }
-
-    public void stopShooterSystem() {
-        stopShooterMotor();
-        stopPitchServo();
-        stopTurret();
+    public double velDropCompensationWithPitch() {
+        //Note: This would be added to Degrees before being converted to raw pitch
+        return getShooterController().getError() * Params.VEL_DROP_PITCH_SCALE;
     }
 
     public void stopShooterMotor() {
         if (velocityTarget != null) {
             velocityTarget = null;
-            resetTimeout();
             topShooterMotor.setPower(0);
             bottomShooterMotor.setPower(topShooterMotor.getPower());
         }
@@ -297,17 +290,16 @@ public class Shooter {
         };
     }
 
-    public double degreesToRawPitch(double degrees) {
-        double pitchZeroOffset = (degrees - Params.PITCH_POSITION_OFFSET) / (Params.PITCH_GEAR_RATIO * 360);
-        return pitchZeroOffset + Params.PITCH_ENCODER_ZERO_OFFSET;
+    public void stopShooter() {
+        stopShooterMotor();
+        stopPitchServo();
+        stopTurret();
     }
-
 
     public boolean isFlywheelOnTarget(double tolerance) {
         boolean isOnTarget = false;
         if (velocityTarget != null) {
-            isOnTarget = ((timeout > 0.0) && (timer.seconds() >= timeout)) || (Math.abs(velocityTarget - getVelocityRPM()) <= tolerance);
-                            //timer expired                                 or                  rpm is good
+            isOnTarget = (Math.abs(velocityTarget - getVelocityRPM()) <= tolerance);
         }
         return isOnTarget;
     }
@@ -328,11 +320,14 @@ public class Shooter {
         return isOnTarget;
     }
 
-    //TODO I REMOVED THE TURRET IS READY
+    public boolean isShooterReady(double flywheelTolerance, double turretTolerance, double pitchTolerance) {
+        return (velocityTarget == null || isFlywheelOnTarget(flywheelTolerance))
+                && (turretTarget == null || isTurretOnTarget(turretTolerance))
+                && (pitchTarget == null || isPitchOnTarget(pitchTolerance));
+    }
 
-    public boolean isShooterReady(double flywheelTolerance) {
-        return (velocityTarget == null || isFlywheelOnTarget(flywheelTolerance));
-                //&& (turretTarget == null || isTurretOnTarget(turretTolerance));
+    public boolean isShooterReady() {
+        return isShooterReady(Params.SHOOTER_TOLERANCE_RPM, Params.TURRET_TOLERANCE, Params.PITCH_TOLERANCE);
     }
 
     public void flywheelTask() {
@@ -341,6 +336,12 @@ public class Shooter {
             double currentVelocity = getVelocityRPM();
             output = shooterController.calculate(velocityTarget, currentVelocity);
             topShooterMotor.setPower(output);
+            bottomShooterMotor.setPower(topShooterMotor.getPower());
+        }
+        else
+        {
+            //Have the shooter idle down to zero instead of wasting power.
+            topShooterMotor.setPower(0);
             bottomShooterMotor.setPower(topShooterMotor.getPower());
         }
         if (!Robot.inComp) {
@@ -362,6 +363,7 @@ public class Shooter {
             telemetry.addData("Current Pitch Degrees", getPitchDegrees());
         }
     }
+
     public void turretTask() {
         double output = 0;
         countCrossovers();
@@ -384,39 +386,45 @@ public class Shooter {
         }
     }
 
-
-
     public void shooterTask() {
         flywheelTask();
         pitchTask();
         turretTask();
-        
-        Robot.AimInfo aimInfo = robot.getAimInfo();
 
-        //Finds the rpm needed by providing distance from the goal as input.
+        Robot.AimInfo aimInfo = robot.getAimInfo();
+        //Find rpm and pitch from the shootparams table based on distance to goal.
         ShootParams.Entry shootParams = Shooter.shootParamsTable.get(aimInfo.getDistanceToGoal());
 
-        //tilt angle calculated by finding distance from the goal
-        setPitchDegrees(shootParams.region.tiltAngle);
+        //TODO: All this logic could be written a lot better but for now I dont want to confuse yall?
+        if(compensateForVelDropWithPitch) {
+            double pitchCompensation = velDropCompensationWithPitch();
+            if(alwaysAimPitch) {
+                setPitchDegrees(shootParams.region.tiltAngle + pitchCompensation);
+            }
+            else {
+                setPitchDegrees(pitchTarget + pitchCompensation);
+            }
+        }
+        else {
+            if(alwaysAimPitch) {
+                setPitchDegrees(shootParams.region.tiltAngle);
+            }
+            else {
+                setPitchDegrees(pitchTarget);
+            }
+        }
 
-
-        /*If alwaysaimshooter is true, use atan calculation of turret angle, else set it to the current target
-
-        For teleop if alwaysaimshooter is off, the target is set to zero. */
-        if (alwaysAimShooter){
+        //Aim turret, pitch, and velocity based on the boolean settings using the shootparams table.
+        if (alwaysAimTurret) {
             setTurretDegrees(aimInfo.getAngleToGoal());
         } else {
             setTurretDegrees(turretTarget);
         }
 
-        //Uses values from the shooter rpm regression if always set velocity, otherwise set the velocity and
-        //pitch to velocity and pitch of the targets.
-        currentShooterVelTarget = shootParams.outputs[0];
         if (alwaysSetVelocity) {
             setVelocityTarget(shootParams.outputs[0]);
-        } else {
-            setVelocityTarget(velocityTarget);
-            setPitchDegrees(pitchTarget);
         }
+        //Always setting pitch to the calculated angle from the shootparams table.
+        setVelocityTarget(velocityTarget);
     }
 }
