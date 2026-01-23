@@ -66,17 +66,13 @@ public class ShooterTask {
 
             case SPEEDING_UP:
                 robot.shooter.setVelocityTarget(velTarget);
-                if (robot.shooter.isShooterReady(Shooter.Params.SHOOTER_TOLERANCE_RPM)){
+                if (robot.shooter.isShooterReady()){
                     totalShooterTime.resetTimer();
                     robot.intakeUptake.openBlockingServo();
                     setShooterState(ShooterState.SHOOTING);
                 }
                 break;
             case SHOOTING:
-                /*TODO: check how much the velocity has dropped compared to the target velocity and change
-                TODO: the pitch according to that, and remove has/hadball logic
-                 */
-
                 robot.intakeUptake.setIntakeUptakeMode(IntakeUptake.intakeUptakeStates.UPTAKING);
 
                 if (shotTimer.getElapsedTimeSeconds() > 0.3){

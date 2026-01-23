@@ -389,8 +389,9 @@ public class Shooter {
 
         if (alwaysSetVelocity) {
             velocityTarget = shootParams.outputs[0];
+        } else {
+            setVelocityTarget(velocityTarget);
         }
         //Always setting pitch to the calculated angle from the shootparams table.
-        setVelocityTarget(velocityTarget);
     }
 }
