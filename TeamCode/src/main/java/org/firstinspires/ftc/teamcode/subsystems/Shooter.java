@@ -53,6 +53,7 @@ public class Shooter {
         public static  final double PITCH_POSITION_OFFSET = MIN_PITCH_DEGREES;
         public static final double PITCH_DEGREES_PER_REV = 360 * PITCH_GEAR_RATIO;
         public static final double PITCH_TOLERANCE = 2;
+        public static final double VEL_DROP_PITCH_SCALE = 0;
 
         //Turret Params
         public static final double TURRET_KP = 0.016, TURRET_KI = (.01), TURRET_KD = (.00003), TURRET_KF = (0), TURRET_I_ZONE = (5);
@@ -89,9 +90,10 @@ public class Shooter {
     public double prevVoltage = 0;
     private int crossovers = 0;
 
-    public static boolean alwaysSetVelocity = false;
-    public static boolean alwaysAimTurret = false;
-    public static boolean alwaysAimPitch = false;
+    private static boolean alwaysSetVelocity = false;
+    private static boolean alwaysAimTurret = false;
+    private static boolean alwaysAimPitch = false;
+    private static boolean compensateForVelDropWithPitch = false;
 
     public Shooter(HardwareMap hwMap, Telemetry telemetry, Robot robot) {
 
@@ -122,6 +124,18 @@ public class Shooter {
 
         shooterController = new PidfController(Params.SHOOTER_KP, Params.SHOOTER_KI, Params.SHOOTER_KD, Params.SHOOTER_KF, Params.SHOOTER_I_ZONE);
         turretController = new PidfController(Params.TURRET_KP, Params.TURRET_KI, Params.TURRET_KD, Params.TURRET_KF, Params.TURRET_I_ZONE);
+    }
+
+    public boolean getAlwaysAimTurret() {
+        return alwaysAimTurret;
+    }
+
+    public boolean getAlwaysSetVelocity() {
+        return alwaysSetVelocity;
+    }
+
+    public boolean getAlwaysAimPitch() {
+        return alwaysAimPitch;
     }
 
     public PidfController getShooterController() {
@@ -249,6 +263,11 @@ public class Shooter {
         }
     }
 
+    public double velDropCompensationWithPitch() {
+        //Note: This would be added to Degrees before being converted to raw pitch
+        return getShooterController().getError() * Params.VEL_DROP_PITCH_SCALE;
+    }
+
     public void stopShooterMotor() {
         if (velocityTarget != null) {
             velocityTarget = null;
@@ -371,6 +390,23 @@ public class Shooter {
         ShootParams.Entry shootParams = Shooter.shootParamsTable.get(aimInfo.getDistanceToGoal());
 
         //TODO: All this logic could be written a lot better but for now I dont want to confuse yall?
+        if(compensateForVelDropWithPitch) {
+            double pitchCompensation = velDropCompensationWithPitch();
+            if(alwaysAimPitch) {
+                setPitchDegrees(shootParams.region.tiltAngle + pitchCompensation);
+            }
+            else {
+                setPitchDegrees(pitchTarget + pitchCompensation);
+            }
+        }
+        else {
+            if(alwaysAimPitch) {
+                setPitchDegrees(shootParams.region.tiltAngle);
+            }
+            else {
+                setPitchDegrees(pitchTarget);
+            }
+        }
 
         //Aim turret, pitch, and velocity based on the boolean settings using the shootparams table.
         if (alwaysAimTurret) {
@@ -379,16 +415,8 @@ public class Shooter {
             setTurretDegrees(turretTarget);
         }
 
-        if(alwaysAimPitch) {
-            setPitchDegrees(shootParams.region.tiltAngle);
-        }
-        else
-        {
-            setPitchDegrees(pitchTarget);
-        }
-
         if (alwaysSetVelocity) {
-            velocityTarget = shootParams.outputs[0];
+            setVelocityTarget(shootParams.outputs[0]);
         }
         //Always setting pitch to the calculated angle from the shootparams table.
         setVelocityTarget(velocityTarget);
