@@ -87,7 +87,7 @@ public class CmdCloseZoneAuto implements AutoCommands {
 
     @Override
     public void cancel() {
-        robot.shooterTask.cancelShooterUpdate();
+        robot.shooterTask.cancel();
         Robot.setTeleOpStartPose(robot.follower.getPose());
         //TODO: make it track position even after rolling
     }
@@ -110,7 +110,7 @@ public class CmdCloseZoneAuto implements AutoCommands {
                 break;
             case DRIVE_TO_SHOOTING_SPOT:
 
-                robot.shooterTask.revUpShooterMotor(AUTO_RPM);
+                robot.shooter.setVelocityTarget(AUTO_RPM);
 
                 if (shotCount == 0 && isFirstTimePath ) {robot.follower.followPath(driveToShootPreloads, true); isFirstTimePath = false;}
                 if (shotCount == 1 && isFirstTimePath) {robot.follower.followPath(driveToShootGroup1, true); isFirstTimePath = false;}
@@ -123,7 +123,7 @@ public class CmdCloseZoneAuto implements AutoCommands {
             case SHOOTING:
 
                 if (isFirstTimePath) {
-                    robot.shooterTask.startShooterTask();
+                    robot.shooterTask.startTask();
                     isFirstTimePath = false;
                 }
 

@@ -118,17 +118,17 @@ public class TeleOp extends LinearOpMode {
             }
 
             if (currentGamepad1.x && !previousGamepad1.x) {
-                robot.shooterTask.startShooterTask();
+                robot.shooterTask.startTask();
             }
 
             if (currentGamepad1.cross && !previousGamepad1.cross) {
-                robot.shooterTask.cancelShooterUpdate();
+                robot.shooterTask.cancel();
                 robot.intakeUptake.setIntakeUptakeMode(IntakeUptake.intakeUptakeStates.OFF);
                 intakeOn = false;
             }
 
             if (robot.isInRevUpZone()){
-                robot.shooterTask.revUpShooterMotor(robot.shooter.getVelocityTarget());
+                robot.shooter.setVelocityTarget(robot.shooter.getVelocityTarget());
             }
 
             robot.shooterTask.update();
