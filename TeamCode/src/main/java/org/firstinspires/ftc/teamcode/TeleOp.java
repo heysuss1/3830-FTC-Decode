@@ -57,7 +57,7 @@ public class TeleOp extends LinearOpMode {
 
         loopTimer = new Timer();
 
-        robot.shooter.setAlwaysAimShooter(lockTurret);
+        robot.shooter.setAlwaysAimTurret(lockTurret);
         robot.shooter.setAlwaysSetVelocity(alwaysSetVelocity);
 
         while (opModeInInit()) {
@@ -114,7 +114,7 @@ public class TeleOp extends LinearOpMode {
 
             if (currentGamepad1.left_bumper && !previousGamepad1.left_bumper){
                 lockTurret = !lockTurret;  // Toggle the boolean
-                robot.shooter.setAlwaysAimShooter(lockTurret);
+                robot.shooter.setAlwaysAimTurret(lockTurret);
                 if (!lockTurret){
                     robot.shooter.setTurretDegrees(0.0);
                 }
@@ -159,7 +159,7 @@ public class TeleOp extends LinearOpMode {
             robot.shooter.shooterTask();
             robot.intakeUptake.intakeUptakeTask();
             if (robot.isInRevUpZone()){
-                shooterTask.revUpShooterMotor(robot.shooter.getCurrentShooterVelTarget());
+                shooterTask.revUpShooterMotor(robot.shooter.getVelocityTarget());
             }
 
                 telemetry.addData("Shooter vel: ", robot.shooter.getVelocityRPM());
@@ -167,7 +167,7 @@ public class TeleOp extends LinearOpMode {
                 telemetry.addData("x: ", robot.follower.getPose().getX());
                 telemetry.addData("y: ", robot.follower.getPose().getY());
                 telemetry.addData("Heading: ", robot.follower.getHeading());
-                telemetry.addData("Shooter param rpm", robot.shooter.getCurrentShooterVelTarget());
+                telemetry.addData("Shooter param rpm", robot.shooter.getVelocityTarget());
                 telemetry.addData("Current Turret Degrees", robot.shooter.getTurretDegrees());
                 telemetry.addData("Color Sensor 1 Distance", robot.intakeUptake.getColorSensor1Distance());
                 telemetry.addData("Color Sensor 2 Distance", robot.intakeUptake.getColorSensor2Distance());
