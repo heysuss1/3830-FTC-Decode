@@ -89,7 +89,7 @@ public class Auto extends LinearOpMode {
 
             }
             telemetry.addData("Editing Mode", editingMode);
-            telemetry.addData("Team", Robot.getTEAM());
+            telemetry.addData("Team", Robot.getTeam());
             telemetry.addData("Auto Type", autoType);
             telemetry.addData("Wait Time", startDelay);
             telemetry.update();

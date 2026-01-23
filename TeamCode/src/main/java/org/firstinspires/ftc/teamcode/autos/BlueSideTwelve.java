@@ -77,7 +77,7 @@ public class BlueSideTwelve extends OpMode {
 
         Robot.setTeam(Auto.Team.BLUE);
 
-        telemetry.addData("Team", Robot.getTEAM());
+        telemetry.addData("Team", Robot.getTeam());
         buildPaths();
     }
 

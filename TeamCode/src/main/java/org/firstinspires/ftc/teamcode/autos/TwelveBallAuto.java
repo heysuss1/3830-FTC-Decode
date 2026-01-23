@@ -84,7 +84,7 @@ public class TwelveBallAuto extends OpMode {
         if (gamepad1.left_bumper){
             editingAlliance = false;
         }
-        telemetry.addData("Team", Robot.getTEAM());
+        telemetry.addData("Team", Robot.getTeam());
         telemetry.update();
     }
 
