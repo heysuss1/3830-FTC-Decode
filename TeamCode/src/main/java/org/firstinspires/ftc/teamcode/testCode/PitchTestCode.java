@@ -7,6 +7,7 @@ import com.qualcomm.robotcore.hardware.AnalogInput;
 import com.qualcomm.robotcore.hardware.Gamepad;
 import com.qualcomm.robotcore.hardware.Servo;
 
+import org.firstinspires.ftc.teamcode.Robot;
 import org.firstinspires.ftc.teamcode.subsystems.Shooter;
 
 
@@ -14,16 +15,15 @@ import org.firstinspires.ftc.teamcode.subsystems.Shooter;
 @Config
 @TeleOp(name = "Pitch Position Test")
 public class PitchTestCode extends LinearOpMode {
-    AnalogInput pitchEncoder;
-    Servo pitchServo;
 
+
+    Robot robot;
     double servoPosition = 0;
     public static double PITCH_GEAR_RATIO = .177; //.208 //(15.0/173) * (48.0/20)
 
 
     public double getPitchDegrees() {
-        double rawPitchPos = (pitchEncoder.getVoltage() / 3.3);
-        return rawPitchToDegrees(rawPitchPos);
+        return rawPitchToDegrees(robot.shooter.getRawPitchPos());
     }
 
     public double rawPitchToDegrees(double rawPitchPos) {
@@ -32,8 +32,7 @@ public class PitchTestCode extends LinearOpMode {
     }
 
     public void runOpMode(){
-        pitchEncoder = hardwareMap.get(AnalogInput.class, "pitchEncoder");
-        pitchServo = hardwareMap.get(Servo.class, "pitchServo");
+        robot = new Robot(hardwareMap, telemetry);
         waitForStart();
 
         Gamepad currentGamepad1 = new Gamepad();
@@ -50,8 +49,8 @@ public class PitchTestCode extends LinearOpMode {
             } else if (currentGamepad1.dpad_right && !previousGamepad1.dpad_right){
                 servoPosition += 0.01;
             }
-            pitchServo.setPosition(servoPosition);
-            telemetry.addData("Servo position", pitchEncoder.getVoltage()/3.3);
+            robot.shooter.getPitchServo().setPosition(servoPosition);
+            telemetry.addData("Servo position", robot.shooter.getRawPitchPos());
             telemetry.addData("pitch degree", getPitchDegrees());
             telemetry.update();
 
