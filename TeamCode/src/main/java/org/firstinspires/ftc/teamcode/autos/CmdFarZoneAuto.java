@@ -1,27 +1,79 @@
 package org.firstinspires.ftc.teamcode.autos;
 
+import com.pedropathing.geometry.BezierLine;
+import com.pedropathing.geometry.Pose;
+import com.pedropathing.paths.PathChain;
+import com.pedropathing.util.Timer;
+import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.OpMode;
+
+import org.firstinspires.ftc.teamcode.Auto;
+import org.firstinspires.ftc.teamcode.Robot;
+import org.firstinspires.ftc.teamcode.subsystems.IntakeUptake;
+import org.firstinspires.ftc.teamcode.subsystems.Shooter;
+import org.firstinspires.ftc.teamcode.tasks.ShooterTask;
 public class CmdFarZoneAuto implements AutoCommands{
 
     enum AutoState {
         START,
         DRIVE_TO_SHOOTING_SPOT,
         SHOOTING,
-        DRIVE_TO_GROUP,
-        SLURPING_GROUP,
-        DRIVE_TO_PARK, // <-- dunno if we need this but just in case
-        DRIVE_TO_GATE, // <--- these are for later when we get more balls than the pre-placed ones
-        SLURPING_FROM_GATE,
-        STOP
+        DRIVE_TO_LOADING_ZONE,
+        DRIVE_TO_PARK
+
     }
 
-    AutoState state = AutoState.START;
+    AutoState autoState = AutoState.START;
+    Robot robot;
+    Timer pathTimer;
+    boolean isFirstTimePath;
+    final double AUTO_RPM = 4000;
+    int shotCount = 0;
     @Override
     public void buildPaths(){
 
     }
     @Override
     public void autonomousUpdate(){
+        switch (autoState) {
+            case START:
+                //intentionally fall through!!111!11111111!!1
+            case DRIVE_TO_SHOOTING_SPOT:
 
+                robot.shooter.setVelocityTarget(AUTO_RPM);
+
+                if (shotCount == 0 && isFirstTimePath )
+                {
+                    robot.follower.followPath(driveToShootPreloads, true);
+                    isFirstTimePath = false;
+                }
+                if (shotCount == 1 && isFirstTimePath) { robot.follower.followPath(driveToShootGroup1, true); isFirstTimePath = false;}
+
+                if (!robot.follower.isBusy()) {
+                    isFirstTimePath = true;
+                    autoState = TwelveBallAuto.AutoState.SHOOTING;
+                }
+                break;
+            case SHOOTING:
+
+                if (isFirstTimePath){
+                    robot.shooterTask.startTask();
+                    isFirstTimePath = false;
+                }
+
+                if (robot.shooterTask.isFinished()) {
+                    isFirstTimePath = true;
+                    shotCount++;
+                    if (shotCount == 1) autoState = AutoState.DRIVE_TO_LOADING_ZONE;
+                    if (shotCount == 2) autoState = AutoState.DRIVE_TO_PARK;
+                }
+
+                break;
+            case DRIVE_TO_LOADING_ZONE:
+
+                break;
+
+        }
     }
     @Override
     public void cancel(){
@@ -29,6 +81,6 @@ public class CmdFarZoneAuto implements AutoCommands{
     }
     @Override
     public String getAutoState(){
-        return state.toString();
+        return autoState.toString();
     }
 }
