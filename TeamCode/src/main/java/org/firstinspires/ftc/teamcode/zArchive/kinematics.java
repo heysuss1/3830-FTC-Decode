@@ -20,8 +20,8 @@ public class kinematics {
 
     //tan(h2-h1) = (a2-a1)/d
     public double getDistanceLimelight(double targetHeight, double angleToObject){
-        double deltaDistance = targetHeight - Robot.cameraHeight;
-        double deltaAngle = angleToObject - Robot.cameraAngle;
+        double deltaDistance = targetHeight - Robot.cameraParams.cameraHeight;
+        double deltaAngle = angleToObject - Robot.cameraParams.cameraAngle;
 
         return deltaDistance/(Math.tan(deltaAngle));
     }

@@ -89,7 +89,7 @@ public class Auto extends LinearOpMode {
 
             }
             telemetry.addData("Editing Mode", editingMode);
-            telemetry.addData("Team", Robot.getTEAM());
+            telemetry.addData("Team", Robot.getTeam());
             telemetry.addData("Auto Type", autoType);
             telemetry.addData("Wait Time", startDelay);
             telemetry.update();
@@ -137,7 +137,7 @@ public class Auto extends LinearOpMode {
         double heading = pos.getHeading();
 
         if (team == Team.BLUE) {
-            x = Robot.FIELD_LENGTH - x;
+            x = Robot.fieldParams.FIELD_LENGTH - x;
             heading = Math.floorMod((int)(180 - heading),360);
             //heading = ((180 - heading) % 360 + 360) % 360;
             //This is the same as the mod: heading = (180 - heading) >= 0 ? (180 - heading) : 360 + (180 - heading);

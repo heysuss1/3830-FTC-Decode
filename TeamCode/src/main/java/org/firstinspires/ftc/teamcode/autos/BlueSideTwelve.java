@@ -77,7 +77,7 @@ public class BlueSideTwelve extends OpMode {
 
         Robot.setTeam(Auto.Team.BLUE);
 
-        telemetry.addData("Team", Robot.getTEAM());
+        telemetry.addData("Team", Robot.getTeam());
         buildPaths();
     }
 
@@ -127,7 +127,7 @@ public class BlueSideTwelve extends OpMode {
 
                 //TODO: RENAME VARIABLE NAME
                 if (isFirstTimePath){
-                    shooterTask.startShooterTask();
+                    shooterTask.startTask();
                     isFirstTimePath = false;
 
                 }
@@ -176,7 +176,7 @@ public class BlueSideTwelve extends OpMode {
                 break;
         }
 
-        shooterTask.update(4300);
+        shooterTask.update();
         robot.shooter.shooterTask();
         robot.intakeUptake.intakeUptakeTask();
         robot.follower.update();

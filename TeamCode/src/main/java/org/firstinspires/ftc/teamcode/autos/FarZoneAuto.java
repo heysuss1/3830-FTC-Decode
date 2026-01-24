@@ -34,7 +34,6 @@ public class FarZoneAuto extends  OpMode{
 
     Robot robot;
     Timer pathTimer;
-    ShooterTask shooterTask;
 
     boolean isFirstTimePath = true;
 
@@ -62,7 +61,6 @@ public class FarZoneAuto extends  OpMode{
     public void init() {
 
         robot = new Robot(hardwareMap, telemetry);
-        shooterTask = new ShooterTask(robot);
         pathTimer = new Timer();
 
 
@@ -114,7 +112,7 @@ public class FarZoneAuto extends  OpMode{
     public void loop(){
         autonomousUpdate();
             telemetry.addData("Current Auto State", autoState);
-            telemetry.addData("Current Shooter State", shooterTask.getShooterState());
+            telemetry.addData("Current Shooter State", robot.shooterTask.getShooterState());
             telemetry.addData("follower busy?", robot.follower.isBusy());
             telemetry.addData("shooter velocity", robot.shooter.getVelocityRPM());
         telemetry.addData("Is Flywheel on target: ", robot.shooter.isFlywheelOnTarget(Shooter.Params.SHOOTER_TOLERANCE_RPM) + ", Is pitch on target: " + robot.shooter.isPitchOnTarget(Shooter.Params.PITCH_TOLERANCE));
@@ -131,7 +129,7 @@ public class FarZoneAuto extends  OpMode{
                 //intentionally fall through
             case DRIVE_TO_SHOOTING_SPOT:
 
-                shooterTask.revUpShooterMotor(AUTO_RPM);
+                robot.shooter.setVelocityTarget(AUTO_RPM);
 
                 if (shotCount == 0 && isFirstTimePath )
                 {
@@ -150,11 +148,11 @@ public class FarZoneAuto extends  OpMode{
             case SHOOTING:
 
                 if (isFirstTimePath){
-                    shooterTask.startShooterTask();
+                    robot.shooterTask.startTask();
                     isFirstTimePath = false;
                 }
 
-                if (shooterTask.isFinished()) {
+                if (robot.shooterTask.isFinished()) {
                     isFirstTimePath = true;
                     shotCount++;
                     if (shotCount <= 3) autoState = AutoState.DRIVE_TO_GROUP;
@@ -198,7 +196,7 @@ public class FarZoneAuto extends  OpMode{
                 break;
         }
 
-        shooterTask.update(AUTO_RPM);
+        robot.shooterTask.update();
         robot.shooter.shooterTask();
         robot.intakeUptake.intakeUptakeTask();
         robot.follower.update();

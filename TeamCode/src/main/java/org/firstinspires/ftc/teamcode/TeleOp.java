@@ -19,45 +19,29 @@ public class TeleOp extends LinearOpMode {
     */
 
     Robot robot;
-    ShooterTask shooterTask;
     Timer loopTimer;
-    double currentTime = 0, lastTime = 0;
     Gamepad currentGamepad1 = new Gamepad();
     Gamepad previousGamepad1 = new Gamepad();
 
-
-
-
     final double MAX_SPEED = 0.8;
+    double currentTime = 0, lastTime = 0;
+    boolean intakeOn = false;
+    boolean orienting = false;
+    int startingPoseIndex = 0;
 
-
+    private boolean lockTurret = true;
+    private boolean alwaysSetVelocity = true;
+    private boolean alwaysSetPitch = true;
 
     public void runOpMode() {
         robot = new Robot(hardwareMap, telemetry);
-
-        //I did this because the robots positions should be stored after auto, and it would only need to be manually
-        //set if doing driver practice and thus not in comp.
-//        robot.follower.setStartingPose(new Pose(143-20, 143-16.5, Math.toRadians(-36)));
-
+        loopTimer = new Timer();
 
         robot.driveTrain.setBrakeMode();
         robot.driveTrain.setSpeed(MAX_SPEED);
 
-
-//        robot.follower.setStartingPose(new Pose(80, 8, Math.toDegrees(90)));
-
-
-        boolean intakeOn = false;
-        boolean orienting = false;
-        boolean lockTurret = true;
-        boolean alwaysSetVelocity = true;
-        int startingPoseIndex = 0;
-
-        shooterTask = new ShooterTask(robot);
-
-        loopTimer = new Timer();
-
-        robot.shooter.setAlwaysAimShooter(lockTurret);
+        robot.shooter.setAlwaysAimTurret(lockTurret);
+        robot.shooter.setAlwaysAimPitch(alwaysSetPitch);
         robot.shooter.setAlwaysSetVelocity(alwaysSetVelocity);
 
         while (opModeInInit()) {
@@ -86,24 +70,17 @@ public class TeleOp extends LinearOpMode {
 
         while (opModeIsActive()) {
 
-            //tracks loop times
+            //Tracks loop times
             lastTime = currentTime;
             currentTime = loopTimer.getElapsedTime();
-
 
             //Copying our game
             previousGamepad1.copy(currentGamepad1);
             currentGamepad1.copy(gamepad1);
 
-
-
-
             robot.driveTrain.moveRobot(currentGamepad1, robot.follower, orienting);
 
-
-            /*
-            When right bumper is pressed, intake toggles between on and off states.
-             */
+            //When right bumper is pressed, intake toggles between on and off states.
             if (currentGamepad1.right_bumper && !previousGamepad1.right_bumper) {
                 intakeOn = !intakeOn;  // Toggle the boolean
                 robot.intakeUptake.setIntakeUptakeMode(
@@ -114,12 +91,11 @@ public class TeleOp extends LinearOpMode {
 
             if (currentGamepad1.left_bumper && !previousGamepad1.left_bumper){
                 lockTurret = !lockTurret;  // Toggle the boolean
-                robot.shooter.setAlwaysAimShooter(lockTurret);
+                robot.shooter.setAlwaysAimTurret(lockTurret);
                 if (!lockTurret){
                     robot.shooter.setTurretDegrees(0.0);
                 }
             }
-
 
             if (currentGamepad1.back && !previousGamepad1.back){
                 alwaysSetVelocity = !alwaysSetVelocity;
@@ -129,7 +105,6 @@ public class TeleOp extends LinearOpMode {
                     robot.shooter.setPitchDegrees(27.0);
                 }
             }
-
 
             if (currentGamepad1.circle && !previousGamepad1.circle) {
                 robot.intakeUptake.setIntakeUptakeMode(IntakeUptake.intakeUptakeStates.OUTTAKING);
@@ -142,39 +117,37 @@ public class TeleOp extends LinearOpMode {
                 robot.driveTrain.setSpeed(MAX_SPEED);
             }
 
-
-
             if (currentGamepad1.x && !previousGamepad1.x) {
-                shooterTask.startShooterTask();
+                robot.shooterTask.startTask();
             }
 
             if (currentGamepad1.cross && !previousGamepad1.cross) {
-                shooterTask.cancelShooterUpdate();
+                robot.shooterTask.cancel();
                 robot.intakeUptake.setIntakeUptakeMode(IntakeUptake.intakeUptakeStates.OFF);
                 intakeOn = false;
             }
 
-            shooterTask.update();
+            if (robot.isInRevUpZone()){
+                robot.shooter.setVelocityTarget(robot.shooter.getVelocityTarget());
+            }
+
+            robot.shooterTask.update();
             robot.follower.update();
             robot.shooter.shooterTask();
             robot.intakeUptake.intakeUptakeTask();
-            if (robot.isInRevUpZone()){
-                shooterTask.revUpShooterMotor(robot.shooter.getCurrentShooterVelTarget());
-            }
 
-                telemetry.addData("Shooter vel: ", robot.shooter.getVelocityRPM());
-                telemetry.addData("Loop Time", currentTime - lastTime);
-                telemetry.addData("x: ", robot.follower.getPose().getX());
-                telemetry.addData("y: ", robot.follower.getPose().getY());
-                telemetry.addData("Heading: ", robot.follower.getHeading());
-                telemetry.addData("Shooter param rpm", robot.shooter.getCurrentShooterVelTarget());
-                telemetry.addData("Current Turret Degrees", robot.shooter.getTurretDegrees());
-                telemetry.addData("Color Sensor 1 Distance", robot.intakeUptake.getColorSensor1Distance());
-                telemetry.addData("Color Sensor 2 Distance", robot.intakeUptake.getColorSensor2Distance());
-                telemetry.addData("Color Sensor 3 Distance", robot.intakeUptake.getColorSensor3Distance());
-                telemetry.addData("Number of big BLACK balls", robot.intakeUptake.getNumberOfBallsStored());
-
+            telemetry.addData("Shooter vel: ", robot.shooter.getVelocityRPM());
+            telemetry.addData("Loop Time", currentTime - lastTime);
+            telemetry.addData("x: ", robot.follower.getPose().getX());
+            telemetry.addData("y: ", robot.follower.getPose().getY());
+            telemetry.addData("Heading: ", robot.follower.getHeading());
+            telemetry.addData("Shooter param rpm", robot.shooter.getVelocityTarget());
+            telemetry.addData("Current Turret Degrees", robot.shooter.getTurretDegrees());
+            telemetry.addData("Color Sensor 1 Distance", robot.intakeUptake.getColorSensor1Distance());
+            telemetry.addData("Color Sensor 2 Distance", robot.intakeUptake.getColorSensor2Distance());
+            telemetry.addData("Color Sensor 3 Distance", robot.intakeUptake.getColorSensor3Distance());
+            telemetry.addData("Number of big BLACK balls", robot.intakeUptake.getNumberOfBallsStored());
             telemetry.update();
-            }
         }
     }
+}
