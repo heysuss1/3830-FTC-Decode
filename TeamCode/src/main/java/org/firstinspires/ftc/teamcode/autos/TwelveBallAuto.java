@@ -73,19 +73,19 @@ public class TwelveBallAuto extends OpMode {
     }
 
 
-    public void init_loop(){
-        if (gamepad1.dpad_up) {
-            Robot.setTeam(Robot.Team.BLUE);
-        }
-        if (gamepad1.dpad_down){
-            Robot.setTeam(Robot.Team.RED);
-        }
-        if (gamepad1.left_bumper){
-            editingAlliance = false;
-        }
-        telemetry.addData("Team", Robot.getTEAM());
-        telemetry.update();
-    }
+//    public void init_loop(){
+//        if (gamepad1.dpad_up) {
+//            Robot.setTeam(Robot.Team.BLUE);
+//        }
+//        if (gamepad1.dpad_down){
+//            Robot.setTeam(Robot.Team.RED);
+//        }
+//        if (gamepad1.left_bumper){
+//            editingAlliance = false;
+//        }
+//        telemetry.addData("Team", Robot.getTEAM());
+//        telemetry.update();
+//    }
 
     public void start(){
 //         startingPose = Robot.convertAlliancePose(startingPose);

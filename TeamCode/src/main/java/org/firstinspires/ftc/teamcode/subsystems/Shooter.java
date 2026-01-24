@@ -131,7 +131,8 @@ public class Shooter {
         bottomShooterMotor = hwMap.get(DcMotorEx.class, "bottomShooterMotor");
         bottomShooterMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         bottomShooterMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        bottomShooterMotor.setDirection(DcMotorSimple.Direction.REVERSE);
+        bottomShooterMotor.setDirection(DcMotorSimple.Direction.FORWARD);
+
         bottomShooterMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
         bottomShooterMotor.setPower(0);
 
