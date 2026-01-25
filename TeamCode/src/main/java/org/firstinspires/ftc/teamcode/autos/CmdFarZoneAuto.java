@@ -51,7 +51,7 @@ public class CmdFarZoneAuto extends AutoCommands{
             case SHOOTING:
 
                 if (isFirstTimePath){
-                    robot.shooterTask.startTask();
+                    robot.shooterTask.startTask(null);
                     isFirstTimePath = false;
                 }
 
@@ -72,6 +72,7 @@ public class CmdFarZoneAuto extends AutoCommands{
                 break;
             case STOP:
                 cancel();
+                break;
         }
     }
 }

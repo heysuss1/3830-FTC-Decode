@@ -27,6 +27,8 @@ public class TeleOp extends LinearOpMode {
     double currentTime = 0, lastTime = 0;
     boolean intakeOn = false;
     boolean orienting = false;
+
+    Double manualRPM = null;
     int startingPoseIndex = 0;
 
     private boolean lockTurret = true;
@@ -101,7 +103,7 @@ public class TeleOp extends LinearOpMode {
                 alwaysSetVelocity = !alwaysSetVelocity;
                 robot.shooter.setAlwaysSetVelocity(alwaysSetVelocity);
                 if (!alwaysSetVelocity){
-                    robot.shooter.setVelocityTarget(3750.0);
+                    manualRPM = 3750.0;
                     robot.shooter.setPitchDegrees(27.0);
                 }
             }
@@ -118,7 +120,7 @@ public class TeleOp extends LinearOpMode {
             }
 
             if (currentGamepad1.x && !previousGamepad1.x) {
-                robot.shooterTask.startTask();
+                robot.shooterTask.startTask(manualRPM);
             }
 
             if (currentGamepad1.cross && !previousGamepad1.cross) {
@@ -127,9 +129,12 @@ public class TeleOp extends LinearOpMode {
                 intakeOn = false;
             }
 
-//            if (robot.isInRevUpZone()){
-//                robot.shooter.setVelocityTarget(robot.shooter.getVelocityTarget());
-//            }
+            if (currentGamepad1.dpad_left && !previousGamepad1.dpad_left){
+                robot.resetPose();
+            }
+            if (robot.isInRevUpZone()){
+                robot.shooter.setVelocityTarget(robot.shooter.getVelocityTarget());
+            }
 
             robot.shooterTask.update();
             robot.follower.update();
@@ -147,7 +152,6 @@ public class TeleOp extends LinearOpMode {
             telemetry.addData("Color Sensor 2 Distance", robot.intakeUptake.getColorSensor2Distance());
             telemetry.addData("Color Sensor 3 Distance", robot.intakeUptake.getColorSensor3Distance());
             telemetry.addData("Number of big BLACK balls", robot.intakeUptake.getNumberOfBallsStored());
-            telemetry.addData("Shooter State", robot.shooterTask.getShooterState());
             telemetry.addData("Shooter Velocity Target", robot.shooter.getVelocityTarget());
             telemetry.update();
         }

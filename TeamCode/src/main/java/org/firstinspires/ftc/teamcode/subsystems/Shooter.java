@@ -439,10 +439,11 @@ public class Shooter {
             setTurretDegrees(turretTarget);
         }
 
-//        if (alwaysSetVelocity) {
-////            setVelocityTarget(shootParams.outputs[0]);
-//            currentVelocityTarget = (shootParams.outputs[0]);
-//        }
+        if (alwaysSetVelocity) {
+            currentVelocityTarget = (shootParams.outputs[0]);
+        } else {
+
+        }
         //Always setting pitch to the calculated angle from the shootparams table.
     }
 }

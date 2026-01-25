@@ -24,28 +24,36 @@ public class ShooterTask {
     double speedUpTimeout;
     double shootTimeout;
 
+    public Double manualRpmOverride;
+
     public ShooterTask(Robot robot){
         this.robot = robot;
         timeoutTimer = new Timer();
     }
 
-    public void startTask(double speedUpTimeout, double shootTimeout){
+    public void startTask(double speedUpTimeout, double shootTimeout, Double manualRpm){
         taskFinished = false;
         this.speedUpTimeout = speedUpTimeout;
         this.shootTimeout = shootTimeout;
         timeoutTimer.resetTimer();
         shooterState = ShooterState.SPEEDING_UP;
+        manualRpmOverride = manualRpm;
     }
 
-    public void startTask(){
-        startTask(DEFAULT_SPEEDUP_TIMEOUT, DEFAULT_SHOOT_TIMEOUT);
+    public void startTask(Double manualRpm){
+        startTask(DEFAULT_SPEEDUP_TIMEOUT, DEFAULT_SHOOT_TIMEOUT, manualRpm);
     }
 
     public void cancel(){
         taskFinished = true;
-//        robot.intakeUptake.closeBlockingServo();
+        robot.intakeUptake.closeBlockingServo();
     }
 
+
+    public void setShooterState(ShooterState state){
+        shooterState = state;
+        timeoutTimer.resetTimer();
+    }
     public ShooterState getShooterState(){
         return shooterState;
     }
@@ -57,24 +65,23 @@ public class ShooterTask {
     public void update(){
         switch (shooterState) {
             case SPEEDING_UP:
-                robot.intakeUptake.openBlockingServo();
-                if (robot.shooter.getAlwaysSetVelocity()){
+                if (manualRpmOverride != null) {
+                    robot.shooter.setVelocityTarget(manualRpmOverride);
+                } else{
                     robot.shooter.setVelocityTarget(robot.shooter.getCurrentVelocityTarget());
-                } else {
-                    robot.shooter.setVelocityTarget(robot.shooter.getVelocityTarget());
                 }
-                if (robot.shooter.isShooterReady() || (speedUpTimeout > 0.0 ||  timeoutTimer.getElapsedTimeSeconds() > speedUpTimeout))
+
+                if (robot.shooter.isShooterReady() || (speedUpTimeout > 0.0 && timeoutTimer.getElapsedTimeSeconds() > speedUpTimeout))
                 {
-                    shooterState = ShooterState.SHOOTING;
+                   setShooterState(ShooterState.SHOOTING);
                 }
                 break;
 
             case SHOOTING:
-
                 robot.intakeUptake.setIntakeUptakeMode(IntakeUptake.intakeUptakeStates.UPTAKING);
 
                 if (robot.intakeUptake.isUptakeEmpty() || (shootTimeout > 0.0 && timeoutTimer.getElapsedTimeSeconds() > shootTimeout)){
-//                    robot.intakeUptake.closeBlockingServo();
+                    robot.intakeUptake.closeBlockingServo();
                     shooterState = ShooterState.DONE;
                 }
                 break;

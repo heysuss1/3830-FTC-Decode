@@ -41,7 +41,7 @@ public class Robot {
         PPG
     }
 
-    static Auto.Team TEAM;
+    static Auto.Team team;
     static Motif MOTIF = Motif.GPP;
     public static Pose teleOpStartPose;
 
@@ -58,6 +58,11 @@ public class Robot {
         public static double cameraAngle = 35; //degrees
     }
 
+
+    public void resetPose(){
+        if (team == Auto.Team.BLUE) follower.setPose(new Pose(135, 9, Math.PI/2));
+        if (team == Auto.Team.RED   ) follower.setPose(new Pose(8, 8, Math.PI/2));
+    }
     public static final class fieldParams {
         public final static double Y_GOAL = 141.5;
         public final static double X_GOAL_RED = 141.5;
@@ -85,7 +90,7 @@ public class Robot {
     }
 
     public static Auto.Team getTeam() {
-        return TEAM;
+        return team;
     }
 
     public static Motif getMotif() {
@@ -101,7 +106,7 @@ public class Robot {
     }
 
     public static void setTeam(Auto.Team team) {
-        TEAM = team;
+        Robot.team = team;
     }
 
     public static void setTeleOpStartPose(Pose startPose) {

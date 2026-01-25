@@ -94,7 +94,7 @@ public class CmdTwelveCloseZoneAuto extends AutoCommands {
             case SHOOTING:
 
                 if (isFirstTimePath) {
-                    robot.shooterTask.startTask();
+                    robot.shooterTask.startTask(null);
                     isFirstTimePath = false;
                 }
 
