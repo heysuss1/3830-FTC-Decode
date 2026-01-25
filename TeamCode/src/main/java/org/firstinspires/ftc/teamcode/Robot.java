@@ -41,28 +41,16 @@ public class Robot {
         PPG
     }
 
-    static Auto.Team team;
+    static Auto.Team team = Auto.Team.RED;
+    static Auto.AutoType autoType = Auto.AutoType.CLOSE_ZONE;
     static Motif MOTIF = Motif.GPP;
     public static Pose teleOpStartPose;
-
-    //TODO: Do you still need all this stuff between  48-54?
-    public static Pose RED_GOAL_POSE = new Pose(123, 126.5, Math.toRadians(36));
-    public static Pose BLUE_GOAL_POSE = (RED_GOAL_POSE); //TODO I HAVE TO CONVERT
-    public static Pose RED_FAR_POSE = new Pose(60, 8, Math.toRadians(90));
-    public static Pose BLUE_FAR_POSE = (RED_FAR_POSE); //I REMOVED CONVERSION
-    public static String[] POSE_NAME_LIST = {"Red Goal", "Blue Goal", "Red Far Zone", "Blue Far Zone"};
-    public static Pose[] POSE_LIST = {RED_GOAL_POSE, BLUE_GOAL_POSE, RED_FAR_POSE, BLUE_FAR_POSE};
 
     public static final class cameraParams {
         public static double cameraHeight = 6.7; //Inches
         public static double cameraAngle = 35; //degrees
     }
 
-
-    public void resetPose(){
-        if (team == Auto.Team.BLUE) follower.setPose(new Pose(135, 9, Math.PI/2));
-        if (team == Auto.Team.RED   ) follower.setPose(new Pose(8, 8, Math.PI/2));
-    }
     public static final class fieldParams {
         public final static double Y_GOAL = 141.5;
         public final static double X_GOAL_RED = 141.5;
@@ -93,6 +81,10 @@ public class Robot {
         return team;
     }
 
+    public static Auto.AutoType getAutoType() {
+        return  autoType;
+    }
+
     public static Motif getMotif() {
         return MOTIF;
     }
@@ -109,8 +101,18 @@ public class Robot {
         Robot.team = team;
     }
 
+    public static void setAutoType(Auto.AutoType autoType) {
+        Robot.autoType = autoType;
+    }
+
     public static void setTeleOpStartPose(Pose startPose) {
         teleOpStartPose = startPose;
+    }
+
+    public void resetPose(){
+        if (team == Auto.Team.BLUE) follower.setPose(new Pose(135, 9, Math.PI/2));
+        if (team == Auto.Team.RED   ) follower.setPose(new Pose(8, 8, Math.PI/2));
+        //TODO: Did you think about orientation? are they facing in or out? if they are isn't heading flipped?
     }
 
     public AimInfo getAimInfo() {

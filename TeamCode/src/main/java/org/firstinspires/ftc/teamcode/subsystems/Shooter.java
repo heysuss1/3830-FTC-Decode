@@ -15,6 +15,11 @@ import org.firstinspires.ftc.teamcode.controllers.PidfController;
 
 public class Shooter {
 
+    public static boolean alwaysSetVelocity = false;
+    public static boolean alwaysAimTurret = false;
+    public static boolean alwaysAimPitch = false;
+    public static boolean compensateForVelDropWithPitch = false;
+
     public static final ShootParams.Region[] shootRegions = {
             //Region 1: pitch 25 degrees, y = 3718.987 + 4.966x
             new ShootParams.Region(28.0, new double[][] {{3718.987, 4.966}}),
@@ -82,20 +87,14 @@ public class Shooter {
 
     public final Robot robot;
 
-    public Double velocityTarget = null;
-
     double currentVelocityTarget;
+    public Double velocityTarget = null;
     public Double pitchTarget = null;
     public Double turretTarget = null;
 
     public double currentVoltage = 0;
     public double prevVoltage = 0;
     private int crossovers = 0;
-
-    private static boolean alwaysSetVelocity = false;
-    private static boolean alwaysAimTurret = false;
-    private static boolean alwaysAimPitch = false;
-    private static boolean compensateForVelDropWithPitch = false;
 
     public Shooter(HardwareMap hwMap, Telemetry telemetry, Robot robot) {
 
@@ -129,25 +128,12 @@ public class Shooter {
         turretController = new PidfController(Params.TURRET_KP, Params.TURRET_KI, Params.TURRET_KD, Params.TURRET_KF, Params.TURRET_I_ZONE);
     }
 
-    public boolean getAlwaysAimTurret() {
-        return alwaysAimTurret;
-    }
-
-    public boolean getAlwaysSetVelocity() {
-        return alwaysSetVelocity;
-    }
-
     public double getCurrentVelocityTarget() {
         return currentVelocityTarget;
     }
     public void setCurrentVelocityTarget(double velocityTarget){
         currentVelocityTarget = velocityTarget;
     }
-
-    public boolean getAlwaysAimPitch() {
-        return alwaysAimPitch;
-    }
-
     public PidfController getShooterController() {
         return shooterController;
     }
@@ -220,8 +206,8 @@ public class Shooter {
     }
 
     public double degreesToRawPitch(double degrees) {
-        //TODO: Why did you remove this safety. double clippedDegrees = Range.clip(degrees, Params.MIN_PITCH_DEGREES, Params.MAX_PITCH_DEGREES);
-        double pitchZeroOffset = (degrees - Params.PITCH_POSITION_OFFSET) / (Params.PITCH_DEGREES_PER_REV);
+        double clippedDegrees = Range.clip(degrees, Params.MIN_PITCH_DEGREES, Params.MAX_PITCH_DEGREES);
+        double pitchZeroOffset = (clippedDegrees - Params.PITCH_POSITION_OFFSET) / (Params.PITCH_DEGREES_PER_REV);
         return pitchZeroOffset + Params.PITCH_ENCODER_ZERO_OFFSET;
     }
 
@@ -246,18 +232,6 @@ public class Shooter {
         double turretTargetModulo = robot.shooter.modularConversion(turretTargetRaw);
         turretTarget = Range.clip(turretTargetModulo, -160, 160);
         //TODO: Why are you only clipping to 160 and not 180? This seems like a band-aid.
-    }
-
-    public void setAlwaysAimTurret(boolean condition) {
-        alwaysAimTurret = condition;
-    }
-
-    public void setAlwaysSetVelocity(boolean condition) {
-        alwaysSetVelocity = condition;
-    }
-
-    public void setAlwaysAimPitch(boolean condition) {
-        alwaysAimPitch = condition;
     }
 
     public double modularConversion(double n) {
@@ -440,7 +414,10 @@ public class Shooter {
         }
 
         if (alwaysSetVelocity) {
-            currentVelocityTarget = (shootParams.outputs[0]);
+            //You should only rev up in rev up zone when always set velocity is on.
+            if (robot.isInRevUpZone()){
+                currentVelocityTarget = (shootParams.outputs[0]);
+            }
         } else {
 
         }

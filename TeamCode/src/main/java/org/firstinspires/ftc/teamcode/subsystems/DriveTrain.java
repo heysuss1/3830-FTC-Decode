@@ -1,7 +1,5 @@
 package org.firstinspires.ftc.teamcode.subsystems;
 
-import com.pedropathing.follower.Follower;
-import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.Gamepad;
@@ -12,100 +10,68 @@ import org.firstinspires.ftc.robotcore.external.Telemetry;
 
 public class DriveTrain {
 
-    //Initialize motors
-    public DcMotorEx lf;
-    public DcMotorEx rf;
-    public Telemetry telemetry;
-    public DcMotorEx lb;
-    public DcMotorEx rb;
-    private double speed;
+    //TODO: Add field centric control
 
-    //Get motors from the hardware map
-    public DriveTrain(HardwareMap hwMap, Telemetry telemetry){
+    private final DcMotorEx leftFront, leftRear, rightFront, rightRear;
+    private Telemetry telemetry;
+    double maxSpeed = 1.0;
+    boolean slowTurning = true;
+
+    public DriveTrain(HardwareMap hwMap, Telemetry telemetry) {
         this.telemetry = telemetry;
-        lf = hwMap.get(DcMotorEx.class, "lf");
-        lf.setDirection(DcMotorSimple.Direction.FORWARD);
-        lf.setPower(0);
 
-        rf = hwMap.get(DcMotorEx.class, "rf");
-        rf.setDirection(DcMotorSimple.Direction.FORWARD);
-        rf.setPower(0);
+        leftFront = hwMap.get(DcMotorEx.class, "leftFront");
+        leftRear = hwMap.get(DcMotorEx.class, "leftRear");
+        rightFront = hwMap.get(DcMotorEx.class, "rightFront");
+        rightRear = hwMap.get(DcMotorEx.class, "rightRear");
 
-        lb = hwMap.get(DcMotorEx.class, "lb");
-        lb.setDirection(DcMotorSimple.Direction.REVERSE);
-        lb.setPower(0);
+        leftFront.setZeroPowerBehavior(DcMotorEx.ZeroPowerBehavior.BRAKE);
+        leftRear.setZeroPowerBehavior(DcMotorEx.ZeroPowerBehavior.BRAKE);
+        rightFront.setZeroPowerBehavior(DcMotorEx.ZeroPowerBehavior.BRAKE);
+        rightRear.setZeroPowerBehavior(DcMotorEx.ZeroPowerBehavior.BRAKE);
 
-        rb = hwMap.get(DcMotorEx.class, "rb");
-        rb.setDirection(DcMotorSimple.Direction.FORWARD);
-        rb.setPower(0);
+        leftFront.setPower(0);
+        leftRear.setPower(0);
+        rightFront.setPower(0);
+        rightRear.setPower(0);
+
+        rightFront.setDirection(DcMotorSimple.Direction.FORWARD);
+        rightRear.setDirection(DcMotorSimple.Direction.FORWARD);
+        leftFront.setDirection(DcMotorSimple.Direction.REVERSE);
+        leftRear.setDirection(DcMotorSimple.Direction.REVERSE);
     }
 
-    public void setBrakeMode(){
-        lf.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        rf.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        lb.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        rb.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+    public void setSlowTurning(boolean turnSlow) {
+        slowTurning = turnSlow;
     }
-    //Get the current max speed of the robot.
-    public double getSpeed() {
-        return speed;
-    }
-    //Set the current max speed of the robot, has to be between -1 and 1.
-    public void setSpeed(double speed){
-        this.speed = Range.clip(speed, -1, 1);
+    public void setMaxSpeed(double speed) {
+        maxSpeed = Range.clip(speed, 0.0, 1.0);
     }
 
+    private void setPower(double rightFrontPower, double leftFrontPower, double rightRearPower, double leftRearPower) {
+        rightFront.setPower(Range.clip(leftRearPower, -maxSpeed, maxSpeed));
+        leftFront.setPower(Range.clip(rightFrontPower, -maxSpeed, maxSpeed));
+        rightRear.setPower(Range.clip(leftFrontPower, -maxSpeed, maxSpeed));
+        leftRear.setPower(Range.clip(rightRearPower, -maxSpeed, maxSpeed));
+    }
 
-    //Do math to move the robot!!!
-    public void moveRobot(Gamepad gamepad1, Follower follower, boolean orienting){
-        double forward;
-        double sideways;
-        double turning;
-        double max;
-        double scaleFactor;
+    public void driveTask(Gamepad gamepad1)
+    {
+        double y = -(Math.atan(5 * gamepad1.left_stick_y) / Math.atan(5));
+        double x = (Math.atan(5 * gamepad1.left_stick_x) / Math.atan(5)) * 1.1; // Strafing compensation
+        double turning = (Math.atan(5 * gamepad1.right_stick_x) / Math.atan(5));
 
-        forward = -(Math.atan(5 * gamepad1.left_stick_y) / Math.atan(5));
-        sideways = (Math.atan(5 * gamepad1.left_stick_x) / Math.atan(5));
-        turning = (Math.atan(5 * gamepad1.right_stick_x) / Math.atan(5)) * 0.5;
-
-        max = Math.max(Math.abs(forward - sideways - turning), Math.max(Math.abs(forward + sideways - turning), Math.max(Math.abs(forward + sideways + turning), Math.abs(forward + turning - sideways))));
-        if (max > speed) {
-            scaleFactor = speed/max;
-        } else {
-            scaleFactor = speed;
+        if (slowTurning) {
+            turning *= 0.5; //Slow down turning
         }
-        scaleFactor *= Math.max(Math.abs(1), 0.2);
 
-        if (!orienting) {
-            setPower(
-                    (forward - sideways - turning) * scaleFactor,
-                    (forward + sideways - turning) * scaleFactor,
-                    (forward + sideways + turning) * scaleFactor,
-                    (forward + turning - sideways) * scaleFactor);
-        } else {
-            setPower(
-                    1,
-                    1,
-                    1,
-                    1
-            );
-        }
-    }
+        double denominator = Math.max(Math.abs(y) + Math.abs(x) + Math.abs(turning), 1);
+        double frontLeftPower = (y + x + turning) / denominator;
+        double backLeftPower = (y - x + turning) / denominator;
+        double frontRightPower = (y - x - turning) / denominator;
+        double backRightPower = (y + x - turning) / denominator;
 
-    //Set power to all of the motors at once.
-    public void setPower(double fr, double br, double fl, double bl) {
-        rf.setPower(Range.clip(fr, -speed, speed));
-        rb.setPower(Range.clip(br, -speed, speed));
-        lf.setPower(Range.clip(fl, -speed, speed));
-        lb.setPower(Range.clip(bl, -speed, speed));
-    }
-
-    public enum turnDirection {CW, CCW}
-    public void turn(turnDirection direction, double power) {
-        if (direction == DriveTrain.turnDirection.CW) {
-            setPower(-1,-1,1,1);
-        } else if (direction == DriveTrain.turnDirection.CCW) {
-            setPower(1,1,-1,-1);
-        }
+        setPower(frontRightPower, frontLeftPower, backRightPower, backLeftPower);
     }
 }
+

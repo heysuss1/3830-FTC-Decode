@@ -106,6 +106,7 @@ public class Auto extends LinearOpMode {
 
         autoCommand.buildPaths();
         Robot.setTeam(team);
+        Robot.setAutoType(autoType);
         waitForStart();
         autoCommand.startAutoCommand();
         while(opModeIsActive()){
