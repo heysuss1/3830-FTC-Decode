@@ -83,6 +83,8 @@ public class Shooter {
     public final Robot robot;
 
     public Double velocityTarget = null;
+
+    double currentVelocityTarget;
     public Double pitchTarget = null;
     public Double turretTarget = null;
 
@@ -135,6 +137,13 @@ public class Shooter {
         return alwaysSetVelocity;
     }
 
+    public double getCurrentVelocityTarget() {
+        return currentVelocityTarget;
+    }
+    public void setCurrentVelocityTarget(double velocityTarget){
+        currentVelocityTarget = velocityTarget;
+    }
+
     public boolean getAlwaysAimPitch() {
         return alwaysAimPitch;
     }
@@ -147,6 +156,12 @@ public class Shooter {
         return turretController;
     }
 
+    public CRServo getPrimaryTurretServo(){
+        return primaryTurretServo;
+    }
+    public CRServo getSecondaryTurretServo(){
+        return secondaryTurretServo;
+    }
     public DcMotorEx getShooterMotor() {
         return topShooterMotor;
     }
@@ -396,6 +411,8 @@ public class Shooter {
         //Find rpm and pitch from the shootparams table based on distance to goal.
         ShootParams.Entry shootParams = Shooter.shootParamsTable.get(aimInfo.getDistanceToGoal());
 
+        currentVelocityTarget = (shootParams.outputs[0]);
+
         //TODO: All this logic could be written a lot better but for now I dont want to confuse yall?
         if(compensateForVelDropWithPitch) {
             double pitchCompensation = velDropCompensationWithPitch();
@@ -422,10 +439,10 @@ public class Shooter {
             setTurretDegrees(turretTarget);
         }
 
-        if (alwaysSetVelocity) {
-            setVelocityTarget(shootParams.outputs[0]);
-        }
+//        if (alwaysSetVelocity) {
+////            setVelocityTarget(shootParams.outputs[0]);
+//            currentVelocityTarget = (shootParams.outputs[0]);
+//        }
         //Always setting pitch to the calculated angle from the shootparams table.
-        setVelocityTarget(velocityTarget);
     }
 }

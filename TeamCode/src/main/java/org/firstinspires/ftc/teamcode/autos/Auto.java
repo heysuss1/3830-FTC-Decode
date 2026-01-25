@@ -1,13 +1,11 @@
-package org.firstinspires.ftc.teamcode;
+package org.firstinspires.ftc.teamcode.autos;
 
 import com.pedropathing.geometry.Pose;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.Gamepad;
 
-import org.firstinspires.ftc.teamcode.autos.AutoCommands;
-import org.firstinspires.ftc.teamcode.autos.CmdCloseZoneAuto;
-import org.firstinspires.ftc.teamcode.autos.CmdFarZoneAuto;
+import org.firstinspires.ftc.teamcode.Robot;
 import org.firstinspires.ftc.teamcode.subsystems.Shooter;
 
 @Autonomous(name = "Auto")
@@ -96,11 +94,10 @@ public class Auto extends LinearOpMode {
         }
 
         if (autoType == AutoType.CLOSE_ZONE) {
-            autoCommand = new CmdCloseZoneAuto(robot, team, startDelay);
+            autoCommand = new CmdTwelveCloseZoneAuto(robot, team, startDelay);
+        } else {
+            autoCommand = new CmdFarZoneAuto(robot, team, startDelay);
         }
-//        } else {
-//            autoCommand = new CmdFarZoneAuto(robot, team, startDelay);
-//        }
 
         robot.shooter.setPitchDegrees(27.5);
         robot.shooter.setTurretDegrees(0.0);

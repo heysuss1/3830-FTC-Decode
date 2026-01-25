@@ -43,7 +43,7 @@ public class ShooterTask {
 
     public void cancel(){
         taskFinished = true;
-        robot.intakeUptake.closeBlockingServo();
+//        robot.intakeUptake.closeBlockingServo();
     }
 
     public ShooterState getShooterState(){
@@ -57,9 +57,14 @@ public class ShooterTask {
     public void update(){
         switch (shooterState) {
             case SPEEDING_UP:
+                robot.intakeUptake.openBlockingServo();
+                if (robot.shooter.getAlwaysSetVelocity()){
+                    robot.shooter.setVelocityTarget(robot.shooter.getCurrentVelocityTarget());
+                } else {
+                    robot.shooter.setVelocityTarget(robot.shooter.getVelocityTarget());
+                }
                 if (robot.shooter.isShooterReady() || (speedUpTimeout > 0.0 ||  timeoutTimer.getElapsedTimeSeconds() > speedUpTimeout))
                 {
-                    robot.intakeUptake.openBlockingServo();
                     shooterState = ShooterState.SHOOTING;
                 }
                 break;
@@ -69,7 +74,7 @@ public class ShooterTask {
                 robot.intakeUptake.setIntakeUptakeMode(IntakeUptake.intakeUptakeStates.UPTAKING);
 
                 if (robot.intakeUptake.isUptakeEmpty() || (shootTimeout > 0.0 && timeoutTimer.getElapsedTimeSeconds() > shootTimeout)){
-                    robot.intakeUptake.closeBlockingServo();
+//                    robot.intakeUptake.closeBlockingServo();
                     shooterState = ShooterState.DONE;
                 }
                 break;
