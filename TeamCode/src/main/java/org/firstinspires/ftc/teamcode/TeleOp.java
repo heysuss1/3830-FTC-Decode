@@ -4,18 +4,30 @@ import com.pedropathing.util.Timer;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.Gamepad;
 
+import org.firstinspires.ftc.teamcode.autos.Auto;
 import org.firstinspires.ftc.teamcode.subsystems.IntakeUptake;
-import org.firstinspires.ftc.teamcode.tasks.ShooterTask;
+import org.firstinspires.ftc.teamcode.subsystems.Shooter;
 
 @com.qualcomm.robotcore.eventloop.opmode.TeleOp(name = "TeleOp")
 public class TeleOp extends LinearOpMode {
 
-    //TODO: a button to relocalize robot in our human player zone.
+    final double MAX_SPEED = 1.0; //See if you driver can handle 1.0, it should net faster cycles.
+    final double SLOW_SPEED = 0.3;
+    final double CLOSE_ZONE_RPM = 3700.0;
+    final double FAR_ZONE_RPM = 4500.0;
+
     /*
-    cross - shoot
-    right bumper - intake on and off
     right trigger - slow mode
+    right bumper - Intake toggle
     circle - outtake
+    x - shot
+    cross - cancel shooting
+    back - toggle always set velocity
+    dpad right - toggle always aim pitch
+    left bumper - toggle always aim turret
+    dpad left - reset pose
+    dpad up - increase manual RPM by 100
+    dpad down - decrease manual RPM by 100
     */
 
     Robot robot;
@@ -23,47 +35,36 @@ public class TeleOp extends LinearOpMode {
     Gamepad currentGamepad1 = new Gamepad();
     Gamepad previousGamepad1 = new Gamepad();
 
-    final double MAX_SPEED = 0.8;
     double currentTime = 0, lastTime = 0;
     boolean intakeOn = false;
-    boolean orienting = false;
-
     Double manualRPM = null;
-    int startingPoseIndex = 0;
-
-    private boolean lockTurret = true;
-    private boolean alwaysSetVelocity = false;
-    private boolean alwaysSetPitch = true;
 
     public void runOpMode() {
         robot = new Robot(hardwareMap, telemetry);
         loopTimer = new Timer();
 
-        robot.driveTrain.setBrakeMode();
-        robot.driveTrain.setSpeed(MAX_SPEED);
-
-        robot.shooter.setAlwaysAimTurret(lockTurret);
-        robot.shooter.setAlwaysAimPitch(alwaysSetPitch);
-        robot.shooter.setAlwaysSetVelocity(alwaysSetVelocity);
+        robot.driveTrain.setSlowTurning(true);
+        robot.driveTrain.setMaxSpeed(MAX_SPEED);
 
         while (opModeInInit()) {
             previousGamepad1.copy(currentGamepad1);
             currentGamepad1.copy(gamepad1);
 
             if (currentGamepad1.dpad_right && !previousGamepad1.dpad_right) {
-                startingPoseIndex = Math.floorMod(startingPoseIndex + 1, 4);
+                Robot.setTeam(Auto.Team.RED == Robot.getTeam() ? Auto.Team.BLUE : Auto.Team.RED);
             }
 
             if (currentGamepad1.dpad_left && !previousGamepad1.dpad_left) {
-                startingPoseIndex = Math.floorMod(startingPoseIndex + 1, 4);
-
+                Robot.setAutoType(Auto.AutoType.CLOSE_ZONE == Robot.getAutoType() ? Auto.AutoType.FAR_ZONE : Auto.AutoType.CLOSE_ZONE);
             }
-            telemetry.addData("Starting Pose", Robot.POSE_NAME_LIST[startingPoseIndex]);
+
+            telemetry.addData("Team: ", Robot.getTeam());
+            telemetry.addData("Auto Type: ", Robot.getAutoType());
             telemetry.update();
         }
 
         if (Robot.getTeleOpStartPose() == null) {
-            robot.follower.setStartingPose(Robot.POSE_LIST[startingPoseIndex]);
+            robot.resetPose();
         } else {
             robot.follower.setStartingPose(Robot.getTeleOpStartPose());
         }
@@ -76,36 +77,21 @@ public class TeleOp extends LinearOpMode {
             lastTime = currentTime;
             currentTime = loopTimer.getElapsedTime();
 
-            //Copying our game
             previousGamepad1.copy(currentGamepad1);
             currentGamepad1.copy(gamepad1);
 
-            robot.driveTrain.moveRobot(currentGamepad1, robot.follower, orienting);
+            if (currentGamepad1.right_trigger > 0.1)
+                robot.driveTrain.setMaxSpeed(SLOW_SPEED);
+            else {
+                robot.driveTrain.setMaxSpeed(MAX_SPEED);
+            }
 
-            //When right bumper is pressed, intake toggles between on and off states.
             if (currentGamepad1.right_bumper && !previousGamepad1.right_bumper) {
-                intakeOn = !intakeOn;  // Toggle the boolean
+                intakeOn = !intakeOn;
                 robot.intakeUptake.setIntakeUptakeMode(
                         intakeOn ? IntakeUptake.intakeUptakeStates.INTAKING
                                 : IntakeUptake.intakeUptakeStates.OFF
                 );
-            }
-
-            if (currentGamepad1.left_bumper && !previousGamepad1.left_bumper){
-                lockTurret = !lockTurret;  // Toggle the boolean
-                robot.shooter.setAlwaysAimTurret(lockTurret);
-                if (!lockTurret){
-                    robot.shooter.setTurretDegrees(0.0);
-                }
-            }
-
-            if (currentGamepad1.back && !previousGamepad1.back){
-                alwaysSetVelocity = !alwaysSetVelocity;
-                robot.shooter.setAlwaysSetVelocity(alwaysSetVelocity);
-                if (!alwaysSetVelocity){
-                    manualRPM = 3750.0;
-                    robot.shooter.setPitchDegrees(27.0);
-                }
             }
 
             if (currentGamepad1.circle && !previousGamepad1.circle) {
@@ -113,33 +99,56 @@ public class TeleOp extends LinearOpMode {
                 intakeOn = false;
             }
 
-            if (currentGamepad1.right_trigger > 0.1)
-                robot.driveTrain.setSpeed(0.3);
-            else {
-                robot.driveTrain.setSpeed(MAX_SPEED);
-            }
-
             if (currentGamepad1.x && !previousGamepad1.x) {
                 robot.shooterTask.startTask(manualRPM);
+                intakeOn = true;
             }
 
             if (currentGamepad1.cross && !previousGamepad1.cross) {
                 robot.shooterTask.cancel();
-                robot.intakeUptake.setIntakeUptakeMode(IntakeUptake.intakeUptakeStates.OFF);
                 intakeOn = false;
+            }
+
+            if (currentGamepad1.back && !previousGamepad1.back){
+                Shooter.alwaysSetVelocity = !Shooter.alwaysSetVelocity;  // Toggle the boolean
+                if (!Shooter.alwaysSetVelocity){
+                    manualRPM = CLOSE_ZONE_RPM;
+                }
+                else manualRPM = null;
+            }
+
+            if (currentGamepad1.dpad_right && !previousGamepad1.dpad_right){
+                Shooter.alwaysAimPitch = !Shooter.alwaysAimPitch;  // Toggle the boolean
+                if (!Shooter.alwaysAimPitch)
+                {
+                    robot.shooter.setPitchDegrees(27.0);
+                }
+            }
+
+            if (currentGamepad1.left_bumper && !previousGamepad1.left_bumper){
+                Shooter.alwaysAimTurret = !Shooter.alwaysAimTurret;  // Toggle the boolean
+                if (!Shooter.alwaysAimTurret){
+                    robot.shooter.setTurretDegrees(0.0);
+                }
             }
 
             if (currentGamepad1.dpad_left && !previousGamepad1.dpad_left){
                 robot.resetPose();
             }
-            if (robot.isInRevUpZone()){
-                robot.shooter.setVelocityTarget(robot.shooter.getVelocityTarget());
+
+            if (currentGamepad1.dpad_up && !previousGamepad1.dpad_up){
+                manualRPM += 100.0;
+            }
+
+            if (currentGamepad1.dpad_down && !previousGamepad1.dpad_down){
+                manualRPM -= 100.0;
             }
 
             robot.shooterTask.update();
             robot.follower.update();
             robot.shooter.shooterTask();
             robot.intakeUptake.intakeUptakeTask();
+            robot.driveTrain.driveTask(currentGamepad1);
 
             telemetry.addData("Shooter vel: ", robot.shooter.getVelocityRPM());
             telemetry.addData("Loop Time", currentTime - lastTime);

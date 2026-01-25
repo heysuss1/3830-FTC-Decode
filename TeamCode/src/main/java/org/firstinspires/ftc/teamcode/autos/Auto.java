@@ -43,7 +43,7 @@ public class Auto extends LinearOpMode {
     public void runOpMode(){
         robot = new Robot(hardwareMap, telemetry);
 
-        while (editingConfig){
+        while (editingConfig || isStopRequested()){
             previousGamepad1.copy(currentGamepad1);
             currentGamepad1.copy(gamepad1);
 
@@ -106,6 +106,7 @@ public class Auto extends LinearOpMode {
 
         autoCommand.buildPaths();
         Robot.setTeam(team);
+        Robot.setAutoType(autoType);
         waitForStart();
         autoCommand.startAutoCommand();
         while(opModeIsActive()){
