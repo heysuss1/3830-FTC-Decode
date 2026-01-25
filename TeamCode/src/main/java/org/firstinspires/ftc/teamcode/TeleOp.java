@@ -30,7 +30,7 @@ public class TeleOp extends LinearOpMode {
     int startingPoseIndex = 0;
 
     private boolean lockTurret = true;
-    private boolean alwaysSetVelocity = true;
+    private boolean alwaysSetVelocity = false;
     private boolean alwaysSetPitch = true;
 
     public void runOpMode() {
@@ -127,9 +127,9 @@ public class TeleOp extends LinearOpMode {
                 intakeOn = false;
             }
 
-            if (robot.isInRevUpZone()){
-                robot.shooter.setVelocityTarget(robot.shooter.getVelocityTarget());
-            }
+//            if (robot.isInRevUpZone()){
+//                robot.shooter.setVelocityTarget(robot.shooter.getVelocityTarget());
+//            }
 
             robot.shooterTask.update();
             robot.follower.update();
@@ -147,6 +147,8 @@ public class TeleOp extends LinearOpMode {
             telemetry.addData("Color Sensor 2 Distance", robot.intakeUptake.getColorSensor2Distance());
             telemetry.addData("Color Sensor 3 Distance", robot.intakeUptake.getColorSensor3Distance());
             telemetry.addData("Number of big BLACK balls", robot.intakeUptake.getNumberOfBallsStored());
+            telemetry.addData("Shooter State", robot.shooterTask.getShooterState());
+            telemetry.addData("Shooter Velocity Target", robot.shooter.getVelocityTarget());
             telemetry.update();
         }
     }
