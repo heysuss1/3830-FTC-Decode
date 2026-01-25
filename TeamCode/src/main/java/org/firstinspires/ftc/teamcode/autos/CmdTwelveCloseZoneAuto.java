@@ -6,11 +6,10 @@ import com.pedropathing.paths.PathChain;
 import com.pedropathing.util.Timer;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
-import org.firstinspires.ftc.teamcode.Auto;
 import org.firstinspires.ftc.teamcode.Robot;
 import org.firstinspires.ftc.teamcode.subsystems.IntakeUptake;
 
-public class CmdCloseZoneAuto implements AutoCommands {
+public class CmdTwelveCloseZoneAuto extends AutoCommands {
     //TODO: Implement timers for shooter and pathing to timeout if something goes wrong
     private static final double intakePathSpeed = 0.6;
     private static final double AUTO_RPM = 4000;
@@ -42,22 +41,13 @@ public class CmdCloseZoneAuto implements AutoCommands {
     Pose gatePose = (new Pose(120, 70, 0));
     Pose parkPose = (new Pose(120, 92, Math.PI * 3 / 2));
 
-    private final Robot robot;
-    private final Timer pathTimer;
-    private final ElapsedTime shooterTimer;
+
     AutoState autoState;
-    private final double waitTime;
-    private final Auto.Team team;
     private boolean isFirstTimePath = true;
     private int shotCount = 0;
 
-    public CmdCloseZoneAuto(Robot robot, Auto.Team team, double waitTime) {
-        this.waitTime = waitTime;
-        this.robot = robot;
-        this.team = team;
-
-        shooterTimer = new ElapsedTime();
-        pathTimer = new Timer();
+    public CmdTwelveCloseZoneAuto(Robot robot, Auto.Team team, double waitTime) {
+        super(robot, team, waitTime);
 
         startingPose = Auto.convertAlliancePose(startingPose, team);
         shootingPose = Auto.convertAlliancePose(shootingPose, team);
@@ -74,31 +64,12 @@ public class CmdCloseZoneAuto implements AutoCommands {
     }
 
     @Override
-    public void startAutoCommand() {
-        shooterTimer.reset();
-        pathTimer.resetTimer();
-        autoState = AutoState.START;
-    }
-
-    @Override
-    public String getAutoState() {
-        return autoState.name();
-    }
-
-    @Override
-    public void cancel() {
-        robot.shooterTask.cancel();
-        Robot.setTeleOpStartPose(robot.follower.getPose());
-        //TODO: make it track position even after rolling
-    }
-
-    @Override
     public void autonomousUpdate(){
         switch (autoState) {
             case START:
                 if(waitTime > 0)
                 {
-                    if(shooterTimer.seconds() > waitTime)
+                    if(pathTimer.getElapsedTimeSeconds() > waitTime)
                     {
                         autoState = AutoState.DRIVE_TO_SHOOTING_SPOT;
                     }

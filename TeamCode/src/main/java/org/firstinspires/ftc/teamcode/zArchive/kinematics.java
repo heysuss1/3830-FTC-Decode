@@ -2,7 +2,7 @@ package org.firstinspires.ftc.teamcode.zArchive;
 
 import static java.lang.Math.abs;
 
-import org.firstinspires.ftc.teamcode.Auto;
+import org.firstinspires.ftc.teamcode.autos.Auto;
 import org.firstinspires.ftc.teamcode.Robot;
 
 /*
