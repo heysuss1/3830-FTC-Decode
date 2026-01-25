@@ -59,6 +59,7 @@ public class TeleOp extends LinearOpMode {
             }
 
             telemetry.addData("Team: ", Robot.getTeam());
+            telemetry.addData("Auto Type: ", Robot.getAutoType());
             telemetry.update();
         }
 
