@@ -51,7 +51,7 @@ public class Shooter {
         public static final double SHOOTER_TOLERANCE_RPM = 100;
 
         //Pitch Params
-        public static final double MIN_PITCH_DEGREES = 26;
+        public static final double MIN_PITCH_DEGREES = 27;
         public static final double MAX_PITCH_DEGREES = 53;
         public static final double PITCH_GEAR_RATIO = .177 ;
         public static  final double PITCH_ENCODER_ZERO_OFFSET = .5;
@@ -87,7 +87,6 @@ public class Shooter {
 
     public final Robot robot;
 
-    double currentVelocityTarget;
     public Double velocityTarget = null;
     public Double pitchTarget = null;
     public Double turretTarget = null;
@@ -128,12 +127,6 @@ public class Shooter {
         turretController = new PidfController(Params.TURRET_KP, Params.TURRET_KI, Params.TURRET_KD, Params.TURRET_KF, Params.TURRET_I_ZONE);
     }
 
-    public double getCurrentVelocityTarget() {
-        return currentVelocityTarget;
-    }
-    public void setCurrentVelocityTarget(double velocityTarget){
-        currentVelocityTarget = velocityTarget;
-    }
     public PidfController getShooterController() {
         return shooterController;
     }
@@ -385,42 +378,29 @@ public class Shooter {
         //Find rpm and pitch from the shootparams table based on distance to goal.
         ShootParams.Entry shootParams = Shooter.shootParamsTable.get(aimInfo.getDistanceToGoal());
 
-        currentVelocityTarget = (shootParams.outputs[0]);
-
-        //TODO: All this logic could be written a lot better but for now I dont want to confuse yall?
         if(compensateForVelDropWithPitch) {
             double pitchCompensation = velDropCompensationWithPitch();
             if(alwaysAimPitch) {
                 setPitchDegrees(shootParams.region.tiltAngle + pitchCompensation);
             }
             else {
-                setPitchDegrees(pitchTarget + pitchCompensation);
+                pitchTarget = pitchTarget != null ? pitchTarget + pitchCompensation : Params.MIN_PITCH_DEGREES + pitchCompensation;
             }
         }
         else {
             if(alwaysAimPitch) {
                 setPitchDegrees(shootParams.region.tiltAngle);
             }
-            else {
-                setPitchDegrees(pitchTarget);
-            }
         }
 
-        //Aim turret, pitch, and velocity based on the boolean settings using the shootparams table.
         if (alwaysAimTurret) {
             setTurretDegrees(aimInfo.getAngleToGoal());
-        } else {
-            setTurretDegrees(turretTarget);
         }
 
         if (alwaysSetVelocity) {
-            //You should only rev up in rev up zone when always set velocity is on.
             if (robot.isInRevUpZone()){
-                currentVelocityTarget = (shootParams.outputs[0]);
+                velocityTarget = shootParams.outputs[0];
             }
-        } else {
-
         }
-        //Always setting pitch to the calculated angle from the shootparams table.
     }
 }
