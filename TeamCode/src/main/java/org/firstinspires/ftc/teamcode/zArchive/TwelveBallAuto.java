@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.autos;
+package org.firstinspires.ftc.teamcode.zArchive;
 
 import com.pedropathing.geometry.BezierLine;
 import com.pedropathing.geometry.Pose;
@@ -8,15 +8,12 @@ import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 
 import org.firstinspires.ftc.teamcode.Robot;
+import org.firstinspires.ftc.teamcode.autos.Auto;
 import org.firstinspires.ftc.teamcode.subsystems.IntakeUptake;
 import org.firstinspires.ftc.teamcode.subsystems.Shooter;
-import org.firstinspires.ftc.teamcode.tasks.ShooterTask;
 
-import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
-
-@Autonomous(name = "Far Zone Auto Red")
-public class FarZoneAuto extends  OpMode{
-
+@Autonomous (name = "Red Side Auto")
+public class TwelveBallAuto extends OpMode {
 
 
     final double AUTO_RPM = 4000;
@@ -47,7 +44,7 @@ public class FarZoneAuto extends  OpMode{
     PathChain driveToShootPreloads, driveToGroup1, driveToShootGroup1, driveToGroup2, driveToShootGroup2, driveToGroup3, driveToShootGroup3,
             intakeGroup1, intakeGroup2, intakeGroup3, driveToGate, driveToPark;
 
-    Pose startingPose = (new Pose(120.5, 132, Math.toRadians(45)));
+    Pose startingPose =(new Pose(120.5, 132, Math.toRadians(45)));
     Pose shootingPose = (new Pose(96, 96, Math.toRadians(45)));
     Pose group1startPose = (new Pose(99, 85, 0));
     Pose group2startPose =(new Pose(99, 61, 0) );
@@ -74,19 +71,19 @@ public class FarZoneAuto extends  OpMode{
     }
 
 
-//    public void init_loop(){
-//        if (gamepad1.dpad_up) {
-//            Robot.setTeam(Robot.Team.BLUE);
-//        }
-//        if (gamepad1.dpad_down){
-//            Robot.setTeam(Robot.Team.RED);
-//        }
-//        if (gamepad1.left_bumper){
-//            editingAlliance = false;
-//        }
-//        telemetry.addData("Team", Robot.getTEAM());
-//        telemetry.update();
-//    }
+    public void init_loop(){
+        if (gamepad1.dpad_up) {
+            Robot.setTeam(Auto.Team.BLUE);
+        }
+        if (gamepad1.dpad_down){
+            Robot.setTeam(Auto.Team.RED);
+        }
+        if (gamepad1.left_bumper){
+            editingAlliance = false;
+        }
+        telemetry.addData("Team", Robot.getTeam());
+        telemetry.update();
+    }
 
     public void start(){
 //         startingPose = Robot.convertAlliancePose(startingPose);
@@ -99,8 +96,6 @@ public class FarZoneAuto extends  OpMode{
 //         group3endPose = Robot.convertAlliancePose(group3endPose);
 //         gatePose = Robot.convertAlliancePose(gatePose);
 //         parkPose = Robot.convertAlliancePose(parkPose);
-
-
     }
 
     public void stop(){
@@ -148,7 +143,7 @@ public class FarZoneAuto extends  OpMode{
             case SHOOTING:
 
                 if (isFirstTimePath){
-                    robot.shooterTask.startTask();
+                    robot.shooterTask.startTask(null);
                     isFirstTimePath = false;
                 }
 

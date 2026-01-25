@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.autos;
+package org.firstinspires.ftc.teamcode.zArchive;
 
 import com.pedropathing.geometry.BezierLine;
 import com.pedropathing.geometry.Pose;
@@ -10,13 +10,13 @@ import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import org.firstinspires.ftc.teamcode.Robot;
 import org.firstinspires.ftc.teamcode.subsystems.IntakeUptake;
 import org.firstinspires.ftc.teamcode.subsystems.Shooter;
-import org.firstinspires.ftc.teamcode.tasks.ShooterTask;
+
+@Autonomous(name = "Far Zone Auto Red")
+public class FarZoneAuto extends  OpMode{
 
 
-@Autonomous (name = "Blue side auto")
-public class BlueSideTwelve extends OpMode {
 
-
+    final double AUTO_RPM = 4000;
     enum AutoState {
         START,
         DRIVE_TO_SHOOTING_SPOT,
@@ -31,7 +31,6 @@ public class BlueSideTwelve extends OpMode {
 
     Robot robot;
     Timer pathTimer;
-    ShooterTask shooterTask;
 
     boolean isFirstTimePath = true;
 
@@ -45,39 +44,61 @@ public class BlueSideTwelve extends OpMode {
     PathChain driveToShootPreloads, driveToGroup1, driveToShootGroup1, driveToGroup2, driveToShootGroup2, driveToGroup3, driveToShootGroup3,
             intakeGroup1, intakeGroup2, intakeGroup3, driveToGate, driveToPark;
 
-    Pose startingPose = (new Pose(23.5, 132, Math.toRadians(135)));
-    Pose shootingPose = (new Pose(48, 96, Math.toRadians(135)));
-    Pose group1startPose = (new Pose(45, 85, Math.toRadians(180)));
-    Pose group2startPose =(new Pose(42, 61, Math.toRadians(180)) );
-    Pose group3startPose = (new Pose(42, 35, Math.toRadians(180)) );
-    Pose group1endPose =(new Pose(16.5, 85, Math.toRadians(180)) );
-    Pose group2endPose = (new Pose(17, 61, Math.toRadians(180)) );
-    Pose group3endPose = (new Pose(10, 35, Math.toRadians(180)) );
-    Pose gatePose = (new Pose(24, 70, 0));
-    Pose parkPose = (new Pose(24, 92, Math.PI*3/2));
-
+    Pose startingPose = (new Pose(120.5, 132, Math.toRadians(45)));
+    Pose shootingPose = (new Pose(96, 96, Math.toRadians(45)));
+    Pose group1startPose = (new Pose(99, 85, 0));
+    Pose group2startPose =(new Pose(99, 61, 0) );
+    Pose group3startPose = (new Pose(100, 35, 0) );
+    Pose group1endPose =(new Pose(127.5, 85, 0) );
+    Pose group2endPose = (new Pose(127, 61, 0) );
+    Pose group3endPose = (new Pose(131, 35, 0) );
+    Pose gatePose = (new Pose(120, 70, 0));
+    Pose parkPose = (new Pose(120, 92, Math.PI*3/2));
 
     public void init() {
 
         robot = new Robot(hardwareMap, telemetry);
-        shooterTask = new ShooterTask(robot);
         pathTimer = new Timer();
 
 
         robot.follower.setStartingPose(startingPose);
         robot.follower.setMaxPower(1);
-        robot.shooter.setPitchDegrees(31.0);
+        robot.shooter.setPitchDegrees(27.5);
         robot.shooter.setTurretDegrees(0.0);
         robot.intakeUptake.closeBlockingServo();
 //        robot.shooter.setAlwaysAimShooter(false);
-
-        Robot.setTeam(Auto.Team.BLUE);
-
-        telemetry.addData("Team", Robot.getTeam());
         buildPaths();
     }
 
 
+//    public void init_loop(){
+//        if (gamepad1.dpad_up) {
+//            Robot.setTeam(Robot.Team.BLUE);
+//        }
+//        if (gamepad1.dpad_down){
+//            Robot.setTeam(Robot.Team.RED);
+//        }
+//        if (gamepad1.left_bumper){
+//            editingAlliance = false;
+//        }
+//        telemetry.addData("Team", Robot.getTEAM());
+//        telemetry.update();
+//    }
+
+    public void start(){
+//         startingPose = Robot.convertAlliancePose(startingPose);
+//         shootingPose = Robot.convertAlliancePose(shootingPose);
+//         group1startPose = Robot.convertAlliancePose(group1startPose);
+//         group2startPose = Robot.convertAlliancePose(group2startPose );
+//         group3startPose = Robot.convertAlliancePose(group3startPose);
+//         group1endPose = Robot.convertAlliancePose(group1endPose );
+//         group2endPose = Robot.convertAlliancePose(group2endPose);
+//         group3endPose = Robot.convertAlliancePose(group3endPose);
+//         gatePose = Robot.convertAlliancePose(gatePose);
+//         parkPose = Robot.convertAlliancePose(parkPose);
+
+
+    }
 
     public void stop(){
         Robot.setTeleOpStartPose(robot.follower.getPose());
@@ -88,7 +109,7 @@ public class BlueSideTwelve extends OpMode {
     public void loop(){
         autonomousUpdate();
             telemetry.addData("Current Auto State", autoState);
-            telemetry.addData("Current Shooter State", shooterTask.getShooterState());
+            telemetry.addData("Current Shooter State", robot.shooterTask.getShooterState());
             telemetry.addData("follower busy?", robot.follower.isBusy());
             telemetry.addData("shooter velocity", robot.shooter.getVelocityRPM());
         telemetry.addData("Is Flywheel on target: ", robot.shooter.isFlywheelOnTarget(Shooter.Params.SHOOTER_TOLERANCE_RPM) + ", Is pitch on target: " + robot.shooter.isPitchOnTarget(Shooter.Params.PITCH_TOLERANCE));
@@ -104,6 +125,8 @@ public class BlueSideTwelve extends OpMode {
             case START:
                 //intentionally fall through
             case DRIVE_TO_SHOOTING_SPOT:
+
+                robot.shooter.setVelocityTarget(AUTO_RPM);
 
                 if (shotCount == 0 && isFirstTimePath )
                 {
@@ -121,14 +144,12 @@ public class BlueSideTwelve extends OpMode {
                 break;
             case SHOOTING:
 
-                //TODO: RENAME VARIABLE NAME
                 if (isFirstTimePath){
-                    shooterTask.startTask();
+                    robot.shooterTask.startTask(null);
                     isFirstTimePath = false;
-
                 }
 
-                if (shooterTask.isFinished()) {
+                if (robot.shooterTask.isFinished()) {
                     isFirstTimePath = true;
                     shotCount++;
                     if (shotCount <= 3) autoState = AutoState.DRIVE_TO_GROUP;
@@ -172,7 +193,7 @@ public class BlueSideTwelve extends OpMode {
                 break;
         }
 
-        shooterTask.update();
+        robot.shooterTask.update();
         robot.shooter.shooterTask();
         robot.intakeUptake.intakeUptakeTask();
         robot.follower.update();
