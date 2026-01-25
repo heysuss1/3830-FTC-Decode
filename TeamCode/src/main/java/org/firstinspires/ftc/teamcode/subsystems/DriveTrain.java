@@ -24,7 +24,7 @@ public class DriveTrain {
     public DriveTrain(HardwareMap hwMap, Telemetry telemetry){
         this.telemetry = telemetry;
         lf = hwMap.get(DcMotorEx.class, "lf");
-        lf.setDirection(DcMotorSimple.Direction.REVERSE);
+        lf.setDirection(DcMotorSimple.Direction.FORWARD);
         lf.setPower(0);
 
         rf = hwMap.get(DcMotorEx.class, "rf");
@@ -36,7 +36,7 @@ public class DriveTrain {
         lb.setPower(0);
 
         rb = hwMap.get(DcMotorEx.class, "rb");
-        rb.setDirection(DcMotorSimple.Direction.REVERSE);
+        rb.setDirection(DcMotorSimple.Direction.FORWARD);
         rb.setPower(0);
     }
 

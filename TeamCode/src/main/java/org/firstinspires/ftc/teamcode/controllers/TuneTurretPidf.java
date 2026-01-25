@@ -34,7 +34,7 @@ public class TuneTurretPidf extends LinearOpMode {
             robot.shooter.turretTask();
             telemetryA.addData("Target Position (degrees)", targetPos);
             telemetryA.addData("Current Position (degrees)", robot.shooter.getTurretDegrees());
-            telemetryA.addData("Current Power", robot.shooter.getPrimaryTurretServo().getPower());
+            telemetryA.addData("Current Power", robot.shooter.getTurretServo().getPower());
             telemetryA.addData("Current Error", robot.shooter.getTurretController().getError());
             telemetryA.addData("Raw turret position", robot.shooter.getTurretRawPose());
             telemetryA.update();

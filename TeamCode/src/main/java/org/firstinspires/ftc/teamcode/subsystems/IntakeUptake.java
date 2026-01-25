@@ -15,8 +15,8 @@ import org.firstinspires.ftc.teamcode.Robot;
 public class IntakeUptake {
 
 
-    LED redLED;
-    LED greenLED;
+    public LED redLED;
+    public LED greenLED;
 
     public enum intakeUptakeStates {
         OFF,

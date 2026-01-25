@@ -22,7 +22,6 @@ public class TuneShooterPidf extends OpMode {
         telemetryA = new MultipleTelemetry(this.telemetry, dashboard.getTelemetry());
         robot = new Robot(hardwareMap, telemetry);
         robot.shooter.getShooterController().setPidCoefficients(kP, kI, kD, kF, iZone);
-
     }
 
     public void loop() {

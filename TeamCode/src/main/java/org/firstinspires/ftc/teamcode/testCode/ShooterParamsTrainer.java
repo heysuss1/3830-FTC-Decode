@@ -22,7 +22,6 @@ public class ShooterParamsTrainer extends LinearOpMode {
 
     public void runOpMode(){
         robot = new Robot(hardwareMap, telemetry);
-        task = new ShooterTask(robot);
         Pose startingPose =(new Pose(120.5, 132, Math.toRadians(45)));
         robot.follower.setStartingPose(startingPose);
         waitForStart();
@@ -31,11 +30,11 @@ public class ShooterParamsTrainer extends LinearOpMode {
             robot.shooter.setPitchDegrees(pitchTarget);
             robot.shooter.pitchTask();
             robot.shooter.flywheelTask();
-            task.update(shooterTarget);
+            robot.shooterTask.update();
             robot.follower.update();
 
             if (gamepad1.square) {
-                task.startShooterTask();
+                robot.shooterTask.startTask();
             }
 
             if (gamepad1.circle)
