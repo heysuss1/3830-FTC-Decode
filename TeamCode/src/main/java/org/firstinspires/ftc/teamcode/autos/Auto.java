@@ -13,6 +13,7 @@ public class Auto extends LinearOpMode {
     public enum EditingModes {
         TEAM,
         AUTO_TYPE,
+        AUTO_STRATEGY,
         START_DELAY,
     }
 
@@ -24,6 +25,11 @@ public class Auto extends LinearOpMode {
     public enum AutoType {
         FAR_ZONE,
         CLOSE_ZONE,
+    }
+
+    public enum AutoStrategy {
+        BASE,
+        CYCLE,
     }
 
     Robot robot;
@@ -38,6 +44,7 @@ public class Auto extends LinearOpMode {
 
     private Team team = Team.RED;
     private AutoType autoType = AutoType.CLOSE_ZONE;
+    private AutoStrategy autoStrategy = AutoStrategy.BASE;
     private double startDelay = 0;
 
     public void runOpMode(){
@@ -57,7 +64,8 @@ public class Auto extends LinearOpMode {
                 switch (editingMode)
                 {
                     case TEAM: editingMode = EditingModes.AUTO_TYPE; break;
-                    case AUTO_TYPE: editingMode = EditingModes.START_DELAY; break;
+                    case AUTO_TYPE: editingMode = EditingModes.AUTO_STRATEGY; break;
+                    case AUTO_STRATEGY: editingMode = EditingModes.START_DELAY; break;
                     case START_DELAY: editingMode = EditingModes.TEAM; break;
                 }
             }
@@ -77,6 +85,13 @@ public class Auto extends LinearOpMode {
                         autoType = AutoType.FAR_ZONE;
                     }
                     break;
+                case AUTO_STRATEGY:
+                    if (gamepad1.right_bumper && !previousGamepad1.right_bumper) {
+                        autoStrategy = AutoStrategy.BASE;
+                    } else if (gamepad1.left_bumper && !previousGamepad1.left_bumper) {
+                        autoStrategy = AutoStrategy.CYCLE;
+                    }
+                    break;
                 case START_DELAY:
                     if (gamepad1.right_bumper && !previousGamepad1.right_bumper) {
                         startDelay += 0.5;
@@ -94,9 +109,9 @@ public class Auto extends LinearOpMode {
         }
 
         if (autoType == AutoType.CLOSE_ZONE) {
-            autoCommand = new CmdTwelveCloseZoneAuto(robot, team, startDelay);
+            autoCommand = new CmdCloseZoneAuto(robot, team, autoStrategy, startDelay);
         } else {
-            autoCommand = new CmdFarZoneAuto(robot, team, startDelay);
+            autoCommand = new CmdFarZoneAuto(robot, team, autoStrategy, startDelay);
         }
 
         robot.shooter.setPitchDegrees(27.5);
@@ -129,6 +144,7 @@ public class Auto extends LinearOpMode {
 
 
     }
+
     public static Pose convertAlliancePose(Pose pos, Team team) {
         double x = pos.getX();
         double y = pos.getY();

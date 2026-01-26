@@ -3,39 +3,32 @@ package org.firstinspires.ftc.teamcode.autos;
 import com.pedropathing.geometry.BezierLine;
 import com.pedropathing.geometry.Pose;
 import com.pedropathing.paths.PathChain;
-import com.pedropathing.util.Timer;
 
 import org.firstinspires.ftc.teamcode.Robot;
 
 public class CmdFarZoneAuto extends AutoCommands{
 
-    boolean isFirstTimePath = true;
+    PathChain driveToShootGroup1;
     Pose startPose = new Pose(80, 8, Math.PI/2);
     Pose humanPlayerPickUpPose = new Pose(135, 8, 0);
 
-    PathChain driveToShootGroup1;
-    final double AUTO_RPM = 4000;
-    int shotCount = 0;
-    @Override
-    public void buildPaths(){
-        driveToShootGroup1 = robot.follower.pathBuilder()
-                .addPath(new BezierLine(startPose, humanPlayerPickUpPose))
-                .setLinearHeadingInterpolation(startPose.getHeading(), humanPlayerPickUpPose.getHeading())
-                .build();
-    }
-
-    public CmdFarZoneAuto(Robot robot, Auto.Team team, double waitTime){
-        super(robot, team, waitTime);
+    public CmdFarZoneAuto(Robot robot, Auto.Team team, Auto.AutoStrategy autoStrategy,double waitTime){
+        super(robot, team, autoStrategy, waitTime);
         startPose = Auto.convertAlliancePose(startPose, team);
         humanPlayerPickUpPose = Auto.convertAlliancePose(humanPlayerPickUpPose, team);
         robot.follower.setPose(startPose);
 
     }
+
     @Override
     public void autonomousUpdate(){
         switch (autoState) {
             case START:
-                //intentionally fall through!!111!11111111!!1
+                if (waitTime <= 0 || timer.getElapsedTimeSeconds() > waitTime) {
+                    autoState = AutoState.DRIVE_TO_SHOOTING_SPOT;
+                }
+                break;
+
             case DRIVE_TO_SHOOTING_SPOT:
 
                 robot.shooter.setVelocityTarget(AUTO_RPM);
@@ -74,5 +67,13 @@ public class CmdFarZoneAuto extends AutoCommands{
                 cancel();
                 break;
         }
+    }
+
+    @Override
+    public void buildPaths(){
+        driveToShootGroup1 = robot.follower.pathBuilder()
+                .addPath(new BezierLine(startPose, humanPlayerPickUpPose))
+                .setLinearHeadingInterpolation(startPose.getHeading(), humanPlayerPickUpPose.getHeading())
+                .build();
     }
 }

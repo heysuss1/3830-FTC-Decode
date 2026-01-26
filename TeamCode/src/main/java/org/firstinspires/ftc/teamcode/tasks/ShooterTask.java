@@ -44,6 +44,7 @@ public class ShooterTask {
 
     public void cancel(){
         taskFinished = true;
+        robot.shooter.stopShooterMotor();
         robot.intakeUptake.closeBlockingServo();
         robot.intakeUptake.setIntakeUptakeMode(IntakeUptake.intakeUptakeStates.OFF);
     }

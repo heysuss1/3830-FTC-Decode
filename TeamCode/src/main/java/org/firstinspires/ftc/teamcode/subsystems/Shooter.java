@@ -254,8 +254,6 @@ public class Shooter {
     public void stopShooterMotor() {
         if (velocityTarget != null) {
             velocityTarget = null;
-            topShooterMotor.setPower(0);
-            bottomShooterMotor.setPower(topShooterMotor.getPower());
         }
     }
 
