@@ -9,17 +9,6 @@ import org.firstinspires.ftc.teamcode.subsystems.IntakeUptake;
 
 public class CmdCloseZoneAuto extends AutoCommands {
 
-    //Saved in case we want to revert
-//    Pose shootingPose = (new Pose(98, 85, 0));
-//    Pose group1startPose = (new Pose(99, 85, 0));
-//    Pose group2startPose = (new Pose(99, 61, 0));
-//    Pose group3startPose = (new Pose(100, 35, 0));
-//    Pose group1endPose = (new Pose(127.5, 85, 0));
-//    Pose group2endPose = (new Pose(127, 61, 0));
-//    Pose group3endPose = (new Pose(131, 35, 0));
-//    Pose gatePose = (new Pose(120, 70, 0));
-//    Pose parkPose = (new Pose(120, 92, Math.PI * 3 / 2));
-
     PathChain driveToShootPreloads, driveToGroup1, driveToShootGroup1, driveToGroup2, driveToShootGroup2,
             driveToGroup3, driveToShootGroup3, intakeGroup1, intakeGroup2, intakeGroup3, driveToPark,
             driveToOpenGate, intakeFromGate, driveToShootGateGroup;
@@ -50,10 +39,6 @@ public class CmdCloseZoneAuto extends AutoCommands {
         parkPose = Auto.convertAlliancePose(parkPose, team);
 
         robot.follower.setStartingPose(startingPose);
-    }
-
-    private boolean isCycleStrategy() {
-        return autoStrategy == Auto.AutoStrategy.CYCLE;
     }
 
     public void autonomousUpdate() {

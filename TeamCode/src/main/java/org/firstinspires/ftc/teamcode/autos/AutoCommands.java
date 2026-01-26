@@ -61,6 +61,10 @@ public abstract class AutoCommands
         return autoState;
     }
 
+    protected boolean isCycleStrategy() {
+        return autoStrategy == Auto.AutoStrategy.CYCLE;
+    }
+
     abstract void autonomousUpdate();
 
     abstract void buildPaths();

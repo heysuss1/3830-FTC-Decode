@@ -14,10 +14,11 @@ public class CmdFarZoneAuto extends AutoCommands{
 
     public CmdFarZoneAuto(Robot robot, Auto.Team team, Auto.AutoStrategy autoStrategy,double waitTime){
         super(robot, team, autoStrategy, waitTime);
+
         startPose = Auto.convertAlliancePose(startPose, team);
         humanPlayerPickUpPose = Auto.convertAlliancePose(humanPlayerPickUpPose, team);
-        robot.follower.setPose(startPose);
 
+        robot.follower.setPose(startPose);
     }
 
     @Override
