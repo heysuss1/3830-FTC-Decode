@@ -17,8 +17,7 @@ public abstract class AutoCommands
         DRIVE_TO_GROUP,
         SLURPING_GROUP,
         DRIVE_TO_PARK,
-        DRIVE_TO_GATE,
-        SLURPING_FROM_GATE,
+        HUNT_FOR_BALLS,
         STOP
 
     }

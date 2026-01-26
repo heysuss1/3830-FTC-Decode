@@ -9,6 +9,7 @@ import org.firstinspires.ftc.teamcode.subsystems.IntakeUptake;
 
 public class CmdCloseZoneAuto extends AutoCommands {
 
+    private static final double PICKUP_TIMEOUT = 3.0; // seconds
     PathChain driveToShootPreloads, driveToGroup1, driveToShootGroup1, driveToGroup2, driveToShootGroup2,
             driveToGroup3, driveToShootGroup3, intakeGroup1, intakeGroup2, intakeGroup3, driveToPark,
             driveToOpenGate, intakeFromGate, driveToShootGateGroup;
@@ -45,7 +46,7 @@ public class CmdCloseZoneAuto extends AutoCommands {
         switch (autoState) {
             case START:
                 if (waitTime <= 0 || timer.getElapsedTimeSeconds() > waitTime) {
-                    autoState = AutoState.DRIVE_TO_SHOOTING_SPOT;
+                   setAutoState(AutoState.DRIVE_TO_SHOOTING_SPOT);
                 }
                 break;
 
@@ -58,7 +59,7 @@ public class CmdCloseZoneAuto extends AutoCommands {
 
                 if (!robot.follower.isBusy()) {
                     isFirstTimePath = true;
-                    autoState = AutoState.SHOOTING;
+                    setAutoState(AutoState.SHOOTING);
                 }
                 break;
 
@@ -71,8 +72,8 @@ public class CmdCloseZoneAuto extends AutoCommands {
                 if (robot.shooterTask.isFinished()) {
                     isFirstTimePath = true;
                     shotCount++;
-                    if (shotCount <= 3) autoState = AutoState.DRIVE_TO_GROUP;
-                    if (shotCount == 4) autoState = isCycleStrategy() ? AutoState.DRIVE_TO_GROUP : AutoState.DRIVE_TO_PARK;
+                    if (shotCount <= 3) setAutoState(AutoState.DRIVE_TO_GROUP);
+                    if (shotCount == 4) setAutoState(isCycleStrategy() ? AutoState.DRIVE_TO_GROUP : AutoState.DRIVE_TO_PARK);
                 }
                 break;
 
@@ -84,7 +85,7 @@ public class CmdCloseZoneAuto extends AutoCommands {
 
                 if (!robot.follower.isBusy()) {
                     isFirstTimePath = true;
-                    autoState = AutoState.SLURPING_GROUP;
+                    setAutoState(AutoState.SLURPING_GROUP);
                 }
                 break;
 
@@ -95,10 +96,15 @@ public class CmdCloseZoneAuto extends AutoCommands {
                     isFirstTimePath = false;
                 }
 
-                if (!robot.follower.isBusy() || robot.intakeUptake.getNumberOfBallsStored() >= 3) {
+                if ((shotCount != 2 && !isCycleStrategy()) && (!robot.follower.isBusy() || robot.intakeUptake.getNumberOfBallsStored() >= 3)) {
                     isFirstTimePath = true;
                     robot.intakeUptake.setIntakeUptakeMode(IntakeUptake.intakeUptakeStates.OFF);
-                    autoState = AutoState.DRIVE_TO_SHOOTING_SPOT;
+                   setAutoState(AutoState.DRIVE_TO_SHOOTING_SPOT);
+                }
+                if ((shotCount == 2 && isCycleStrategy()) && (robot.intakeUptake.getNumberOfBallsStored() >= 3 || timer.getElapsedTimeSeconds() >= PICKUP_TIMEOUT)) {
+                    isFirstTimePath = true;
+                    robot.intakeUptake.setIntakeUptakeMode(IntakeUptake.intakeUptakeStates.OFF);
+                    setAutoState(AutoState.DRIVE_TO_SHOOTING_SPOT);
                 }
                 break;
 
@@ -109,7 +115,7 @@ public class CmdCloseZoneAuto extends AutoCommands {
                 }
 
                 if (!robot.follower.isBusy()) {
-                    autoState = AutoState.STOP;
+                    setAutoState(AutoState.STOP);
                 }
                 break;
 
