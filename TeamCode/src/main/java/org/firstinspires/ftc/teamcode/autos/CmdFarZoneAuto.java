@@ -9,8 +9,6 @@ import org.firstinspires.ftc.teamcode.subsystems.IntakeUptake;
 
 public class CmdFarZoneAuto extends AutoCommands {
 
-    private static final double PICKUP_TIMEOUT = 2.0; // seconds
-
     PathChain driveToIntakeHP1, driveToShootForPickup,
             driveToIntakeRow3, driveToShootRow3, driveToIntakeHP2, huntPath1, huntPath2,
             huntPath3, driveToShootGateBalls, driveToPark;
@@ -87,18 +85,19 @@ public class CmdFarZoneAuto extends AutoCommands {
 
                 if (isFirstTimePath) {
                     robot.intakeUptake.setIntakeUptakeMode(IntakeUptake.intakeUptakeStates.INTAKING);
-                    if(shotCount ==1) robot.follower.followPath(driveToIntakeHP1, true);
-                    if(shotCount ==2) robot.follower.followPath(driveToIntakeHP2, true);
+                    if(shotCount == 1) robot.follower.followPath(driveToIntakeHP1, true);
+                    if(shotCount == 2) robot.follower.followPath(driveToIntakeHP2, true);
                     isFirstTimePath = false;
                 }
 
-                if (!robot.follower.isBusy() || robot.intakeUptake.getNumberOfBallsStored() >= 3) {
+                if (!robot.follower.isBusy()) {
                     isFirstTimePath = true;
-                    if(shotCount != 2 && !isCycleStrategy()) {
+                    if(shotCount == 2 && isCycleStrategy()) {
+                        setAutoState(AutoState.HUNT_FOR_BALLS);
+                    } else {
                         setAutoState(AutoState.DRIVE_TO_SHOOTING_SPOT);
                         robot.intakeUptake.setIntakeUptakeMode(IntakeUptake.intakeUptakeStates.OFF);
                     }
-                    else setAutoState(AutoState.HUNT_FOR_BALLS);
                 }
 
                 break;

@@ -96,7 +96,7 @@ public class CmdCloseZoneAuto extends AutoCommands {
                     isFirstTimePath = false;
                 }
 
-                if ((shotCount != 2 && !isCycleStrategy()) && (!robot.follower.isBusy() || robot.intakeUptake.getNumberOfBallsStored() >= 3)) {
+                if ((shotCount != 2 && !isCycleStrategy()) && !robot.follower.isBusy()) {
                     isFirstTimePath = true;
                     robot.intakeUptake.setIntakeUptakeMode(IntakeUptake.intakeUptakeStates.OFF);
                    setAutoState(AutoState.DRIVE_TO_SHOOTING_SPOT);
