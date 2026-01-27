@@ -110,8 +110,10 @@ public class Robot {
     }
 
     public void resetPose(){
-        if (team == Auto.Team.BLUE) follower.setPose(new Pose(135, 9, Math.PI/2));
-        if (team == Auto.Team.RED   ) follower.setPose(new Pose(8, 8, Math.PI/2));
+        //SWITCH IT BACK, OLSONS PURPOSES ONLY
+        if (team == Auto.Team.BLUE ) follower.setPose(new Pose(135, 9, Math.PI/2));
+        if (team == Auto.Team.RED ) follower.setPose(new Pose(135, 9, Math.PI/2));
+//        if (team == Auto.Team.RED   ) follower.setPose(new Pose(8, 8, Math.PI/2));
         //TODO: Did you think about orientation? are they facing in or out? if they are isn't heading flipped?
     }
 

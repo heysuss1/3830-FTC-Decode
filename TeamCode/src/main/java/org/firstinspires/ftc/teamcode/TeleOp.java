@@ -43,13 +43,13 @@ public class TeleOp extends LinearOpMode {
         robot = new Robot(hardwareMap, telemetry);
         loopTimer = new Timer();
 
-        robot.driveTrain.setSlowTurning(true);
-        robot.driveTrain.setMaxSpeed(MAX_SPEED);
+        robot.driveTrain.setSpeed(MAX_SPEED);
+
+        robot.driveTrain.setBrakeMode();
 
         while (opModeInInit()) {
             previousGamepad1.copy(currentGamepad1);
             currentGamepad1.copy(gamepad1);
-
             if (currentGamepad1.dpad_right && !previousGamepad1.dpad_right) {
                 Robot.setTeam(Auto.Team.RED == Robot.getTeam() ? Auto.Team.BLUE : Auto.Team.RED);
             }
@@ -69,6 +69,8 @@ public class TeleOp extends LinearOpMode {
             robot.follower.setStartingPose(Robot.getTeleOpStartPose());
         }
 
+        Shooter.alwaysSetVelocity = true;
+
         waitForStart();
 
         while (opModeIsActive()) {
@@ -81,9 +83,9 @@ public class TeleOp extends LinearOpMode {
             currentGamepad1.copy(gamepad1);
 
             if (currentGamepad1.right_trigger > 0.1)
-                robot.driveTrain.setMaxSpeed(SLOW_SPEED);
+                robot.driveTrain.setSpeed(SLOW_SPEED);
             else {
-                robot.driveTrain.setMaxSpeed(MAX_SPEED);
+                robot.driveTrain.setSpeed(MAX_SPEED);
             }
 
             if (currentGamepad1.right_bumper && !previousGamepad1.right_bumper) {
@@ -136,11 +138,11 @@ public class TeleOp extends LinearOpMode {
                 robot.resetPose();
             }
 
-            if (currentGamepad1.dpad_up && !previousGamepad1.dpad_up){
+            if (currentGamepad1.dpad_up && !previousGamepad1.dpad_up && !Shooter.alwaysSetVelocity){
                 manualRPM += 100.0;
             }
 
-            if (currentGamepad1.dpad_down && !previousGamepad1.dpad_down){
+            if (currentGamepad1.dpad_down && !previousGamepad1.dpad_down && !Shooter.alwaysSetVelocity){
                 manualRPM -= 100.0;
             }
 
@@ -157,11 +159,14 @@ public class TeleOp extends LinearOpMode {
             telemetry.addData("Heading: ", robot.follower.getHeading());
             telemetry.addData("Shooter param rpm", robot.shooter.getVelocityTarget());
             telemetry.addData("Current Turret Degrees", robot.shooter.getTurretDegrees());
-            telemetry.addData("Color Sensor 1 Distance", robot.intakeUptake.getColorSensor1Distance());
-            telemetry.addData("Color Sensor 2 Distance", robot.intakeUptake.getColorSensor2Distance());
-            telemetry.addData("Color Sensor 3 Distance", robot.intakeUptake.getColorSensor3Distance());
             telemetry.addData("Number of big BLACK balls", robot.intakeUptake.getNumberOfBallsStored());
             telemetry.addData("Shooter Velocity Target", robot.shooter.getVelocityTarget());
+            telemetry.addData("Is in rev up zone", robot.isInRevUpZone());
+            telemetry.addData("Shooter State", robot.shooterTask.getShooterState());
+            telemetry.addData("Manual RPM", manualRPM);
+            telemetry.addData("Always set velocity?", Shooter.alwaysSetVelocity);
+            telemetry.addData("Always set turret?", Shooter.alwaysAimTurret);
+            telemetry.addData("Shooter empty", robot.intakeUptake.isUptakeEmpty());
             telemetry.update();
         }
     }

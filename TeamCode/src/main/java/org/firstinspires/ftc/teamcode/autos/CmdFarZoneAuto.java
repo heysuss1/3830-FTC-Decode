@@ -12,7 +12,6 @@ public class CmdFarZoneAuto extends AutoCommands{
     boolean isFirstTimePath = true;
     Pose startPose = new Pose(80, 8, Math.PI/2);
     Pose humanPlayerPickUpPose = new Pose(135, 8, 0);
-
     PathChain driveToShootGroup1;
     final double AUTO_RPM = 4000;
     int shotCount = 0;

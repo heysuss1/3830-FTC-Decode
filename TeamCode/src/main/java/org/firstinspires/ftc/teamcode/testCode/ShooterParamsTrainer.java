@@ -23,7 +23,7 @@ public class ShooterParamsTrainer extends LinearOpMode {
     public void runOpMode(){
         robot = new Robot(hardwareMap, telemetry);
         Pose startingPose =(new Pose(120.5, 132, Math.toRadians(45)));
-        robot.shooter.setAlwaysSetVelocity(false);
+        Shooter.alwaysSetVelocity = false;
         robot.follower.setStartingPose(startingPose);
         task = new ShooterTask(robot);
         waitForStart();

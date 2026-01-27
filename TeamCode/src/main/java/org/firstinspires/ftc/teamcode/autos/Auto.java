@@ -43,7 +43,7 @@ public class Auto extends LinearOpMode {
     public void runOpMode(){
         robot = new Robot(hardwareMap, telemetry);
 
-        while (editingConfig || isStopRequested()){
+        while (editingConfig && !isStopRequested()){
             previousGamepad1.copy(currentGamepad1);
             currentGamepad1.copy(gamepad1);
 
@@ -69,6 +69,7 @@ public class Auto extends LinearOpMode {
                     } else if (gamepad1.left_bumper && !previousGamepad1.left_bumper) {
                         team = Team.BLUE;
                     }
+                    Robot.setTeam(team);
                     break;
                 case AUTO_TYPE:
                     if (gamepad1.right_bumper && !previousGamepad1.right_bumper) {

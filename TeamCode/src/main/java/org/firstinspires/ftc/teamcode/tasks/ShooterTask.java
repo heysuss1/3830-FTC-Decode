@@ -7,7 +7,7 @@ import org.firstinspires.ftc.teamcode.subsystems.IntakeUptake;
 public class ShooterTask {
 
     public static final double DEFAULT_SPEEDUP_TIMEOUT = 2.0;
-    public static final double DEFAULT_SHOOT_TIMEOUT = 1.0;
+    public static final double DEFAULT_SHOOT_TIMEOUT = 1.67;
 
     public enum ShooterState{
         SPEEDING_UP,
@@ -36,6 +36,7 @@ public class ShooterTask {
         this.shootTimeout = shootTimeout;
         manualRpmOverride = manualRpm;
         setShooterState(ShooterState.SPEEDING_UP);
+        timeoutTimer.resetTimer();
     }
 
     public void startTask(Double manualRpm){
@@ -84,8 +85,11 @@ public class ShooterTask {
                 break;
             case DONE:
                 cancel();
+                setShooterState(ShooterState.IDLE);
                 break;
             case IDLE:
+                robot.intakeUptake.closeBlockingServo();
+
                 break;
         }
     }

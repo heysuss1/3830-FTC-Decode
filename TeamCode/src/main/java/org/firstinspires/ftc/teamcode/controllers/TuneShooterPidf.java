@@ -30,7 +30,7 @@ public class TuneShooterPidf extends OpMode {
         robot.shooter.flywheelTask();
         telemetryA.addData("Target Velocity (RPM)", targetRpm);
         telemetryA.addData("Current Velocity (RPM)", robot.shooter.getVelocityRPM());
-        telemetryA.addData("Current Power", robot.shooter.getTopShooterMotor().getPower());
+        telemetryA.addData("Current Power", robot.shooter.getShooterMotor().getPower());
         telemetryA.addData("Current Error", robot.shooter.getShooterController().getError());
         telemetryA.update();
     }

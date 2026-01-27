@@ -22,18 +22,18 @@ public class IntakeUptake {
         OFF,
         INTAKING,
         UPTAKING,
-        OUTTAKING;
+        OUTTAKING
     }
     public static class Params {
         public static final double HAS_BALL_1_DISTANCE_THRESHOLD = 2.45; //inches
         public static final double HAS_BALL_2_DISTANCE_THRESHOLD = 1.4;
-        public static final double HAS_BALL_3_DISTANCE_THRESHOLD = 1.235;
+        public static final double HAS_BALL_3_DISTANCE_THRESHOLD = 1.9;
 
-        public static final double BLOCKING_SERVO_1_OPEN_POS = 0.63;
-        public static final double BLOCKING_SERVO_1_CLOSE_POS = 0.8;
+        public static final double BLOCKING_SERVO_1_OPEN_POS = 0.6;
+        public static final double BLOCKING_SERVO_1_CLOSE_POS = .82;
 
-        public static final double BLOCKING_SERVO_2_OPEN_POS = 0.395;
-        public static final double BLOCKING_SERVO_2_CLOSE_POS = 0.15;
+        public static final double BLOCKING_SERVO_2_OPEN_POS = 0.37;
+        public static final double BLOCKING_SERVO_2_CLOSE_POS = .2;
     }
 
     private final Telemetry telemetry;
@@ -81,6 +81,14 @@ public class IntakeUptake {
                 (colorSensor3.getDistance(DistanceUnit.INCH) > Params.HAS_BALL_3_DISTANCE_THRESHOLD);
     }
 
+    public Servo getBlockingServo1() {
+        return blockingServo1;
+    }
+
+    public Servo getBlockingServo2() {
+        return blockingServo2;
+    }
+
     public boolean hasBall1(){
         return colorSensor1.getDistance(DistanceUnit.INCH) < Params.HAS_BALL_1_DISTANCE_THRESHOLD;
     }
@@ -101,11 +109,17 @@ public class IntakeUptake {
         return colorSensor3.getDistance(DistanceUnit.INCH);
     }
 
+
     public double getNumberOfBallsStored() {
         boolean hasBall1 = (colorSensor1.getDistance(DistanceUnit.INCH) < Params.HAS_BALL_1_DISTANCE_THRESHOLD);
         boolean hasBall2 = (colorSensor2.getDistance(DistanceUnit.INCH) < Params.HAS_BALL_2_DISTANCE_THRESHOLD);
         boolean hasBall3 = (colorSensor3.getDistance(DistanceUnit.INCH) < Params.HAS_BALL_3_DISTANCE_THRESHOLD);
 
+        if (hasBall1 && hasBall3){
+            return 3;
+        } else if (hasBall2){
+            return 2 + (hasBall1? 1: 0);
+        }
         return  (hasBall3 ? 1 : 0) +
                 ((hasBall3 && hasBall2) ? 1 : 0) +
                 ((hasBall3 && hasBall2 && hasBall1) ? 1 : 0);
@@ -154,7 +168,7 @@ public class IntakeUptake {
                 setIntakeUptakeMotorPower(0,0);
                 break;
             case INTAKING:
-                setIntakeUptakeMotorPower(1, 1);  // <----- change these values to the correct ones!!111!11!!!!
+                setIntakeUptakeMotorPower(.75, 1);  // <----- change these values to the correct ones!!111!11!!!!
                 break;
             case UPTAKING:
                 setIntakeUptakeMotorPower(1, 1);

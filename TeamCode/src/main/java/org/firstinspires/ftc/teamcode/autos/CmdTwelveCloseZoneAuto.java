@@ -14,19 +14,6 @@ public class CmdTwelveCloseZoneAuto extends AutoCommands {
     private static final double intakePathSpeed = 0.6;
     private static final double AUTO_RPM = 4000;
 
-
-    enum AutoState {
-        START,
-        DRIVE_TO_SHOOTING_SPOT,
-        SHOOTING,
-        DRIVE_TO_GROUP,
-        SLURPING_GROUP,
-        DRIVE_TO_PARK, // <-- dunno if we need this but just in case
-        DRIVE_TO_GATE, // <--- these are for later when we get more balls than the pre-placed ones
-        SLURPING_FROM_GATE,
-        STOP
-    }
-
     PathChain driveToShootPreloads, driveToGroup1, driveToShootGroup1, driveToGroup2, driveToShootGroup2,
             driveToGroup3, driveToShootGroup3, intakeGroup1, intakeGroup2, intakeGroup3, driveToGate, driveToPark;
 
@@ -40,9 +27,6 @@ public class CmdTwelveCloseZoneAuto extends AutoCommands {
     Pose group3endPose = (new Pose(131, 35, 0));
     Pose gatePose = (new Pose(120, 70, 0));
     Pose parkPose = (new Pose(120, 92, Math.PI * 3 / 2));
-
-
-    AutoState autoState;
     private boolean isFirstTimePath = true;
     private int shotCount = 0;
 

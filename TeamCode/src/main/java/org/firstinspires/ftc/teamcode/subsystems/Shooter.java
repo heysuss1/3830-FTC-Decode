@@ -51,10 +51,10 @@ public class Shooter {
         public static final double SHOOTER_TOLERANCE_RPM = 100;
 
         //Pitch Params
-        public static final double MIN_PITCH_DEGREES = 27;
-        public static final double MAX_PITCH_DEGREES = 53;
+        public static final double MIN_PITCH_DEGREES = 19;
+        public static final double MAX_PITCH_DEGREES = 40;
         public static final double PITCH_GEAR_RATIO = .177 ;
-        public static  final double PITCH_ENCODER_ZERO_OFFSET = .5;
+        public static  final double PITCH_ENCODER_ZERO_OFFSET = .56;
         public static  final double PITCH_POSITION_OFFSET = MIN_PITCH_DEGREES;
         public static final double PITCH_DEGREES_PER_REV = 360 * PITCH_GEAR_RATIO;
         public static final double PITCH_TOLERANCE = 2;
@@ -101,19 +101,20 @@ public class Shooter {
         this.robot = robot;
 
         pitchServo = hwMap.get(Servo.class, "pitchServo");
+        pitchServo.setDirection(Servo.Direction.REVERSE);
         pitchEncoder = hwMap.get(AnalogInput.class, "pitchEncoder");
 
         topShooterMotor = hwMap.get(DcMotorEx.class, "topShooterMotor");
         topShooterMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         topShooterMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        topShooterMotor.setDirection(DcMotorSimple.Direction.FORWARD);
+        topShooterMotor.setDirection(DcMotorSimple.Direction.REVERSE);
         topShooterMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
         topShooterMotor.setPower(0);
 
         bottomShooterMotor = hwMap.get(DcMotorEx.class, "bottomShooterMotor");
         bottomShooterMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         bottomShooterMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        bottomShooterMotor.setDirection(DcMotorSimple.Direction.FORWARD);
+        bottomShooterMotor.setDirection(DcMotorSimple.Direction.REVERSE);
 
         bottomShooterMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
         bottomShooterMotor.setPower(0);
@@ -166,7 +167,7 @@ public class Shooter {
     }
 
     public double getRawPitchPos() {
-        return (pitchEncoder.getVoltage()/pitchEncoder.getMaxVoltage());
+        return 1- (pitchEncoder.getVoltage()/pitchEncoder.getMaxVoltage());
     }
 
     public double getTurretRawPose() {
@@ -400,6 +401,9 @@ public class Shooter {
         if (alwaysSetVelocity) {
             if (robot.isInRevUpZone()){
                 velocityTarget = shootParams.outputs[0];
+            } else {
+                topShooterMotor.setPower(0);
+                bottomShooterMotor.setPower(topShooterMotor.getPower());
             }
         }
     }
