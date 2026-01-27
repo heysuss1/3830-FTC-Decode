@@ -52,9 +52,9 @@ public class Shooter {
 
         //Pitch Params
         public static final double MIN_PITCH_DEGREES = 19;
-        public static final double MAX_PITCH_DEGREES = 40;
+        public static final double MAX_PITCH_DEGREES = 45;
         public static final double PITCH_GEAR_RATIO = .177 ;
-        public static  final double PITCH_ENCODER_ZERO_OFFSET = .56;
+        public static  final double PITCH_ENCODER_ZERO_OFFSET = .38;
         public static  final double PITCH_POSITION_OFFSET = MIN_PITCH_DEGREES;
         public static final double PITCH_DEGREES_PER_REV = 360 * PITCH_GEAR_RATIO;
         public static final double PITCH_TOLERANCE = 2;
