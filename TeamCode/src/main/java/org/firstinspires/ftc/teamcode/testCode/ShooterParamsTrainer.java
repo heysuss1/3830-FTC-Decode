@@ -22,7 +22,7 @@ public class ShooterParamsTrainer extends LinearOpMode {
 
     public void runOpMode(){
         robot = new Robot(hardwareMap, telemetry);
-        Pose startingPose =(new Pose(120.5, 132, Math.toRadians(45)));
+        Pose startingPose =(new Pose(114, 123, Math.toRadians(42)));
         Shooter.alwaysSetVelocity = false;
         robot.follower.setStartingPose(startingPose);
         task = new ShooterTask(robot);
@@ -58,8 +58,6 @@ public class ShooterParamsTrainer extends LinearOpMode {
                 robot.intakeUptake.setIntakeUptakeMode(IntakeUptake.intakeUptakeStates.OUTTAKING);
             }
 
-
-            robot.shooter.shooterTask();
             robot.shooter.setTurretDegrees(0.0);
 //            if (gamepad1.circle) {
 //                robot.shooter.setTurretDegrees(null);

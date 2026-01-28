@@ -27,7 +27,6 @@ public class Shooter {
             new ShootParams.Region(30.0, new double[][] {{2899.984, 20}}),
             //Region 3:
             new ShootParams.Region(35.0, new double[][] {{2800, 20}}),
-
     };
 
     public static final ShootParams shootParamsTable = new ShootParams()
@@ -53,8 +52,8 @@ public class Shooter {
         //Pitch Params
         public static final double MIN_PITCH_DEGREES = 19;
         public static final double MAX_PITCH_DEGREES = 45;
-        public static final double PITCH_GEAR_RATIO = .177 ;
-        public static  final double PITCH_ENCODER_ZERO_OFFSET = .38;
+        public static final double PITCH_GEAR_RATIO = .145 ;
+        public static  final double PITCH_ENCODER_ZERO_OFFSET = .56;
         public static  final double PITCH_POSITION_OFFSET = MIN_PITCH_DEGREES;
         public static final double PITCH_DEGREES_PER_REV = 360 * PITCH_GEAR_RATIO;
         public static final double PITCH_TOLERANCE = 2;
@@ -69,7 +68,7 @@ public class Shooter {
         public static final double TURRET_ENCODER_ZERO_OFFSET = 0;
         public static final double TURRET_POSITION_OFFSET = 0;
         public static final double TURRET_DEGREES_PER_REV = -360 * TURRET_GEAR_RATIO;
-        public static final double TURRET_TOLERANCE = 3;
+        public static final double TURRET_TOLERANCE = 360;
     }
 
     private final DcMotorEx bottomShooterMotor;

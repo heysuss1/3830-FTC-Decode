@@ -1,5 +1,6 @@
 package org.firstinspires.ftc.teamcode;
 
+import com.pedropathing.geometry.Pose;
 import com.pedropathing.util.Timer;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.Gamepad;
@@ -44,6 +45,7 @@ public class TeleOp extends LinearOpMode {
         loopTimer = new Timer();
 
         robot.driveTrain.setSpeed(MAX_SPEED);
+        Pose startingPose = (new Pose(114, 123, Math.toRadians(42)));
 
         robot.driveTrain.setBrakeMode();
 
@@ -70,6 +72,8 @@ public class TeleOp extends LinearOpMode {
         }
 
         Shooter.alwaysSetVelocity = true;
+
+        robot.follower.setStartingPose(startingPose);
 
         waitForStart();
 

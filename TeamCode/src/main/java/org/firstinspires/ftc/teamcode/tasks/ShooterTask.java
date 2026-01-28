@@ -7,7 +7,7 @@ import org.firstinspires.ftc.teamcode.subsystems.IntakeUptake;
 public class ShooterTask {
 
     public static final double DEFAULT_SPEEDUP_TIMEOUT = 2.0;
-    public static final double DEFAULT_SHOOT_TIMEOUT = 1.67;
+    public static final double DEFAULT_SHOOT_TIMEOUT = 2.5;
 
     public enum ShooterState{
         SPEEDING_UP,
@@ -47,6 +47,7 @@ public class ShooterTask {
         taskFinished = true;
         robot.intakeUptake.closeBlockingServo();
         robot.intakeUptake.setIntakeUptakeMode(IntakeUptake.intakeUptakeStates.OFF);
+        robot.shooter.stopShooterMotor();
     }
 
     public void setShooterState(ShooterState state){
@@ -78,18 +79,17 @@ public class ShooterTask {
 
             case SHOOTING:
                 robot.intakeUptake.setIntakeUptakeMode(IntakeUptake.intakeUptakeStates.UPTAKING);
-
-                if (robot.intakeUptake.isUptakeEmpty() || (shootTimeout > 0.0 && timeoutTimer.getElapsedTimeSeconds() > shootTimeout)){
+                if (robot.intakeUptake.isUptakeEmpty() || (shootTimeout > 0.0 && timeoutTimer.getElapsedTimeSeconds() > shootTimeout)) {
                     shooterState = ShooterState.DONE;
                 }
                 break;
             case DONE:
                 cancel();
-                setShooterState(ShooterState.IDLE);
+                robot.intakeUptake.closeBlockingServo();
+//                setShooterState(ShooterState.IDLE);
                 break;
             case IDLE:
                 robot.intakeUptake.closeBlockingServo();
-
                 break;
         }
     }
