@@ -22,19 +22,40 @@ public class Shooter {
 
     public static final ShootParams.Region[] shootRegions = {
             //Region 1: pitch 25 degrees, y = 3718.987 + 4.966x
-            new ShootParams.Region(28.0, new double[][] {{3718.987, 4.966}}),
+            new ShootParams.Region(25.0, new double[][] {{3718.987, 4.966}}),
             //Region 2:
-            new ShootParams.Region(30.0, new double[][] {{2899.984, 20}}),
+            new ShootParams.Region(26.0, new double[][] {{2899.984, 20}}),
             //Region 3:
+            new ShootParams.Region(27.0, new double[][] {{2800, 20}}),
+            //Region 4:
+            new ShootParams.Region(28.0, new double[][] {{2800, 20}}),
+            //Region 5:
+            new ShootParams.Region(29.0, new double[][] {{2800, 20}}),
+            //Region 6:
+            new ShootParams.Region(30.0, new double[][] {{2800, 20}}),
+            //Region 7:
+            new ShootParams.Region(31.0, new double[][] {{2800, 20}}),
+            //Region 8:
+            new ShootParams.Region(32.0, new double[][] {{2800, 20}}),
+            //Region 9:
+            new ShootParams.Region(33.0, new double[][] {{2800, 20}}),
+            //Region 10:
+            new ShootParams.Region(34.0, new double[][] {{2800, 20}}),
+            //Region 11:
             new ShootParams.Region(35.0, new double[][] {{2800, 20}}),
+            //Region 12:
+            new ShootParams.Region(36.0, new double[][] {{2800, 20}}),
+
+
+
 
     };
 
     public static final ShootParams shootParamsTable = new ShootParams()
-            .addEntry("target_50in", 49.9, shootRegions[0], 3950)
-            .addEntry("target_60in", 59.9, shootRegions[0], 4050)
-            .addEntry("target_70in", 70, shootRegions[0], 4050)
-            .addEntry("target_70in", 70.00001, shootRegions[1], 4300)
+            .addEntry("target_40in", 39.9, shootRegions[0], 2500)
+            .addEntry("target_45in", 44.9, shootRegions[0], 2550)
+            .addEntry("target_50in", 45.9, shootRegions[1], 4050)
+            .addEntry("target_50in", 70.00001, shootRegions[1], 4300)
             .addEntry("target_80in", 80, shootRegions[1], 4500)
             .addEntry("target_80in", 80.00001, shootRegions[2], 4500)
             .addEntry("target_90in", 90, shootRegions[2], 4500)
