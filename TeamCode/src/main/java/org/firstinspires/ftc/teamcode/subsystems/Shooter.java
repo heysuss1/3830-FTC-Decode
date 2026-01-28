@@ -21,32 +21,32 @@ public class Shooter {
     public static boolean compensateForVelDropWithPitch = false;
 
     public static final ShootParams.Region[] shootRegions = {
-            //Region 1: pitch 25 degrees, y = 3718.987 + 4.966x
-            new ShootParams.Region(25.0, new double[][] {{}}),
+            //Region 0: pitch 25 degrees, y = 3718.987 + 4.966x
+            new ShootParams.Region(25.0, new double[][] {{2100,10}}),
+            //Region 1:
+            new ShootParams.Region(26.0, new double[][] {{1600,20}}),
             //Region 2:
-            new ShootParams.Region(26.0, new double[][] {{}}),
+            new ShootParams.Region(27.0, new double[][] {{2100,10}}),
             //Region 3:
-            new ShootParams.Region(27.0, new double[][] {{}}),
+            new ShootParams.Region(28.0, new double[][] {{1600,20}}),
             //Region 4:
-            new ShootParams.Region(28.0, new double[][] {{}}),
+            new ShootParams.Region(29.0, new double[][] {{1730,18}}),
             //Region 5:
-            new ShootParams.Region(29.0, new double[][] {{}}),
+            new ShootParams.Region(30.0, new double[][] {{1800,15}}),
             //Region 6:
-            new ShootParams.Region(30.0, new double[][] {{}}),
+            new ShootParams.Region(31.0, new double[][] {{2150,10}}),
             //Region 7:
-            new ShootParams.Region(31.0, new double[][] {{}}),
+            new ShootParams.Region(32.0, new double[][] {{2150,10}}),
             //Region 8:
-            new ShootParams.Region(32.0, new double[][] {{}}),
+            new ShootParams.Region(33.0, new double[][] {{2815,2}}),
             //Region 9:
-            new ShootParams.Region(33.0, new double[][] {{}}),
+            new ShootParams.Region(34.0, new double[][] {{2575,5}}),
             //Region 10:
-            new ShootParams.Region(34.0, new double[][] {{}}),
+            new ShootParams.Region(35.0, new double[][] {{2230,9}}),
             //Region 11:
-            new ShootParams.Region(35.0, new double[][] {{}}),
-            //Region 12:
-            new ShootParams.Region(36.0, new double[][] {{}}),
-            //Region 13:
-            new ShootParams.Region(40.0, new double[][] {{}}),
+            new ShootParams.Region(36.0, new double[][] {{3040,0.6}}),
+            //Region 12: (far zone, probably make one more?)
+            new ShootParams.Region(40.0, new double[][] {{3385,2}}),
 
     };
 
