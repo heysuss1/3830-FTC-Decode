@@ -22,45 +22,62 @@ public class Shooter {
 
     public static final ShootParams.Region[] shootRegions = {
             //Region 1: pitch 25 degrees, y = 3718.987 + 4.966x
-            new ShootParams.Region(25.0, new double[][] {{3718.987, 4.966}}),
+            new ShootParams.Region(25.0, new double[][] {{}}),
             //Region 2:
-            new ShootParams.Region(26.0, new double[][] {{2899.984, 20}}),
+            new ShootParams.Region(26.0, new double[][] {{}}),
             //Region 3:
-            new ShootParams.Region(27.0, new double[][] {{2800, 20}}),
+            new ShootParams.Region(27.0, new double[][] {{}}),
             //Region 4:
-            new ShootParams.Region(28.0, new double[][] {{2800, 20}}),
+            new ShootParams.Region(28.0, new double[][] {{}}),
             //Region 5:
-            new ShootParams.Region(29.0, new double[][] {{2800, 20}}),
+            new ShootParams.Region(29.0, new double[][] {{}}),
             //Region 6:
-            new ShootParams.Region(30.0, new double[][] {{2800, 20}}),
+            new ShootParams.Region(30.0, new double[][] {{}}),
             //Region 7:
-            new ShootParams.Region(31.0, new double[][] {{2800, 20}}),
+            new ShootParams.Region(31.0, new double[][] {{}}),
             //Region 8:
-            new ShootParams.Region(32.0, new double[][] {{2800, 20}}),
+            new ShootParams.Region(32.0, new double[][] {{}}),
             //Region 9:
-            new ShootParams.Region(33.0, new double[][] {{2800, 20}}),
+            new ShootParams.Region(33.0, new double[][] {{}}),
             //Region 10:
-            new ShootParams.Region(34.0, new double[][] {{2800, 20}}),
+            new ShootParams.Region(34.0, new double[][] {{}}),
             //Region 11:
-            new ShootParams.Region(35.0, new double[][] {{2800, 20}}),
+            new ShootParams.Region(35.0, new double[][] {{}}),
             //Region 12:
-            new ShootParams.Region(36.0, new double[][] {{2800, 20}}),
-
-
-
+            new ShootParams.Region(36.0, new double[][] {{}}),
+            //Region 13:
+            new ShootParams.Region(40.0, new double[][] {{}}),
 
     };
 
     public static final ShootParams shootParamsTable = new ShootParams()
-            .addEntry("target_40in", 39.9, shootRegions[0], 2500)
-            .addEntry("target_45in", 44.9, shootRegions[0], 2550)
-            .addEntry("target_50in", 45.9, shootRegions[1], 4050)
-            .addEntry("target_50in", 70.00001, shootRegions[1], 4300)
-            .addEntry("target_80in", 80, shootRegions[1], 4500)
-            .addEntry("target_80in", 80.00001, shootRegions[2], 4500)
-            .addEntry("target_90in", 90, shootRegions[2], 4500)
-            .addEntry("target_100in", 100, shootRegions[2], 4700)
-            .addEntry("target_110in", 110, shootRegions[2], 5050);
+            .addEntry("target_40in", 40.0, shootRegions[0], 2500)
+            .addEntry("target_45in", 45.0, shootRegions[0], 2550)
+            .addEntry("target_45in2", 45.01, shootRegions[1], 2500)
+            .addEntry("target_50in", 50.0, shootRegions[1], 2600)
+            .addEntry("target_50in2", 50.01, shootRegions[2], 2600)
+            .addEntry("target_55in", 55.0, shootRegions[2], 2650)
+            .addEntry("target_55in2", 55.01, shootRegions[3], 2700)
+            .addEntry("target_60in", 60.0, shootRegions[3], 2800)
+            .addEntry("target_60in2", 60.01, shootRegions[4], 2810)
+            .addEntry("target_65in", 65.0, shootRegions[4], 2900)
+            .addEntry("target_65in2", 65.01, shootRegions[5], 2775)
+            .addEntry("target_70in", 70.0, shootRegions[5], 2850)
+            .addEntry("target_70in2", 70.01, shootRegions[6], 2850)
+            .addEntry("target_75in", 75.0, shootRegions[6], 2900)
+            .addEntry("target_75in2", 75.01, shootRegions[7], 2900)
+            .addEntry("target_80in", 80.0, shootRegions[7], 2950)
+            .addEntry("target_80in2", 80.01, shootRegions[8], 2975)
+            .addEntry("target_85in", 85.0, shootRegions[8], 2985)
+            .addEntry("target_85in2", 85.01, shootRegions[9], 3000)
+            .addEntry("target_90in", 90.0, shootRegions[9], 3025)
+            .addEntry("target_90in2", 90.01, shootRegions[10], 3040)
+            .addEntry("target_95in", 95.0, shootRegions[10], 3085)
+            .addEntry("target_95in2", 95.01, shootRegions[11], 3097)
+            .addEntry("target_100in", 100.0, shootRegions[11], 3100)
+            .addEntry("target_140in2", 140.0, shootRegions[12], 3665)
+            .addEntry("target_145in", 145.0, shootRegions[12], 3675)
+    ;
 
     public static final class Params {
 
