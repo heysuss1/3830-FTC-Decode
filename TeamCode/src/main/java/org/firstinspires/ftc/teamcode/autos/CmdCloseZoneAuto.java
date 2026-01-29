@@ -10,11 +10,11 @@ import org.firstinspires.ftc.teamcode.subsystems.IntakeUptake;
 public class CmdCloseZoneAuto extends AutoCommands {
 
     private static final double PICKUP_TIMEOUT = 3.0; // seconds
-    PathChain driveToShootPreloads, driveToGroup1, driveToShootGroup1, driveToGroup2, driveToShootGroup2,
+    PathChain driveToShootPreloads, driveToShootGroup1, driveToGroup2, driveToShootGroup2,
             driveToGroup3, driveToShootGroup3, intakeGroup1, intakeGroup2, intakeGroup3, driveToPark;
 
     Pose startingPose = (new Pose(117.2, 128.2, Math.toRadians(44)));
-    Pose shootingPose = (new Pose(93, 78, 0));
+    Pose shootingPose = (new Pose(84, 85, 0));
     Pose group2startPose = (new Pose(99, 61, 0));
     Pose group2endPose = (new Pose(127, 61, 0));
     Pose group1endPose = (new Pose(127.5, 85, 0));
@@ -67,6 +67,7 @@ public class CmdCloseZoneAuto extends AutoCommands {
                 if (robot.shooterTask.isFinished()) {
                     isFirstTimePath = true;
                     shotCount++;
+                    if (shotCount == 1) setAutoState(AutoState.SLURPING_GROUP);
                     if (shotCount <= 3) setAutoState(AutoState.DRIVE_TO_GROUP);
                     if (shotCount == 4) setAutoState(AutoState.DRIVE_TO_PARK);
                 }
@@ -123,7 +124,6 @@ public class CmdCloseZoneAuto extends AutoCommands {
     }
 
     private PathChain getGroupDrivePath() {
-        if (shotCount == 1) return driveToGroup1;
         if (shotCount == 2) return driveToGroup2;
         return driveToGroup3; // shotCount == 3
     }
