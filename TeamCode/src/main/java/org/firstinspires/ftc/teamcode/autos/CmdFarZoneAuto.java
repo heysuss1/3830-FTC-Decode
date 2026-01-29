@@ -9,6 +9,8 @@ import org.firstinspires.ftc.teamcode.subsystems.IntakeUptake;
 
 public class CmdFarZoneAuto extends AutoCommands {
 
+    public static final double TIME_BEFORE_NEXT_INTAKE_ATTEMPT = 5.0; // seconds
+
     PathChain driveToIntakeHP1, driveToShootForPickup,
             driveToIntakeRow3, driveToShootRow3, driveToIntakeHP2, huntPath1, huntPath2,
             huntPath3, driveToShootGateBalls, driveToPark;
@@ -76,7 +78,7 @@ public class CmdFarZoneAuto extends AutoCommands {
                     isFirstTimePath = true;
                     shotCount++;
                     if (shotCount == 1) setAutoState(AutoState.SLURPING_GROUP);
-                    if (shotCount == 2 && isCycleStrategy()) setAutoState(AutoState.SLURPING_GROUP);
+                    if (shotCount == 2) setAutoState(AutoState.SLURPING_GROUP);
                     else setAutoState(AutoState.DRIVE_TO_PARK);
                 }
                 break;
@@ -92,42 +94,10 @@ public class CmdFarZoneAuto extends AutoCommands {
 
                 if (!robot.follower.isBusy()) {
                     isFirstTimePath = true;
-                    if(shotCount == 2 && isCycleStrategy()) {
-                        setAutoState(AutoState.HUNT_FOR_BALLS);
-                    } else {
-                        setAutoState(AutoState.DRIVE_TO_SHOOTING_SPOT);
-                        robot.intakeUptake.setIntakeUptakeMode(IntakeUptake.intakeUptakeStates.OFF);
-                    }
-                }
-
-                break;
-
-            case HUNT_FOR_BALLS:
-                if (isFirstTimePath && huntPath == 1) {
-                    robot.follower.followPath(huntPath1, true);
-                    isFirstTimePath = false;
-                }
-                else if (isFirstTimePath && huntPath == 2) {
-                    robot.follower.followPath(huntPath2, true);
-                    isFirstTimePath = false;
-                }
-                else if (isFirstTimePath && huntPath == 3) {
-                    robot.follower.followPath(huntPath3, true);
-                    isFirstTimePath = false;
-                }
-
-                if (!robot.follower.isBusy() && huntPath < 3) {
-                    isFirstTimePath = true;
-                    huntPath++;
-                }
-
-                if (robot.intakeUptake.getNumberOfBallsStored() >= 3)
-                {
-                    isFirstTimePath = true;
-                    huntPath = 1;
-                    robot.intakeUptake.setIntakeUptakeMode(IntakeUptake.intakeUptakeStates.OFF);
                     setAutoState(AutoState.DRIVE_TO_SHOOTING_SPOT);
+                    robot.intakeUptake.setIntakeUptakeMode(IntakeUptake.intakeUptakeStates.OFF);
                 }
+
                 break;
 
             case DRIVE_TO_PARK:
@@ -170,21 +140,9 @@ public class CmdFarZoneAuto extends AutoCommands {
                 .addPath(new BezierLine(shootingPose, intakeHumanPlayerPose))
                 .setLinearHeadingInterpolation(shootingPose.getHeading(), intakeHumanPlayerPose.getHeading())
                 .build();
-        huntPath1 = robot.follower.pathBuilder()
-                .addPath(new BezierLine(intakeHumanPlayerPose, intakeGateBallsPath1))
-                .setLinearHeadingInterpolation(intakeHumanPlayerPose.getHeading(), intakeGateBallsPath1.getHeading())
-                .build();
-        huntPath2 = robot.follower.pathBuilder()
-                .addPath(new BezierLine(intakeGateBallsPath1, intakeGateBallsPath2))
-                .setLinearHeadingInterpolation(intakeGateBallsPath1.getHeading(), intakeGateBallsPath2.getHeading())
-                .build();
-        huntPath3 = robot.follower.pathBuilder()
-                .addPath(new BezierLine(intakeGateBallsPath2, intakeGateBallsPath3))
-                .setLinearHeadingInterpolation(intakeGateBallsPath2.getHeading(), intakeGateBallsPath3.getHeading())
-                .build();
         driveToShootGateBalls = robot.follower.pathBuilder()
-                .addPath(new BezierLine(intakeGateBallsPath3, shootingPose))
-                .setLinearHeadingInterpolation(intakeGateBallsPath3.getHeading(), shootingPose.getHeading())
+                .addPath(new BezierLine(intakeHumanPlayerPose, shootingPose))
+                .setLinearHeadingInterpolation(intakeHumanPlayerPose.getHeading(), shootingPose.getHeading())
                 .build();
         driveToPark = robot.follower.pathBuilder()
                 .addPath(new BezierLine(shootingPose, parkPose))
