@@ -29,6 +29,7 @@ public abstract class AutoCommands
     protected final Auto.AutoStrategy autoStrategy;
     protected final double waitTime;
 
+    protected final double autoScale = (141.5/144);
     protected AutoState autoState;
     protected boolean isFirstTimePath = true;
     protected int shotCount = 0;

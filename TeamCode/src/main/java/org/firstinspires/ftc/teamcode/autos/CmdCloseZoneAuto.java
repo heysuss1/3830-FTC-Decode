@@ -13,14 +13,14 @@ public class CmdCloseZoneAuto extends AutoCommands {
     PathChain driveToShootPreloads, driveToShootGroup1, driveToGroup2, driveToShootGroup2,
             driveToGroup3, driveToShootGroup3, intakeGroup1, intakeGroup2, intakeGroup3, driveToPark;
 
-    Pose startingPose = (new Pose(117.2, 128.2, Math.toRadians(42)));
-    Pose shootingPose = (new Pose(84, 85, 0));
-    Pose group2startPose = (new Pose(99, 61, 0));
-    Pose group2endPose = (new Pose(127, 61, 0));
-    Pose group1endPose = (new Pose(127.5, 85, 0));
-    Pose group3startPose = (new Pose(100, 35, 0));
-    Pose group3endPose = (new Pose(131, 35, 0));
-    Pose parkPose = (new Pose(97, 76, 0));
+    Pose startingPose = (new Pose(114, 123, Math.toRadians(42)));
+    Pose shootingPose = (new Pose(84 * autoScale, 85 * autoScale, 0));
+    Pose group2startPose = (new Pose(99 * autoScale, 61 * autoScale, 0));
+    Pose group2endPose = (new Pose(127 * autoScale, 61 * autoScale, 0));
+    Pose group1endPose = (new Pose(127.5 * autoScale, 85 * autoScale, 0));
+    Pose group3startPose = (new Pose(100 * autoScale, 35 * autoScale, 0));
+    Pose group3endPose = (new Pose(131 * autoScale, 35 * autoScale, 0));
+    Pose parkPose = (new Pose(97 * autoScale, 76 * autoScale, 0));
 
     public CmdCloseZoneAuto(Robot robot, Auto.Team team, Auto.AutoStrategy autoStrategy, double waitTime) {
         super(robot, team, autoStrategy, waitTime);
