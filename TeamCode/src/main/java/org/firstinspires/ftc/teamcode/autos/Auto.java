@@ -51,26 +51,31 @@ public class Auto extends LinearOpMode {
     private AutoStrategy autoStrategy = AutoStrategy.BASE;
     private double startDelay = 0;
 
-    public void runOpMode(){
+    public void runOpMode() {
         robot = new Robot(hardwareMap, telemetry);
 
-        while (editingConfig && !isStopRequested()){
+        while (editingConfig &&  !isStopRequested()) {
             previousGamepad1.copy(currentGamepad1);
             currentGamepad1.copy(gamepad1);
 
-            if(gamepad1.circle && !previousGamepad1.circle)
-            {
+            if (gamepad1.circle && !previousGamepad1.circle) {
                 editingConfig = false;
             }
 
-            if(gamepad1.cross && !previousGamepad1.cross)
-            {
-                switch (editingMode)
-                {
-                    case TEAM: editingMode = EditingModes.AUTO_TYPE; break;
-                    case AUTO_TYPE: editingMode = EditingModes.AUTO_STRATEGY; break;
-                    case AUTO_STRATEGY: editingMode = EditingModes.START_DELAY; break;
-                    case START_DELAY: editingMode = EditingModes.TEAM; break;
+            if (gamepad1.cross && !previousGamepad1.cross) {
+                switch (editingMode) {
+                    case TEAM:
+                        editingMode = EditingModes.AUTO_TYPE;
+                        break;
+                    case AUTO_TYPE:
+                        editingMode = EditingModes.AUTO_STRATEGY;
+                        break;
+                    case AUTO_STRATEGY:
+                        editingMode = EditingModes.START_DELAY;
+                        break;
+                    case START_DELAY:
+                        editingMode = EditingModes.TEAM;
+                        break;
                 }
             }
 
@@ -118,8 +123,9 @@ public class Auto extends LinearOpMode {
             autoCommand = new CmdFarZoneAuto(robot, team, autoStrategy, startDelay);
         }
 
-        robot.shooter.setPitchDegrees(27.5);
-        robot.shooter.setTurretDegrees(0.0);
+        Shooter.alwaysAimPitch = true;
+        Shooter.alwaysAimTurret = true;
+        Shooter.alwaysSetVelocity = false; //Up to you!
         robot.intakeUptake.closeBlockingServo();
         robot.follower.setMaxPower(1);
 
@@ -128,7 +134,7 @@ public class Auto extends LinearOpMode {
         Robot.setAutoType(autoType);
         waitForStart();
         autoCommand.startAutoCommand();
-        while(opModeIsActive()){
+        while (opModeIsActive()) {
 
             autoCommand.autonomousUpdate();
             robot.shooterTask.update();
@@ -136,17 +142,22 @@ public class Auto extends LinearOpMode {
             robot.intakeUptake.intakeUptakeTask();
             robot.follower.update();
 
-            Robot.setTeleOpStartPose(robot.follower.getPose());
-
             telemetry.addData("Current Auto State: ", autoCommand.getAutoState());
             telemetry.addData("Current Shooter State: ", robot.shooterTask.getShooterState());
+            telemetry.addData("Current shot count: ", autoCommand.shotCount);
+            telemetry.addData("isFirstTimePath: ", autoCommand.isFirstTimePath);
             telemetry.addData("Is follower busy? ", robot.follower.isBusy());
-            telemetry.addData("Shooter velocity: ", robot.shooter.getVelocityRPM());
-            telemetry.addData("Is Flywheel on target: ", robot.shooter.isFlywheelOnTarget(Shooter.Params.SHOOTER_TOLERANCE_RPM) + ", Is pitch on target: " + robot.shooter.isPitchOnTarget(Shooter.Params.PITCH_TOLERANCE));
+            telemetry.addData("Shooter velocity / current Target: ", robot.shooter.getVelocityRPM() + " / " + robot.shooter.getVelocityTarget());
+            telemetry.addData("Pitch angle / current Target: ", robot.shooter.getPitchDegrees() + " / " + robot.shooter.getPitchTarget());
+            telemetry.addData("Turret angle / current Target: ", robot.shooter.getTurretDegrees() + " / " + robot.shooter.getTurretTarget());
+            telemetry.addData("Is subsystems on target:  Flywheel / Pitch / Turret: ",
+                    robot.shooter.isFlywheelOnTarget(Shooter.Params.SHOOTER_TOLERANCE_RPM) + " / "
+                            + robot.shooter.isPitchOnTarget(Shooter.Params.PITCH_TOLERANCE) + " / "
+                            + robot.shooter.isTurretOnTarget(Shooter.Params.TURRET_TOLERANCE));
             telemetry.update();
         }
-
-
+        //Lasting thing the opMode does is save pose for teleop
+        autoCommand.cancel();
     }
 
     public static Pose convertAlliancePose(Pose pos, Team team) {
