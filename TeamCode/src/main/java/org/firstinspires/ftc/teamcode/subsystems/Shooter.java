@@ -130,8 +130,8 @@ public class Shooter {
     public double prevVoltage = 0;
     private int crossovers = 0;
 
-    private static boolean alwaysSetVelocity = false;
-    private static boolean alwaysAimTurret = false;
+    public static boolean alwaysSetVelocity = false;
+    public static boolean alwaysAimTurret = false;
     private static boolean alwaysAimPitch = false;
     private static boolean compensateForVelDropWithPitch = false;
 
