@@ -69,6 +69,8 @@ public class ShooterTask {
             case SPEEDING_UP:
                 if (manualRpmOverride != null) {
                     robot.shooter.setVelocityTarget(manualRpmOverride);
+                } else{
+                    robot.shooter.setVelocityTarget(robot.shooter.getCurrentVelocityTarget());
                 }
 
                 if (robot.shooter.isShooterReady() || (speedUpTimeout > 0.0 && timeoutTimer.getElapsedTimeSeconds() > speedUpTimeout))
@@ -81,6 +83,8 @@ public class ShooterTask {
             case SHOOTING:
                 robot.intakeUptake.setIntakeUptakeMode(IntakeUptake.intakeUptakeStates.UPTAKING);
                 if (robot.intakeUptake.isUptakeEmpty() || (shootTimeout > 0.0 && timeoutTimer.getElapsedTimeSeconds() > shootTimeout)) {
+
+                if (robot.intakeUptake.isUptakeEmpty() || (shootTimeout > 0.0 && timeoutTimer.getElapsedTimeSeconds() > shootTimeout)){
                     shooterState = ShooterState.DONE;
                 }
                 break;

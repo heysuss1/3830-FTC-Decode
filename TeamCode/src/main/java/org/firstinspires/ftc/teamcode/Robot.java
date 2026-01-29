@@ -46,6 +46,14 @@ public class Robot {
     static Motif MOTIF = Motif.GPP;
     public static Pose teleOpStartPose;
 
+    //TODO: Do you still need all this stuff between  48-54?
+    public static Pose RED_GOAL_POSE = new Pose(123, 126.5, Math.toRadians(36));
+    public static Pose BLUE_GOAL_POSE = (RED_GOAL_POSE); //TODO I HAVE TO CONVERT
+    public static Pose RED_FAR_POSE = new Pose(60, 8, Math.toRadians(90));
+    public static Pose BLUE_FAR_POSE = (RED_FAR_POSE); //I REMOVED CONVERSION
+    public static String[] POSE_NAME_LIST = {"Red Goal", "Blue Goal", "Red Far Zone", "Blue Far Zone"};
+    public static Pose[] POSE_LIST = {RED_GOAL_POSE, BLUE_GOAL_POSE, RED_FAR_POSE, BLUE_FAR_POSE};
+
     public static final class cameraParams {
         public static double cameraHeight = 6.7; //Inches
         public static double cameraAngle = 35; //degrees
@@ -111,11 +119,8 @@ public class Robot {
     }
 
     public void resetPose(){
-        //SWITCH IT BACK, OLSONS PURPOSES ONLY
-        if (team == Auto.Team.BLUE ) follower.setPose(new Pose(135, 9, Math.PI/2));
-        if (team == Auto.Team.RED ) follower.setPose(new Pose(135, 9, Math.PI/2));
-//        if (team == Auto.Team.RED   ) follower.setPose(new Pose(8, 8, Math.PI/2));
-        //TODO: Did you think about orientation? are they facing in or out? if they are isn't heading flipped?
+        if (team == Auto.Team.BLUE) follower.setPose(new Pose(135, 9, Math.PI/2));
+        if (team == Auto.Team.RED) follower.setPose(new Pose(8, 8, Math.PI/2));
     }
 
     public AimInfo getAimInfo() {

@@ -15,11 +15,6 @@ import org.firstinspires.ftc.teamcode.controllers.PidfController;
 
 public class Shooter {
 
-    public static boolean alwaysSetVelocity = false;
-    public static boolean alwaysAimTurret = false;
-    public static boolean alwaysAimPitch = true;
-    public static boolean compensateForVelDropWithPitch = false;
-
     public static final ShootParams.Region[] shootRegions = {
             //Region 0: pitch 25 degrees, y = 3718.987 + 4.966x
             new ShootParams.Region(25.0, new double[][] {{2100,10}}),
@@ -126,12 +121,19 @@ public class Shooter {
     public final Robot robot;
 
     public Double velocityTarget = null;
+
+    double currentVelocityTarget;
     public Double pitchTarget = null;
     public Double turretTarget = null;
 
     public double currentVoltage = 0;
     public double prevVoltage = 0;
     private int crossovers = 0;
+
+    private static boolean alwaysSetVelocity = false;
+    private static boolean alwaysAimTurret = false;
+    private static boolean alwaysAimPitch = false;
+    private static boolean compensateForVelDropWithPitch = false;
 
     public Shooter(HardwareMap hwMap, Telemetry telemetry, Robot robot) {
 
@@ -264,7 +266,6 @@ public class Shooter {
         double turretTargetModulo = robot.shooter.modularConversion(turretTargetRaw);
         turretTarget = Range.clip(turretTargetModulo, -90, 90);
         //TODO: Why are you only clipping to 160 and not 180? This seems like a band-aid.
-        //TODO: shut the fuck up
     }
 
     public double modularConversion(double n) {
@@ -379,7 +380,7 @@ public class Shooter {
 
     public void pitchTask() {
         if (pitchTarget != null) {
-            pitchServo.setPosition(1-(1.160*pitchTarget-0.088));
+            pitchServo.setPosition((1-degreesToRawPitch((rawPitchToDegrees(pitchTarget)-3)/0.888)));
         }
         if (!Robot.inComp) {
             telemetry.addLine("\nPitch Info:");
@@ -445,5 +446,6 @@ public class Shooter {
                 stopShooterMotor();
             }
         }
+        //Always setting pitch to the calculated angle from the shootparams table.
     }
 }
