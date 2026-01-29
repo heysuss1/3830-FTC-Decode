@@ -381,7 +381,7 @@ public class Shooter {
 
     public void pitchTask() {
         if (pitchTarget != null) {
-            pitchServo.setPosition((1-degreesToRawPitch((rawPitchToDegrees(pitchTarget)-3)/0.888)));
+            pitchServo.setPosition(1-(1.160*pitchTarget-0.088));
         }
         if (!Robot.inComp) {
             telemetry.addLine("\nPitch Info:");
