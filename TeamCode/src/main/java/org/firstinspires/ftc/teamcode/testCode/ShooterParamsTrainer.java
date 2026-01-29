@@ -75,7 +75,7 @@ public class ShooterParamsTrainer extends LinearOpMode {
             telemetry.addData("Current turret degrees", robot.shooter.getTurretDegrees());
             telemetry.addData("Current servo pos raw", robot.shooter.getRawPitchPos());
             telemetry.addData("Task state", task.getShooterState());
-            telemetry.addData("Is Flywheel on target: ", robot.shooter.isFlywheelOnTarget(Shooter.Params.SHOOTER_TOLERANCE_RPM) + ", Is pitch on target: " + robot.shooter.isPitchOnTarget(Shooter.Params.PITCH_TOLERANCE));
+            telemetry.addData("Is Flywheel on target: ", robot.shooter.isFlywheelOnTarget(Shooter.Params.SHOOTER_TOLERANCE_RPM) + ", Is pitch on target: " + robot.shooter.isPitchOnTarget(Shooter.Params.PITCH_TOLERANCE) + ", Is turret on target: ", robot.shooter.isTurretOnTarget(Shooter.Params.TURRET_TOLERANCE));
             telemetry.update();
         }
     }

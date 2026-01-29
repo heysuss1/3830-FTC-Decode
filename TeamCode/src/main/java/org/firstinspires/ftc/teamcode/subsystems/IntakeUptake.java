@@ -25,7 +25,7 @@ public class IntakeUptake {
         OUTTAKING
     }
     public static class Params {
-        public static final double HAS_BALL_1_DISTANCE_THRESHOLD = 2.45; //inches
+        public static final double HAS_BALL_1_DISTANCE_THRESHOLD = 2.2; //inches
         public static final double HAS_BALL_2_DISTANCE_THRESHOLD = 1.4;
         public static final double HAS_BALL_3_DISTANCE_THRESHOLD = 1.9;
 

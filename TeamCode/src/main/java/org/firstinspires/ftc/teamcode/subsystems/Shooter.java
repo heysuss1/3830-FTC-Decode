@@ -17,7 +17,7 @@ public class Shooter {
 
     public static boolean alwaysSetVelocity = false;
     public static boolean alwaysAimTurret = false;
-    public static boolean alwaysAimPitch = false;
+    public static boolean alwaysAimPitch = true;
     public static boolean compensateForVelDropWithPitch = false;
 
     public static final ShootParams.Region[] shootRegions = {
@@ -90,8 +90,8 @@ public class Shooter {
 
         //Pitch Params
         public static final double MIN_PITCH_DEGREES = 19;
-        public static final double MAX_PITCH_DEGREES = 45;
-        public static final double PITCH_GEAR_RATIO = .145 ;
+        public static final double MAX_PITCH_DEGREES = 46;
+        public static final double PITCH_GEAR_RATIO = .177 ;
         public static  final double PITCH_ENCODER_ZERO_OFFSET = .56;
         public static  final double PITCH_POSITION_OFFSET = MIN_PITCH_DEGREES;
         public static final double PITCH_DEGREES_PER_REV = 360 * PITCH_GEAR_RATIO;
@@ -105,7 +105,7 @@ public class Shooter {
         public static final double CROSSOVER_THRESHOLD = 0.5;
         public static final double MAX_TURRET_DEGREES = 90;
         public static final double TURRET_ENCODER_ZERO_OFFSET = 0;
-        public static final double TURRET_POSITION_OFFSET = 0;
+        public static double TURRET_POSITION_OFFSET = 74;
         public static final double TURRET_DEGREES_PER_REV = -360 * TURRET_GEAR_RATIO;
         public static final double TURRET_TOLERANCE = 360;
     }
@@ -262,8 +262,9 @@ public class Shooter {
 
         double turretTargetRaw = (targetDegrees - Math.toDegrees(robot.follower.getHeading())) * -1;
         double turretTargetModulo = robot.shooter.modularConversion(turretTargetRaw);
-        turretTarget = Range.clip(turretTargetModulo, -160, 160);
+        turretTarget = Range.clip(turretTargetModulo, -90, 90);
         //TODO: Why are you only clipping to 160 and not 180? This seems like a band-aid.
+        //TODO: shut the fuck up
     }
 
     public double modularConversion(double n) {
@@ -343,10 +344,11 @@ public class Shooter {
     }
 
     public boolean isShooterReady(double flywheelTolerance, double turretTolerance, double pitchTolerance) {
-        return (velocityTarget == null || isFlywheelOnTarget(flywheelTolerance))
-                && (turretTarget == null || isTurretOnTarget(turretTolerance))
-                && (pitchTarget == null || isPitchOnTarget(pitchTolerance));
+        return (velocityTarget == null || isFlywheelOnTarget(flywheelTolerance));
+//                && (turretTarget == null || isTurretOnTarget(turretTolerance))
+//                && (pitchTarget == null || isPitchOnTarget(pitchTolerance));
     }
+
 
     public boolean isShooterReady() {
         return isShooterReady(Params.SHOOTER_TOLERANCE_RPM, Params.TURRET_TOLERANCE, Params.PITCH_TOLERANCE);
@@ -377,7 +379,7 @@ public class Shooter {
 
     public void pitchTask() {
         if (pitchTarget != null) {
-            pitchServo.setPosition((1-degreesToRawPitch((rawPitchToDegrees(pitchTarget)-3)/0.888)));
+            pitchServo.setPosition(1-(1.160*pitchTarget-0.088));
         }
         if (!Robot.inComp) {
             telemetry.addLine("\nPitch Info:");
@@ -440,8 +442,7 @@ public class Shooter {
             if (robot.isInRevUpZone()){
                 velocityTarget = shootParams.outputs[0];
             } else {
-                topShooterMotor.setPower(0);
-                bottomShooterMotor.setPower(topShooterMotor.getPower());
+                stopShooterMotor();
             }
         }
     }

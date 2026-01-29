@@ -1,5 +1,6 @@
 package org.firstinspires.ftc.teamcode;
 
+import com.acmerobotics.dashboard.config.Config;
 import com.pedropathing.geometry.Pose;
 import com.pedropathing.util.Timer;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
@@ -9,8 +10,18 @@ import org.firstinspires.ftc.teamcode.autos.Auto;
 import org.firstinspires.ftc.teamcode.subsystems.IntakeUptake;
 import org.firstinspires.ftc.teamcode.subsystems.Shooter;
 
+
+@Config
 @com.qualcomm.robotcore.eventloop.opmode.TeleOp(name = "TeleOp")
 public class TeleOp extends LinearOpMode {
+
+
+    public static double FIELD_X = Robot.fieldParams.Y_GOAL;
+    public static double FIELD_Y = Robot.fieldParams.X_GOAL_RED;
+    public static double turret_offset = Shooter.Params.TURRET_POSITION_OFFSET;
+    public static double blue_line = Robot.fieldParams.BLUE_REV_LINE_Y_INT;
+
+
 
     final double MAX_SPEED = 1.0; //See if you driver can handle 1.0, it should net faster cycles.
     final double SLOW_SPEED = 0.3;
@@ -65,16 +76,18 @@ public class TeleOp extends LinearOpMode {
             telemetry.update();
         }
 
-        if (Robot.getTeleOpStartPose() == null) {
-            robot.resetPose();
-        } else {
-            robot.follower.setStartingPose(Robot.getTeleOpStartPose());
-        }
+//        if (Robot.getTeleOpStartPose() == null) {
+//            robot.resetPose();
+//        } else {
+//            robot.follower.setStartingPose(Robot.getTeleOpStartPose());
+//        }
 
         Shooter.alwaysSetVelocity = true;
 
+        Shooter.alwaysAimTurret = false;
         robot.follower.setStartingPose(startingPose);
-
+        telemetry.addData("Robot Pose", robot.follower.getPose());
+        telemetry.update();
         waitForStart();
 
         while (opModeIsActive()) {
@@ -82,6 +95,12 @@ public class TeleOp extends LinearOpMode {
             //Tracks loop times
             lastTime = currentTime;
             currentTime = loopTimer.getElapsedTime();
+
+            Robot.fieldParams.Y_GOAL = FIELD_Y;
+            Robot.fieldParams.X_GOAL_RED = FIELD_X;
+            Shooter.Params.TURRET_POSITION_OFFSET = turret_offset;
+            Robot.fieldParams.BLUE_REV_LINE_Y_INT = blue_line;
+
 
             previousGamepad1.copy(currentGamepad1);
             currentGamepad1.copy(gamepad1);
@@ -170,6 +189,7 @@ public class TeleOp extends LinearOpMode {
             telemetry.addData("Manual RPM", manualRPM);
             telemetry.addData("Always set velocity?", Shooter.alwaysSetVelocity);
             telemetry.addData("Always set turret?", Shooter.alwaysAimTurret);
+            telemetry.addData("Is Flywheel on target: ", robot.shooter.isFlywheelOnTarget(Shooter.Params.SHOOTER_TOLERANCE_RPM) + ", Is pitch on target: " + robot.shooter.isPitchOnTarget(Shooter.Params.PITCH_TOLERANCE) + ", Is turret on target: ", robot.shooter.isTurretOnTarget(Shooter.Params.TURRET_TOLERANCE));
             telemetry.addData("Shooter empty", robot.intakeUptake.isUptakeEmpty());
             telemetry.update();
         }

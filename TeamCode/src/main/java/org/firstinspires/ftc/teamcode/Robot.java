@@ -52,11 +52,12 @@ public class Robot {
     }
 
     public static final class fieldParams {
-        public final static double Y_GOAL = 141.5;
-        public final static double X_GOAL_RED = 141.5;
+        public static double Y_GOAL = 125;
+        public static double X_GOAL_RED = 141.5;
         public final static double FIELD_LENGTH = 141.5;
         public final static double X_GOAL_BLUE = 0;
         public final static double FIELD_CENTER_X = 72;
+        public static double BLUE_REV_LINE_Y_INT = 118;
     }
 
     public final Telemetry telemetry;
@@ -142,12 +143,12 @@ public class Robot {
         double x = follower.getPose().getX();
         double y = follower.getPose().getY();
         double multiplier = 141.5/144;
-        boolean isAboveRightLine = y > x;
-        boolean isAboveLeftLine = y > -x + 144 * multiplier;
+        boolean isAboveRightLine = y > x-12;
+        boolean isAboveLeftLine = y > -x + fieldParams.BLUE_REV_LINE_Y_INT * multiplier;
 
         boolean isInClozeZone = isAboveLeftLine && isAboveRightLine;
 
-        isAboveLeftLine = y < x - 48 * multiplier;
+        isAboveLeftLine = y < x - 42 * multiplier;
         isAboveRightLine = y < x *-1 + 102 * multiplier;
 
         boolean isInFarZone = (isAboveLeftLine && isAboveRightLine);

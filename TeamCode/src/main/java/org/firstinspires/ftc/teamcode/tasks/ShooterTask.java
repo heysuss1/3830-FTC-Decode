@@ -4,9 +4,11 @@ import com.pedropathing.util.Timer;
 
 import org.firstinspires.ftc.teamcode.Robot;
 import org.firstinspires.ftc.teamcode.subsystems.IntakeUptake;
+import org.firstinspires.ftc.teamcode.subsystems.Shooter;
+
 public class ShooterTask {
 
-    public static final double DEFAULT_SPEEDUP_TIMEOUT = 2.0;
+    public static final double DEFAULT_SPEEDUP_TIMEOUT = 2.5;
     public static final double DEFAULT_SHOOT_TIMEOUT = 2.5;
 
     public enum ShooterState{
@@ -47,7 +49,6 @@ public class ShooterTask {
         taskFinished = true;
         robot.intakeUptake.closeBlockingServo();
         robot.intakeUptake.setIntakeUptakeMode(IntakeUptake.intakeUptakeStates.OFF);
-        robot.shooter.stopShooterMotor();
     }
 
     public void setShooterState(ShooterState state){
@@ -86,7 +87,7 @@ public class ShooterTask {
             case DONE:
                 cancel();
                 robot.intakeUptake.closeBlockingServo();
-//                setShooterState(ShooterState.IDLE);
+                setShooterState(ShooterState.IDLE);
                 break;
             case IDLE:
                 robot.intakeUptake.closeBlockingServo();
