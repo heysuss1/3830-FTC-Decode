@@ -11,6 +11,9 @@ import org.firstinspires.ftc.teamcode.subsystems.Shooter;
 
 @Autonomous(name = "Auto")
 public class Auto extends LinearOpMode {
+
+
+
     public enum EditingModes {
         TEAM,
         AUTO_TYPE,
