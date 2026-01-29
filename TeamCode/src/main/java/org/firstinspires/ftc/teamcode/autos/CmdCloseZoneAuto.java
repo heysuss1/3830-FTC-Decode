@@ -9,20 +9,17 @@ import org.firstinspires.ftc.teamcode.subsystems.IntakeUptake;
 
 public class CmdCloseZoneAuto extends AutoCommands {
 
-    private static final double PICKUP_TIMEOUT = 3.0; // seconds
-    PathChain driveToShootPreloads, driveToGroup1, driveToShootGroup1, driveToGroup2, driveToShootGroup2,
-            driveToGroup3, driveToShootGroup3, intakeGroup1, intakeGroup2, intakeGroup3, driveToPark,
-            driveToOpenGate, intakeFromGate, driveToShootGateGroup;
+    private static final double PICKUP_TIMEOUT = 3.5; // seconds
+    PathChain driveToShootPreloads, driveToShootGroup1, driveToGroup2, driveToShootGroup2,
+            driveToGroup3, driveToShootGroup3, intakeGroup1, intakeGroup2, intakeGroup3, driveToPark;
 
-    Pose startingPose = (new Pose(118.8, 127.9, Math.toRadians(36)));
-    Pose shootingPose = (new Pose(93, 78, 0));
-    Pose group2startPose = (new Pose(105, 64, Math.toRadians(-10)));
-    Pose group2endPose = (new Pose(119, 60, Math.toRadians(-10)));
-    Pose goToOpenGatePose = (new Pose(127.4, 63, 0));
-    Pose pickupFromGatePose = (new Pose(132, 59, Math.toRadians(30)));
-    Pose group1endPose = (new Pose(119, 84, 0));
-    Pose group3startPose = (new Pose(103, 42, Math.toRadians(-5)));
-    Pose group3endPose = (new Pose(119, 36, Math.toRadians(-15)));
+    Pose startingPose = (new Pose(117.2, 128.2, Math.toRadians(42)));
+    Pose shootingPose = (new Pose(84, 85, 0));
+    Pose group2startPose = (new Pose(99, 61, 0));
+    Pose group2endPose = (new Pose(127, 61, 0));
+    Pose group1endPose = (new Pose(127.5, 85, 0));
+    Pose group3startPose = (new Pose(100, 35, 0));
+    Pose group3endPose = (new Pose(131, 35, 0));
     Pose parkPose = (new Pose(97, 76, 0));
 
     public CmdCloseZoneAuto(Robot robot, Auto.Team team, Auto.AutoStrategy autoStrategy, double waitTime) {
@@ -32,8 +29,6 @@ public class CmdCloseZoneAuto extends AutoCommands {
         shootingPose = Auto.convertAlliancePose(shootingPose, team);
         group2startPose = Auto.convertAlliancePose(group2startPose, team);
         group2endPose = Auto.convertAlliancePose(group2endPose, team);
-        goToOpenGatePose = Auto.convertAlliancePose(goToOpenGatePose, team);
-        pickupFromGatePose = Auto.convertAlliancePose(pickupFromGatePose, team);
         group1endPose = Auto.convertAlliancePose(group1endPose, team);
         group3startPose = Auto.convertAlliancePose(group3startPose, team);
         group3endPose = Auto.convertAlliancePose(group3endPose, team);
@@ -46,7 +41,7 @@ public class CmdCloseZoneAuto extends AutoCommands {
         switch (autoState) {
             case START:
                 if (waitTime <= 0 || timer.getElapsedTimeSeconds() > waitTime) {
-                   setAutoState(AutoState.DRIVE_TO_SHOOTING_SPOT);
+                    setAutoState(AutoState.DRIVE_TO_SHOOTING_SPOT);
                 }
                 break;
 
@@ -72,8 +67,9 @@ public class CmdCloseZoneAuto extends AutoCommands {
                 if (robot.shooterTask.isFinished()) {
                     isFirstTimePath = true;
                     shotCount++;
+                    if (shotCount == 1) setAutoState(AutoState.SLURPING_GROUP);
                     if (shotCount <= 3) setAutoState(AutoState.DRIVE_TO_GROUP);
-                    if (shotCount == 4) setAutoState(isCycleStrategy() ? AutoState.DRIVE_TO_GROUP : AutoState.DRIVE_TO_PARK);
+                    if (shotCount == 4) setAutoState(AutoState.DRIVE_TO_PARK);
                 }
                 break;
 
@@ -96,12 +92,7 @@ public class CmdCloseZoneAuto extends AutoCommands {
                     isFirstTimePath = false;
                 }
 
-                if ((shotCount != 2 && !isCycleStrategy()) && !robot.follower.isBusy()) {
-                    isFirstTimePath = true;
-                    robot.intakeUptake.setIntakeUptakeMode(IntakeUptake.intakeUptakeStates.OFF);
-                   setAutoState(AutoState.DRIVE_TO_SHOOTING_SPOT);
-                }
-                if ((shotCount == 2 && isCycleStrategy()) && (robot.intakeUptake.getNumberOfBallsStored() >= 3 || timer.getElapsedTimeSeconds() >= PICKUP_TIMEOUT)) {
+                if (!robot.follower.isBusy()) {
                     isFirstTimePath = true;
                     robot.intakeUptake.setIntakeUptakeMode(IntakeUptake.intakeUptakeStates.OFF);
                     setAutoState(AutoState.DRIVE_TO_SHOOTING_SPOT);
@@ -127,24 +118,20 @@ public class CmdCloseZoneAuto extends AutoCommands {
 
     private PathChain getShootingPath() {
         if (shotCount == 0) return driveToShootPreloads;
-        if (shotCount == 1) return driveToShootGroup2;
-        if (shotCount == 2) return isCycleStrategy() ? driveToShootGateGroup : driveToShootGroup1;
-        if (shotCount == 3) return isCycleStrategy() ? driveToShootGroup1 : driveToShootGroup3;
-        return driveToShootGroup3; // shotCount == 4
+        if (shotCount == 1) return driveToShootGroup1;
+        if (shotCount == 2) return driveToShootGroup2;
+        return driveToShootGroup3; //shotCount == 3
     }
 
     private PathChain getGroupDrivePath() {
-        if (shotCount == 1) return driveToGroup2;
-        if (shotCount == 2) return isCycleStrategy() ? driveToOpenGate : driveToGroup1;
-        if (shotCount == 3) return isCycleStrategy() ? driveToGroup1 : driveToGroup3;
-        return driveToGroup3; // shotCount == 4
+        if (shotCount == 2) return driveToGroup2;
+        return driveToGroup3; // shotCount == 3
     }
 
     private PathChain getIntakePath() {
-        if (shotCount == 1) return intakeGroup2;
-        if (shotCount == 2) return isCycleStrategy() ? intakeFromGate : intakeGroup1;
-        if (shotCount == 3) return isCycleStrategy() ? intakeGroup1 : intakeGroup3;
-        return intakeGroup3; // shotCount == 4
+        if (shotCount == 1) return intakeGroup1;
+        if (shotCount == 2) return intakeGroup2;
+        return intakeGroup3; // shotCount == 3
     }
 
     @Override
@@ -152,6 +139,14 @@ public class CmdCloseZoneAuto extends AutoCommands {
         driveToShootPreloads = robot.follower.pathBuilder()
                 .addPath(new BezierLine(startingPose, shootingPose))
                 .setLinearHeadingInterpolation(startingPose.getHeading(), shootingPose.getHeading())
+                .build();
+        intakeGroup1 = robot.follower.pathBuilder()
+                .addPath(new BezierLine(shootingPose, group1endPose))
+                .setLinearHeadingInterpolation(shootingPose.getHeading(), group1endPose.getHeading())
+                .build();
+        driveToShootGroup1 = robot.follower.pathBuilder()
+                .addPath(new BezierLine(group1endPose, shootingPose))
+                .setLinearHeadingInterpolation(group1endPose.getHeading(), shootingPose.getHeading())
                 .build();
         driveToGroup2 = robot.follower.pathBuilder()
                 .addPath(new BezierLine(shootingPose, group2startPose))
@@ -164,26 +159,6 @@ public class CmdCloseZoneAuto extends AutoCommands {
         driveToShootGroup2 = robot.follower.pathBuilder()
                 .addPath(new BezierLine(group2endPose, shootingPose))
                 .setLinearHeadingInterpolation(group2endPose.getHeading(), shootingPose.getHeading())
-                .build();
-        driveToOpenGate = robot.follower.pathBuilder()
-                .addPath(new BezierLine(shootingPose, goToOpenGatePose))
-                .setLinearHeadingInterpolation(shootingPose.getHeading(), goToOpenGatePose.getHeading())
-                .build();
-        intakeFromGate = robot.follower.pathBuilder()
-                .addPath(new BezierLine(goToOpenGatePose, pickupFromGatePose))
-                .setLinearHeadingInterpolation(goToOpenGatePose.getHeading(), pickupFromGatePose.getHeading())
-                .build();
-        driveToShootGateGroup = robot.follower.pathBuilder()
-                .addPath(new BezierLine(pickupFromGatePose, shootingPose))
-                .setLinearHeadingInterpolation(pickupFromGatePose.getHeading(), shootingPose.getHeading())
-                .build();
-        intakeGroup1 = robot.follower.pathBuilder()
-                .addPath(new BezierLine(shootingPose, group1endPose))
-                .setLinearHeadingInterpolation(shootingPose.getHeading(), group1endPose.getHeading())
-                .build();
-        driveToShootGroup1 = robot.follower.pathBuilder()
-                .addPath(new BezierLine(group1endPose, shootingPose))
-                .setLinearHeadingInterpolation(group1endPose.getHeading(), shootingPose.getHeading())
                 .build();
         driveToGroup3 = robot.follower.pathBuilder()
                 .addPath(new BezierLine(shootingPose, group3startPose))

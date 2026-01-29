@@ -60,7 +60,7 @@ public class Robot {
     }
 
     public static final class fieldParams {
-        public static double Y_GOAL = 125;
+        public static double Y_GOAL = 141.5;
         public static double X_GOAL_RED = 141.5;
         public final static double FIELD_LENGTH = 141.5;
         public final static double X_GOAL_BLUE = 0;

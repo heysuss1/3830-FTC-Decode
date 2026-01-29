@@ -54,6 +54,7 @@ public class Shooter {
             .addEntry("target_55in", 55.0, shootRegions[2], 2650)
             .addEntry("target_55in2", 55.01, shootRegions[3], 2700)
             .addEntry("target_60in", 60.0, shootRegions[3], 2800)
+            //TODO: recheck targets 60 region 4 to 70 region 5
             .addEntry("target_60in2", 60.01, shootRegions[4], 2810)
             .addEntry("target_65in", 65.0, shootRegions[4], 2900)
             .addEntry("target_65in2", 65.01, shootRegions[5], 2775)
@@ -132,7 +133,7 @@ public class Shooter {
 
     public static boolean alwaysSetVelocity = false;
     public static boolean alwaysAimTurret = false;
-    private static boolean alwaysAimPitch = false;
+    public static boolean alwaysAimPitch = false;
     private static boolean compensateForVelDropWithPitch = false;
 
     public Shooter(HardwareMap hwMap, Telemetry telemetry, Robot robot) {

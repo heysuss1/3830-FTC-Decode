@@ -1,3 +1,4 @@
+
 package org.firstinspires.ftc.teamcode.autos;
 
 import com.pedropathing.geometry.Pose;
@@ -13,6 +14,7 @@ public class Auto extends LinearOpMode {
     public enum EditingModes {
         TEAM,
         AUTO_TYPE,
+        AUTO_STRATEGY,
         START_DELAY,
     }
 
@@ -24,6 +26,11 @@ public class Auto extends LinearOpMode {
     public enum AutoType {
         FAR_ZONE,
         CLOSE_ZONE,
+    }
+
+    public enum AutoStrategy {
+        BASE,
+        CYCLE,
     }
 
     Robot robot;
@@ -38,6 +45,7 @@ public class Auto extends LinearOpMode {
 
     private Team team = Team.RED;
     private AutoType autoType = AutoType.CLOSE_ZONE;
+    private AutoStrategy autoStrategy = AutoStrategy.BASE;
     private double startDelay = 0;
 
     public void runOpMode(){
@@ -70,7 +78,6 @@ public class Auto extends LinearOpMode {
                     } else if (gamepad1.left_bumper && !previousGamepad1.left_bumper) {
                         team = Team.BLUE;
                     }
-                    Robot.setTeam(team);
                     break;
                 case AUTO_TYPE:
                     if (gamepad1.right_bumper && !previousGamepad1.right_bumper) {
