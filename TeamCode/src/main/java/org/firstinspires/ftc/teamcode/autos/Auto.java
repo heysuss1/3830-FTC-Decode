@@ -127,11 +127,16 @@ public class Auto extends LinearOpMode {
         Shooter.alwaysAimTurret = true;
         Shooter.alwaysSetVelocity = false; //Up to you!
         robot.intakeUptake.closeBlockingServo();
-        robot.follower.setMaxPower(1);
+        robot.follower.setMaxPower(.8);
 
         autoCommand.buildPaths();
         Robot.setTeam(team);
         Robot.setAutoType(autoType);
+        telemetry.addData("Auto Ready To Start: ", true);
+        telemetry.addData("Team", Robot.getTeam());
+        telemetry.addData("Auto Type", autoType);
+        telemetry.addData("Wait Time", startDelay);
+        telemetry.update();
         waitForStart();
         autoCommand.startAutoCommand();
         Shooter.alwaysAimTurret = false;
@@ -151,6 +156,7 @@ public class Auto extends LinearOpMode {
             telemetry.addData("Shooter velocity / current Target: ", robot.shooter.getVelocityRPM() + " / " + robot.shooter.getVelocityTarget());
             telemetry.addData("Pitch angle / current Target: ", robot.shooter.getPitchDegrees() + " / " + robot.shooter.getPitchTarget());
             telemetry.addData("Turret angle / current Target: ", robot.shooter.getTurretDegrees() + " / " + robot.shooter.getTurretTarget());
+            telemetry.addData("Distance to Goal", robot.getAimInfo().getDistanceToGoal());
             telemetry.addData("Is subsystems on target:  Flywheel / Pitch / Turret: ",
                     robot.shooter.isFlywheelOnTarget(Shooter.Params.SHOOTER_TOLERANCE_RPM) + " / "
                             + robot.shooter.isPitchOnTarget(Shooter.Params.PITCH_TOLERANCE) + " / "

@@ -8,7 +8,9 @@ import org.firstinspires.ftc.teamcode.Robot;
 public abstract class AutoCommands
 {
     protected static final double intakePathSpeed = 0.7;
-    protected static final double AUTO_RPM = 2950;
+    protected static final double CLOSE_AUTO_RPM = 2940;
+    protected static final double FAR_AUTO_RPM = 3660;
+
 
     protected enum AutoState{
         START,

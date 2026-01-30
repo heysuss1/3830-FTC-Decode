@@ -20,14 +20,16 @@ public class Constants {
             .mass(12.88)
             .forwardZeroPowerAcceleration(-31.0)
             .lateralZeroPowerAcceleration(-74.294)
-            .headingPIDFCoefficients(new PIDFCoefficients(2.8, 0, 0.06, 0))
-            .translationalPIDFCoefficients(new PIDFCoefficients(0.1,0,0.005,0))
-            .drivePIDFCoefficients(new FilteredPIDFCoefficients(0.014, 0, 0.001, 0.6, 0.0001))
             .secondaryDrivePIDFCoefficients(new FilteredPIDFCoefficients(0.005, 0.0001, 0.000005, 0.6, 0.01))
+            .headingPIDFCoefficients(new PIDFCoefficients(2.8, 0, 0.06, 0))
+            .translationalPIDFCoefficients(new PIDFCoefficients(0.15,0,0.005,0))
+            .drivePIDFCoefficients(new FilteredPIDFCoefficients(0.01, 0, 0.0003, 0.6, 0.0001))
+            .secondaryDrivePIDFCoefficients(new FilteredPIDFCoefficients(0.005, 0.0001, 0.000005, 0.6, 0.01))
+            .secondaryTranslationalPIDFCoefficients(new PIDFCoefficients(0.13, 0, 0.01, 0.02))
             .useSecondaryDrivePIDF(true)
             .useSecondaryHeadingPIDF(false)
-            .holdPointTranslationalScaling(.55) //maybe this will work?
-                .useSecondaryTranslationalPIDF(false);
+            .holdPointTranslationalScaling(.45) //maybe this will work?
+            .useSecondaryTranslationalPIDF(true);
 
     public static MecanumConstants driveConstants = new MecanumConstants()
             .maxPower(1)

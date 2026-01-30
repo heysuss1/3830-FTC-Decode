@@ -42,6 +42,7 @@ public class Shooter {
             new ShootParams.Region(36.0, new double[][] {{3040,0.6}}),
             //Region 12: (far zone, probably make one more?)
             new ShootParams.Region(40.0, new double[][] {{3385,2}}),
+            //From the middle of the zone (150~ distance, 41 pitch and 3775 rpm runs very nicce
 
     };
 
@@ -81,7 +82,9 @@ public class Shooter {
         public static final double GOBUILDA_5000_CPR = 28.0;
         public static final double SHOOTER_MOTOR_GEAR_RATIO = 1;
         public static final double SHOOTER_TICKS_PER_REV = GOBUILDA_5000_CPR * SHOOTER_MOTOR_GEAR_RATIO;
-        public static final double SHOOTER_KP = 0.001, SHOOTER_KI = 0.01, SHOOTER_KD = 0, SHOOTER_KF = 0.0002, SHOOTER_I_ZONE = 150;
+//        public static final double SHOOTER_KP = 0.001, SHOOTER_KI = 0.01, SHOOTER_KD = 0, SHOOTER_KF = 0.0002, SHOOTER_I_ZONE = 150;
+                public static final double SHOOTER_KP = 0.0012, SHOOTER_KI = 0.02, SHOOTER_KD = 0.00001, SHOOTER_KF = 0.0002, SHOOTER_I_ZONE = 150;
+
         public static final double SHOOTER_TOLERANCE_RPM = 100;
 
         //Pitch Params
