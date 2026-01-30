@@ -28,7 +28,7 @@ public class CmdFarZoneAuto extends AutoCommands {
     Pose intakeGateBallsPath1 = new Pose (126, 12, Math.toRadians(30));
     Pose intakeGateBallsPath2 = new Pose (133, 16, Math.toRadians(70));
     Pose intakeGateBallsPath3 = new Pose (135, 39, Math.toRadians(90));
-    Pose parkPose = new Pose(113, 16,0);
+    Pose parkPose = new Pose(113, 18,0);
 
     int huntPath = 1;
 
@@ -73,10 +73,17 @@ public class CmdFarZoneAuto extends AutoCommands {
                     isFirstTimePath = false;
                 }
 
-                if (!robot.follower.isBusy()) {
+                if ((intakeTimerHasBeenReset && timer.getElapsedTimeSeconds() > .5)){
+                    intakeTimerHasBeenReset = false;
                     isFirstTimePath = true;
                     setAutoState(AutoState.SHOOTING);
                     robot.intakeUptake.setIntakeUptakeMode(IntakeUptake.intakeUptakeStates.OFF);
+                }
+
+                if (!robot.follower.isBusy() && !intakeTimerHasBeenReset) {
+                    timer.resetTimer();
+                    intakeTimerHasBeenReset = true;
+
                 }
                 break;
 
@@ -97,6 +104,7 @@ public class CmdFarZoneAuto extends AutoCommands {
 
                 if (isFirstTimePath) {
                     robot.intakeUptake.setIntakeUptakeMode(IntakeUptake.intakeUptakeStates.INTAKING);
+                    intakeTimerHasBeenReset = false;
                     if(shotCount <= 1) robot.follower.followPath(driveToIntakeHP1, true);
                     if(shotCount == 2) robot.follower.followPath(driveToIntakeRow3, .7, true);
                     if (shotCount == 3) robot.follower.followPath(driveToIntakeHP2, true);
