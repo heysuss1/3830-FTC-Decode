@@ -6,18 +6,21 @@ import com.pedropathing.paths.PathChain;
 
 import org.firstinspires.ftc.teamcode.Robot;
 import org.firstinspires.ftc.teamcode.subsystems.IntakeUptake;
+import org.firstinspires.ftc.teamcode.subsystems.Shooter;
 
 public class CmdCloseZoneAuto extends AutoCommands {
 
     private static final double PICKUP_TIMEOUT = 3.5; // seconds
-    PathChain driveToShootPreloads, driveToShootGroup1, driveToGroup2, driveToShootGroup2,
+    PathChain driveToShootPreloads, driveToShootGroup1, driveToGroup1, driveToGroup2, driveToShootGroup2,
             driveToGroup3, driveToShootGroup3, intakeGroup1, intakeGroup2, intakeGroup3, driveToPark;
 
     Pose startingPose = (new Pose(114, 123, Math.toRadians(42)));
-    Pose shootingPose = (new Pose(84 * autoScale, 85 * autoScale, 0));
+    Pose shootingPose = (new Pose(84 * autoScale, 85 * autoScale, Math.toRadians(42)));
     Pose group2startPose = (new Pose(99 * autoScale, 61 * autoScale, 0));
     Pose group2endPose = (new Pose(127 * autoScale, 61 * autoScale, 0));
     Pose group1endPose = (new Pose(127.5 * autoScale, 85 * autoScale, 0));
+    Pose group1StartPose = (new Pose(100 * autoScale, 85 * autoScale, 0));
+    ;
     Pose group3startPose = (new Pose(100 * autoScale, 35 * autoScale, 0));
     Pose group3endPose = (new Pose(131 * autoScale, 35 * autoScale, 0));
     Pose parkPose = (new Pose(97 * autoScale, 76 * autoScale, 0));
@@ -35,12 +38,18 @@ public class CmdCloseZoneAuto extends AutoCommands {
         parkPose = Auto.convertAlliancePose(parkPose, team);
 
         robot.follower.setStartingPose(startingPose);
+        robot.follower.setMaxPower(.8);
+        Shooter.alwaysAimTurret = false;
+        robot.shooter.setTurretDegrees(0.0);
+        robot.shooter.setPitchDegrees(33.0);
+
     }
 
     public void autonomousUpdate() {
         switch (autoState) {
             case START:
                 if (waitTime <= 0 || timer.getElapsedTimeSeconds() > waitTime) {
+                    shotCount = 0;
                     setAutoState(AutoState.DRIVE_TO_SHOOTING_SPOT);
                 }
                 break;
@@ -52,12 +61,12 @@ public class CmdCloseZoneAuto extends AutoCommands {
                     isFirstTimePath = false;
                 }
 
-                if (!robot.follower.isBusy()) {
+//                if (!robot.follower.isBusy()) {
+                if (robot.follower.atParametricEnd()){
                     isFirstTimePath = true;
                     setAutoState(AutoState.SHOOTING);
                 }
                 break;
-
             case SHOOTING:
                 if (isFirstTimePath) {
                     robot.shooterTask.startTask(null);
@@ -124,6 +133,7 @@ public class CmdCloseZoneAuto extends AutoCommands {
     }
 
     private PathChain getGroupDrivePath() {
+        if(shotCount == 0 || shotCount == 1) return driveToGroup1;
         if (shotCount == 2) return driveToGroup2;
         return driveToGroup3; // shotCount == 3
     }
@@ -139,6 +149,10 @@ public class CmdCloseZoneAuto extends AutoCommands {
         driveToShootPreloads = robot.follower.pathBuilder()
                 .addPath(new BezierLine(startingPose, shootingPose))
                 .setLinearHeadingInterpolation(startingPose.getHeading(), shootingPose.getHeading())
+                .build();
+        driveToGroup1 = robot.follower.pathBuilder()
+                .addPath(new BezierLine(shootingPose, group1StartPose))
+                .setLinearHeadingInterpolation(shootingPose.getHeading(), group1StartPose.getHeading())
                 .build();
         intakeGroup1 = robot.follower.pathBuilder()
                 .addPath(new BezierLine(shootingPose, group1endPose))

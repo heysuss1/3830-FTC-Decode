@@ -12,7 +12,7 @@
 //public class CmdTwelveCloseZoneAuto extends AutoCommands {
 //    //TODO: Implement timers for shooter and pathing to timeout if something goes wrong
 //    private static final double intakePathSpeed = 0.6;
-//    private static final double AUTO_RPM = 4000;
+//    private static final double AUTO_RPM = 2950;
 //
 //    PathChain driveToShootPreloads, driveToGroup1, driveToShootGroup1, driveToGroup2, driveToShootGroup2,
 //            driveToGroup3, driveToShootGroup3, intakeGroup1, intakeGroup2, intakeGroup3, driveToGate, driveToPark;

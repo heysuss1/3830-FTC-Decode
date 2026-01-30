@@ -16,7 +16,7 @@ import org.firstinspires.ftc.teamcode.subsystems.Shooter;
 public class TwelveBallAuto extends OpMode {
 
 
-    final double AUTO_RPM = 4000;
+    final double AUTO_RPM = 2975;
     enum AutoState {
         START,
         DRIVE_TO_SHOOTING_SPOT,

@@ -17,7 +17,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 
 public class Constants {
     public static FollowerConstants followerConstants = new FollowerConstants()
-            .mass(11.974)
+            .mass(12.88)
             .forwardZeroPowerAcceleration(-31.0)
             .lateralZeroPowerAcceleration(-74.294)
             .headingPIDFCoefficients(new PIDFCoefficients(2.8, 0, 0.06, 0))
@@ -26,7 +26,8 @@ public class Constants {
             .secondaryDrivePIDFCoefficients(new FilteredPIDFCoefficients(0.005, 0.0001, 0.000005, 0.6, 0.01))
             .useSecondaryDrivePIDF(true)
             .useSecondaryHeadingPIDF(false)
-            .useSecondaryTranslationalPIDF(false);
+            .holdPointTranslationalScaling(.55) //maybe this will work?
+                .useSecondaryTranslationalPIDF(false);
 
     public static MecanumConstants driveConstants = new MecanumConstants()
             .maxPower(1)
@@ -38,14 +39,14 @@ public class Constants {
             .leftRearMotorDirection(DcMotorSimple.Direction.REVERSE)
             .rightFrontMotorDirection(DcMotorSimple.Direction.FORWARD)
             .rightRearMotorDirection(DcMotorSimple.Direction.FORWARD)
-            .xVelocity(72.387)
-            .yVelocity(60.653)
+            .xVelocity(77.284)
+            .yVelocity(57.58)
             .useBrakeModeInTeleOp(true);
     public static PathConstraints pathConstraints = new PathConstraints(0.99, 100, 1, 1);
 
     public static PinpointConstants localizerConstants = new PinpointConstants()
-            .forwardPodY(-3.0625)
-            .strafePodX(-4.875)
+            .forwardPodY(-3.2859)
+            .strafePodX(-4.8607)
             .distanceUnit(DistanceUnit.INCH)
             .hardwareMapName("pinpoint")
             .encoderResolution(GoBildaPinpointDriver.GoBildaOdometryPods.goBILDA_4_BAR_POD)

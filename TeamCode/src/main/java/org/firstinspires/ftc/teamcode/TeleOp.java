@@ -83,6 +83,7 @@ public class TeleOp extends LinearOpMode {
 //        }
 
         Shooter.alwaysSetVelocity = true;
+        Shooter.alwaysAimPitch = true;
 
         Shooter.alwaysAimTurret = false;
         robot.follower.setStartingPose(startingPose);
@@ -142,13 +143,13 @@ public class TeleOp extends LinearOpMode {
                 else manualRPM = null;
             }
 
-            if (currentGamepad1.dpad_right && !previousGamepad1.dpad_right){
+//            if (currentGamepad1.dpad_right && !previousGamepad1.dpad_right){
                 Shooter.alwaysAimPitch = !Shooter.alwaysAimPitch;  // Toggle the boolean
-                if (!Shooter.alwaysAimPitch)
-                {
-                    robot.shooter.setPitchDegrees(27.0);
-                }
-            }
+//                if (!Shooter.alwaysAimPitch)
+//                {
+//                    robot.shooter.setPitchDegrees(27.0);
+//                }
+//            }
 
             if (currentGamepad1.left_bumper && !previousGamepad1.left_bumper){
                 Shooter.alwaysAimTurret = !Shooter.alwaysAimTurret;  // Toggle the boolean

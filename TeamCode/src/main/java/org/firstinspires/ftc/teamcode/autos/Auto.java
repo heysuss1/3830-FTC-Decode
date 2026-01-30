@@ -134,6 +134,7 @@ public class Auto extends LinearOpMode {
         Robot.setAutoType(autoType);
         waitForStart();
         autoCommand.startAutoCommand();
+        Shooter.alwaysAimTurret = false;
         while (opModeIsActive()) {
 
             autoCommand.autonomousUpdate();

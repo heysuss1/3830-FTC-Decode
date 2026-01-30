@@ -88,7 +88,7 @@ public class Shooter {
         public static final double MIN_PITCH_DEGREES = 19;
         public static final double MAX_PITCH_DEGREES = 46;
         public static final double PITCH_GEAR_RATIO = .177 ;
-        public static  final double PITCH_ENCODER_ZERO_OFFSET = .56;
+        public static  final double PITCH_ENCODER_ZERO_OFFSET = .485;
         public static  final double PITCH_POSITION_OFFSET = MIN_PITCH_DEGREES;
         public static final double PITCH_DEGREES_PER_REV = 360 * PITCH_GEAR_RATIO;
         public static final double PITCH_TOLERANCE = 2;
@@ -101,7 +101,7 @@ public class Shooter {
         public static final double CROSSOVER_THRESHOLD = 0.5;
         public static final double MAX_TURRET_DEGREES = 90;
         public static final double TURRET_ENCODER_ZERO_OFFSET = 0;
-        public static double TURRET_POSITION_OFFSET = 74;
+        public static double TURRET_POSITION_OFFSET = -1;
         public static final double TURRET_DEGREES_PER_REV = -360 * TURRET_GEAR_RATIO;
         public static final double TURRET_TOLERANCE = 360;
     }
