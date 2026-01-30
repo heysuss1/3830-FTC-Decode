@@ -127,7 +127,7 @@ public class Auto extends LinearOpMode {
         Shooter.alwaysAimTurret = true;
         Shooter.alwaysSetVelocity = false; //Up to you!
         robot.intakeUptake.closeBlockingServo();
-        robot.follower.setMaxPower(.8);
+        robot.follower.setMaxPower(1);
 
         autoCommand.buildPaths();
         Robot.setTeam(team);

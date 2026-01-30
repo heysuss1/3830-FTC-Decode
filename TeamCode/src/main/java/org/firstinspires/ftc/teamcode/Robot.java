@@ -140,6 +140,9 @@ public class Robot {
         double distanceToGoal = Math.hypot(deltaY, deltaX);
         double angleToGoal = Math.toDegrees(Math.atan2(deltaY, deltaX));
 
+        if (autoType == Auto.AutoType.FAR_ZONE){
+            distanceToGoal += 13.4;
+        }
         return new AimInfo(distanceToGoal, angleToGoal);
 
     }

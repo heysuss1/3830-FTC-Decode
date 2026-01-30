@@ -76,17 +76,17 @@ public class TeleOp extends LinearOpMode {
             telemetry.update();
         }
 
-//        if (Robot.getTeleOpStartPose() == null) {
-//            robot.resetPose();
-//        } else {
-//            robot.follower.setStartingPose(Robot.getTeleOpStartPose());
-//        }
+        if (Robot.getTeleOpStartPose() == null) {
+            robot.resetPose();
+        } else {
+            robot.follower.setStartingPose(Robot.getTeleOpStartPose());
+        }
 
         Shooter.alwaysSetVelocity = true;
         Shooter.alwaysAimPitch = true;
 
         Shooter.alwaysAimTurret = false;
-        robot.follower.setStartingPose(startingPose);
+//        robot.follower.setStartingPose(startingPose);
         telemetry.addData("Robot Pose", robot.follower.getPose());
         telemetry.update();
         waitForStart();
@@ -183,6 +183,7 @@ public class TeleOp extends LinearOpMode {
             telemetry.addData("Heading: ", robot.follower.getHeading());
             telemetry.addData("Shooter param rpm", robot.shooter.getVelocityTarget());
             telemetry.addData("Current Turret Degrees", robot.shooter.getTurretDegrees());
+            telemetry.addData("Distance to goal", robot.getAimInfo().getDistanceToGoal());
             telemetry.addData("Number of big BLACK balls", robot.intakeUptake.getNumberOfBallsStored());
             telemetry.addData("Shooter Velocity Target", robot.shooter.getVelocityTarget());
             telemetry.addData("Is in rev up zone", robot.isInRevUpZone());
