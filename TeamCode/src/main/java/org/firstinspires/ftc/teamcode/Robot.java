@@ -124,8 +124,8 @@ public class Robot {
     }
 
     public AimInfo getAimInfo() {
-        double robotX = follower.getPose().getX() + 3.5*Math.cos(follower.getHeading());
-        double robotY = follower.getPose().getY() + 3.5*Math.sin(follower.getHeading());
+        double robotX = follower.getPose().getX(); //+ 3.5*Math.cos(follower.getHeading());
+        double robotY = follower.getPose().getY(); //+ 3.5*Math.sin(follower.getHeading());
 
         double x_goal;
 

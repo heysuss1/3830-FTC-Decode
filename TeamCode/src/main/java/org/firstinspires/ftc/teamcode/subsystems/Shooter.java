@@ -91,14 +91,14 @@ public class Shooter {
         public static final double MIN_PITCH_DEGREES = 19;
         public static final double MAX_PITCH_DEGREES = 46;
         public static final double PITCH_GEAR_RATIO = .177 ;
-        public static  final double PITCH_ENCODER_ZERO_OFFSET = .485;
+        public static  final double PITCH_ENCODER_ZERO_OFFSET = .524;
         public static  final double PITCH_POSITION_OFFSET = MIN_PITCH_DEGREES;
         public static final double PITCH_DEGREES_PER_REV = 360 * PITCH_GEAR_RATIO;
         public static final double PITCH_TOLERANCE = 2;
         public static final double VEL_DROP_PITCH_SCALE = 0;
 
         //Turret Params
-        public static final double TURRET_KP = 0.016, TURRET_KI = (.01), TURRET_KD = (.00003), TURRET_KF = (0), TURRET_I_ZONE = (5);
+        public static final double TURRET_KP = .013, TURRET_KI = (.001), TURRET_KD = (0), TURRET_KF = (0.0001), TURRET_I_ZONE = (5);
         public static final double TURRET_GEAR_RATIO = 0.506;
         public static final double MIN_TURRET_DEGREES = -90;
         public static final double CROSSOVER_THRESHOLD = 0.5;
@@ -268,7 +268,9 @@ public class Shooter {
 
         double turretTargetRaw = (targetDegrees - Math.toDegrees(robot.follower.getHeading())) * -1;
         double turretTargetModulo = robot.shooter.modularConversion(turretTargetRaw);
+
         turretTarget = Range.clip(turretTargetModulo, -90, 90);
+        telemetry.addData("Turret Target (actual)", turretTargetRaw);
         //TODO: Why are you only clipping to 160 and not 180? This seems like a band-aid.
     }
 
@@ -399,7 +401,9 @@ public class Shooter {
 
         if (turretTarget != null) {
             double currentPosition = getTurretDegrees();
-            output = turretController.calculate(turretTarget, currentPosition) + 0.0004;
+            output = turretController.calculate(turretTarget, currentPosition) ;
+//            if (output > 0) output += 0.0004;
+//            if (output < 0) output -= 0.0004;
             primaryTurretServo.setPower(output);
             secondaryTurretServo.setPower(output);
 
@@ -441,6 +445,7 @@ public class Shooter {
 
         if (alwaysAimTurret) {
             setTurretDegrees(aimInfo.getAngleToGoal());
+            telemetry.addData("Target from shooter class",aimInfo.getAngleToGoal() );
         }
 
         if (alwaysSetVelocity) {

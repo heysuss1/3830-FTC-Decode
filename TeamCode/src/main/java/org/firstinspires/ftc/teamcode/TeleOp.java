@@ -22,7 +22,7 @@ public class TeleOp extends LinearOpMode {
     public static double blue_line = Robot.fieldParams.BLUE_REV_LINE_Y_INT;
 
 
-
+    Robot.AimInfo aimInfo;
     final double MAX_SPEED = 1.0; //See if you driver can handle 1.0, it should net faster cycles.
     final double SLOW_SPEED = 0.3;
     final double CLOSE_ZONE_RPM = 3700.0;
@@ -56,7 +56,10 @@ public class TeleOp extends LinearOpMode {
         loopTimer = new Timer();
 
         robot.driveTrain.setSpeed(MAX_SPEED);
-        Pose startingPose = (new Pose(114, 123, Math.toRadians(42)));
+//      Pose startingPose = (new Pose(118, 126.875, Math.toRadians(42)));
+
+        Pose startingPose =(new Pose(114, 123, Math.toRadians(42)));
+
 
         robot.driveTrain.setBrakeMode();
 
@@ -75,18 +78,18 @@ public class TeleOp extends LinearOpMode {
             telemetry.addData("Auto Type: ", Robot.getAutoType());
             telemetry.update();
         }
-
-        if (Robot.getTeleOpStartPose() == null) {
-            robot.resetPose();
-        } else {
-            robot.follower.setStartingPose(Robot.getTeleOpStartPose());
-        }
+//
+//        if (Robot.getTeleOpStartPose() == null) {
+//            robot.resetPose();
+//        } else {
+//            robot.follower.setStartingPose(Robot.getTeleOpStartPose());
+//        }
 
         Shooter.alwaysSetVelocity = true;
         Shooter.alwaysAimPitch = true;
 
         Shooter.alwaysAimTurret = false;
-//        robot.follower.setStartingPose(startingPose);
+        robot.follower.setStartingPose(startingPose);
         telemetry.addData("Robot Pose", robot.follower.getPose());
         telemetry.update();
         waitForStart();
@@ -97,6 +100,7 @@ public class TeleOp extends LinearOpMode {
             lastTime = currentTime;
             currentTime = loopTimer.getElapsedTime();
 
+            aimInfo = robot.getAimInfo();
             Robot.fieldParams.Y_GOAL = FIELD_Y;
             Robot.fieldParams.X_GOAL_RED = FIELD_X;
             Shooter.Params.TURRET_POSITION_OFFSET = turret_offset;
@@ -180,7 +184,7 @@ public class TeleOp extends LinearOpMode {
             telemetry.addData("Loop Time", currentTime - lastTime);
             telemetry.addData("x: ", robot.follower.getPose().getX());
             telemetry.addData("y: ", robot.follower.getPose().getY());
-            telemetry.addData("Heading: ", robot.follower.getHeading());
+            telemetry.addData("Heading: ", Math.toDegrees(robot.follower.getHeading()));
             telemetry.addData("Shooter param rpm", robot.shooter.getVelocityTarget());
             telemetry.addData("Current Turret Degrees", robot.shooter.getTurretDegrees());
             telemetry.addData("Distance to goal", robot.getAimInfo().getDistanceToGoal());
@@ -189,6 +193,7 @@ public class TeleOp extends LinearOpMode {
             telemetry.addData("Is in rev up zone", robot.isInRevUpZone());
             telemetry.addData("Shooter State", robot.shooterTask.getShooterState());
             telemetry.addData("Manual RPM", manualRPM);
+            telemetry.addData("Turret Target", aimInfo.getAngleToGoal());
             telemetry.addData("Always set velocity?", Shooter.alwaysSetVelocity);
             telemetry.addData("Always set turret?", Shooter.alwaysAimTurret);
             telemetry.addData("Is Flywheel on target: ", robot.shooter.isFlywheelOnTarget(Shooter.Params.SHOOTER_TOLERANCE_RPM) + ", Is pitch on target: " + robot.shooter.isPitchOnTarget(Shooter.Params.PITCH_TOLERANCE) + ", Is turret on target: ", robot.shooter.isTurretOnTarget(Shooter.Params.TURRET_TOLERANCE));

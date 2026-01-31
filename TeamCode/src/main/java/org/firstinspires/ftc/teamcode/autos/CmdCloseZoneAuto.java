@@ -31,7 +31,7 @@ public class CmdCloseZoneAuto extends AutoCommands {
     Pose group2endPose = (new Pose(124 * autoScale, 51 * autoScale, 0));
     Pose group2ControlPose = new Pose(78 * autoScale, 59 * autoScale);
     Pose group1endPose = (new Pose(125 * autoScale, 85 * autoScale, 0));
-    Pose group1StartPose = (new Pose(1000 * autoScale, 85 * autoScale, 0));
+    Pose group1StartPose = (new Pose(100 * autoScale, 85 * autoScale, 0));
     Pose group1ControlPose = new Pose(78 * autoScale, 81 * autoScale);
 
     Pose gatePose = (new Pose(126.4 * autoScale, (55.3) * autoScale, Math.toRadians(34.77854-11.57375)));
