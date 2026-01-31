@@ -12,19 +12,29 @@ public class CmdFarZoneAuto extends AutoCommands {
 
     public static final double TIME_BEFORE_NEXT_INTAKE_ATTEMPT = 5.0; // seconds
 
+    final double farZoneYConstant = -13;
+
+    final double farZoneFieldLength = 160;
 
     boolean intakeTimerHasBeenReset = false;
     PathChain driveToPreload, driveToIntakeHP1, driveToShootFromHP,
             driveToIntakeRow3, driveToShootRow3, driveToIntakeHP2, huntPath1, huntPath2,
             huntPath3, driveToShootGateBalls, driveToPark;
 
+    public void blueTeamPoses(){
+        startPose = new Pose(farZoneFieldLength - startPose.getX(), startPose.getY(), Math.PI - startPose.getHeading());
+        intakeHumanPlayerPose = new Pose(farZoneFieldLength - intakeHumanPlayerPose.getX(), intakeHumanPlayerPose.getY() + farZoneYConstant, Math.PI - intakeHumanPlayerPose.getHeading());
+        intakeRow3Pose = new Pose(farZoneFieldLength - intakeRow3Pose.getX(), intakeRow3Pose.getY() + farZoneYConstant, Math.PI - intakeRow3Pose.getHeading());
+        shootingPose = new Pose(farZoneFieldLength - shootingPose.getX(), shootingPose.getY() + farZoneYConstant, Math.PI - shootingPose.getHeading());
+        parkPose = new Pose(farZoneFieldLength - parkPose.getX(), parkPose.getY() + farZoneYConstant, Math.PI - parkPose.getHeading());
+        intakeRow3ControlPose = new Pose(farZoneFieldLength - intakeRow3ControlPose.getHeading(), intakeRow3ControlPose.getY() + farZoneYConstant);
+    }
     PathChain driveToShootGroup1;
     Pose startPose = new Pose(80, 9, Math.toRadians(90));
     Pose intakeHumanPlayerPose = new Pose(137.5, 16, 0);
-    Pose shootIntakeRowPose = new Pose(87, 22, Math.toRadians(63));
+//    Pose shootIntakeRowPose = new Pose(87, 22, Math.toRadians(63));
     Pose intakeRow3Pose = new Pose(137.5, 42, Math.toRadians(0));
-//    Pose shootingPose = new Pose(87, 22, Math.toRadians(61.5));  heading is zeroed;
-    Pose shootingPose = new Pose(87, 22, Math.toRadians(61.5));
+    Pose shootingPose = new Pose(87, 22, Math.toRadians(70));
     Pose intakeRow3ControlPose = new Pose(63, 45);
     Pose intakeGateBallsPath1 = new Pose (126, 12, Math.toRadians(30));
     Pose intakeGateBallsPath2 = new Pose (133, 16, Math.toRadians(70));
@@ -33,19 +43,20 @@ public class CmdFarZoneAuto extends AutoCommands {
 
     int huntPath = 1;
 
+    //startPose = Auto.convertAlliancePose(startPose, team);
+    //intakeHumanPlayerPose = Auto.convertAlliancePose(intakeHumanPlayerPose, team);
+    //intakeRow3Pose = Auto.convertAlliancePose(intakeRow3Pose, team);
+    //shootingPose = Auto.convertAlliancePose(shootingPose, team);
+    //intakeGateBallsPath1 = Auto.convertAlliancePose(intakeGateBallsPath1, team);
+    //intakeGateBallsPath2 = Auto.convertAlliancePose(intakeGateBallsPath2, team);
+    //intakeGateBallsPath3 = Auto.convertAlliancePose(intakeGateBallsPath3, team);
+    //parkPose = Auto.convertAlliancePose(parkPose, team);
     public CmdFarZoneAuto(Robot robot, Auto.Team team, Auto.AutoStrategy autoStrategy,double waitTime){
         super(robot, team, autoStrategy, waitTime);
 
-        startPose = Auto.convertAlliancePose(startPose, team);
-        intakeHumanPlayerPose = Auto.convertAlliancePose(intakeHumanPlayerPose, team);
-        shootIntakeRowPose = Auto.convertAlliancePose(shootIntakeRowPose, team);
-        intakeRow3Pose = Auto.convertAlliancePose(intakeRow3Pose, team);
-        shootingPose = Auto.convertAlliancePose(shootingPose, team);
-        intakeGateBallsPath1 = Auto.convertAlliancePose(intakeGateBallsPath1, team);
-        intakeGateBallsPath2 = Auto.convertAlliancePose(intakeGateBallsPath2, team);
-        intakeGateBallsPath3 = Auto.convertAlliancePose(intakeGateBallsPath3, team);
-        parkPose = Auto.convertAlliancePose(parkPose, team);
-
+        if (team == Auto.Team.BLUE){
+            blueTeamPoses();
+        }
         robot.follower.setPose(startPose);
         robot.shooter.setPitchDegrees(41.0);
         robot.shooter.setTurretDegrees(0.0);

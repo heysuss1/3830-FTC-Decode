@@ -13,7 +13,6 @@ import org.firstinspires.ftc.teamcode.subsystems.Shooter;
 public class Auto extends LinearOpMode {
 
 
-
     public enum EditingModes {
         TEAM,
         AUTO_TYPE,
@@ -114,6 +113,7 @@ public class Auto extends LinearOpMode {
             telemetry.addData("Team", Robot.getTeam());
             telemetry.addData("Auto Type", autoType);
             telemetry.addData("Wait Time", startDelay);
+            telemetry.addData("Cycle type: ", autoStrategy);
             telemetry.update();
         }
 
@@ -136,6 +136,7 @@ public class Auto extends LinearOpMode {
         telemetry.addData("Team", Robot.getTeam());
         telemetry.addData("Auto Type", autoType);
         telemetry.addData("Wait Time", startDelay);
+        telemetry.addData("Cycle type: ", autoStrategy);
         telemetry.update();
         waitForStart();
         autoCommand.startAutoCommand();

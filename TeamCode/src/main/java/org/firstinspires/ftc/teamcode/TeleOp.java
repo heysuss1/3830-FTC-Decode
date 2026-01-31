@@ -78,18 +78,18 @@ public class TeleOp extends LinearOpMode {
             telemetry.addData("Auto Type: ", Robot.getAutoType());
             telemetry.update();
         }
-//
-//        if (Robot.getTeleOpStartPose() == null) {
-//            robot.resetPose();
-//        } else {
-//            robot.follower.setStartingPose(Robot.getTeleOpStartPose());
-//        }
+
+        if (Robot.getTeleOpStartPose() == null) {
+            robot.follower.setStartingPose(new Pose(114, 123, Math.toRadians(42)));
+        } else {
+              robot.follower.setStartingPose(Robot.getTeleOpStartPose());
+        }
 
         Shooter.alwaysSetVelocity = true;
         Shooter.alwaysAimPitch = true;
 
         Shooter.alwaysAimTurret = false;
-        robot.follower.setStartingPose(startingPose);
+//        robot.follower.setStartingPose(startingPose);
         telemetry.addData("Robot Pose", robot.follower.getPose());
         telemetry.update();
         waitForStart();

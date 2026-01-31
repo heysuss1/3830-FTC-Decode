@@ -65,6 +65,7 @@ public class Robot {
         public static double FIELD_LENGTH = 141.5;
         public final static double X_GOAL_BLUE = 0;
         public final static double FIELD_CENTER_X = 72;
+
         public static double BLUE_REV_LINE_Y_INT = 118;
     }
 
@@ -119,13 +120,14 @@ public class Robot {
     }
 
     public void resetPose(){
-        if (team == Auto.Team.BLUE) follower.setPose(new Pose(135, 9, Math.PI/2));
-        if (team == Auto.Team.RED) follower.setPose(new Pose(8, 8, Math.PI/2));
+        if (team == Auto.Team.BLUE) follower.setPose(new Pose((141.5-114), 123, Math.PI - Math.toRadians(42)));
+        if (team == Auto.Team.RED)  follower.setStartingPose(new Pose(114, 123, Math.toRadians(42)));
     }
 
     public AimInfo getAimInfo() {
         double robotX = follower.getPose().getX(); //+ 3.5*Math.cos(follower.getHeading());
         double robotY = follower.getPose().getY(); //+ 3.5*Math.sin(follower.getHeading());
+
 
         double x_goal;
 
@@ -144,6 +146,7 @@ public class Robot {
         if (autoType == Auto.AutoType.FAR_ZONE){
             distanceToGoal += 13.4;
         }
+
         return new AimInfo(distanceToGoal, angleToGoal);
 
     }
