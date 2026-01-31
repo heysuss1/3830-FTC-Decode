@@ -60,9 +60,9 @@ public class Robot {
     }
 
     public static final class fieldParams {
-        public static double Y_GOAL = 141.5;
-        public static double X_GOAL_RED = 141.5;
-        public static double FIELD_LENGTH = 141.5;
+        public static double Y_GOAL = 144;
+        public static double X_GOAL_RED = 144;
+        public static double FIELD_LENGTH = 144;
         public final static double X_GOAL_BLUE = 0;
         public final static double FIELD_CENTER_X = 72;
 
@@ -119,9 +119,10 @@ public class Robot {
         teleOpStartPose = startPose;
     }
 
+
     public void resetPose(){
-        if (team == Auto.Team.BLUE) follower.setPose(new Pose((141.5-114), 123, Math.PI - Math.toRadians(42)));
-        if (team == Auto.Team.RED)  follower.setStartingPose(new Pose(114, 123, Math.toRadians(42)));
+        if (team == Auto.Team.BLUE) follower.setPose(new Pose(135, 9, 0));
+        if (team == Auto.Team.RED   ) follower.setPose(new Pose(8, 8, 0));
     }
 
     public AimInfo getAimInfo() {
@@ -143,10 +144,6 @@ public class Robot {
         double distanceToGoal = Math.hypot(deltaY, deltaX);
         double angleToGoal = Math.toDegrees(Math.atan2(deltaY, deltaX));
 
-        if (autoType == Auto.AutoType.FAR_ZONE){
-            distanceToGoal += 13.4;
-        }
-
         return new AimInfo(distanceToGoal, angleToGoal);
 
     }
@@ -154,14 +151,13 @@ public class Robot {
     public boolean isInRevUpZone() {
         double x = follower.getPose().getX();
         double y = follower.getPose().getY();
-        double multiplier = 141.5/144;
         boolean isAboveRightLine = y > x-12;
-        boolean isAboveLeftLine = y > -x + fieldParams.BLUE_REV_LINE_Y_INT * multiplier;
+        boolean isAboveLeftLine = y > -x + fieldParams.BLUE_REV_LINE_Y_INT ;
 
         boolean isInClozeZone = isAboveLeftLine && isAboveRightLine;
 
-        isAboveLeftLine = y < x - 42 * multiplier;
-        isAboveRightLine = y < x *-1 + 102 * multiplier;
+        isAboveLeftLine = y < x - 42 ;
+        isAboveRightLine = y < -x + 102;
 
         boolean isInFarZone = (isAboveLeftLine && isAboveRightLine);
         return (isInClozeZone || isInFarZone);

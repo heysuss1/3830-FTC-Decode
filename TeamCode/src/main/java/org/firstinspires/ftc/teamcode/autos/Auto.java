@@ -174,10 +174,6 @@ public class Auto extends LinearOpMode {
         double y = pos.getY();
         double heading = Math.toDegrees(pos.getHeading());
 
-        if (Robot.getAutoType() == Auto.AutoType.FAR_ZONE){
-            Robot.fieldParams.FIELD_LENGTH = 144;
-        }
-
         if (team == Team.BLUE) {
             x = Robot.fieldParams.FIELD_LENGTH - x;
             heading = Math.floorMod((int)(180 - heading),(360));

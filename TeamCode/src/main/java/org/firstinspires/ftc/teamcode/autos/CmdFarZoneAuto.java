@@ -31,11 +31,13 @@ public class CmdFarZoneAuto extends AutoCommands {
     }
     PathChain driveToShootGroup1;
     Pose startPose = new Pose(80, 9, Math.toRadians(90));
-    Pose intakeHumanPlayerPose = new Pose(137.5, 16, 0);
-//    Pose shootIntakeRowPose = new Pose(87, 22, Math.toRadians(63));
-    Pose intakeRow3Pose = new Pose(137.5, 42, Math.toRadians(0));
+   // Pose intakeHumanPlayerPose = new Pose(137.5, 16, 0);
+     Pose intakeHumanPlayerPose = new Pose(135, 9, 0);
+
+    //    Pose shootIntakeRowPose = new Pose(87, 22, Math.toRadians(63));
+    Pose intakeRow3Pose = new Pose(135, 35, Math.toRadians(0));
     Pose shootingPose = new Pose(87, 22, Math.toRadians(70));
-    Pose intakeRow3ControlPose = new Pose(63, 45);
+    Pose intakeRow3ControlPose = new Pose(73, 49);
     Pose intakeGateBallsPath1 = new Pose (126, 12, Math.toRadians(30));
     Pose intakeGateBallsPath2 = new Pose (133, 16, Math.toRadians(70));
     Pose intakeGateBallsPath3 = new Pose (135, 39, Math.toRadians(90));
@@ -43,20 +45,23 @@ public class CmdFarZoneAuto extends AutoCommands {
 
     int huntPath = 1;
 
-    //startPose = Auto.convertAlliancePose(startPose, team);
-    //intakeHumanPlayerPose = Auto.convertAlliancePose(intakeHumanPlayerPose, team);
-    //intakeRow3Pose = Auto.convertAlliancePose(intakeRow3Pose, team);
-    //shootingPose = Auto.convertAlliancePose(shootingPose, team);
-    //intakeGateBallsPath1 = Auto.convertAlliancePose(intakeGateBallsPath1, team);
-    //intakeGateBallsPath2 = Auto.convertAlliancePose(intakeGateBallsPath2, team);
-    //intakeGateBallsPath3 = Auto.convertAlliancePose(intakeGateBallsPath3, team);
-    //parkPose = Auto.convertAlliancePose(parkPose, team);
+
     public CmdFarZoneAuto(Robot robot, Auto.Team team, Auto.AutoStrategy autoStrategy,double waitTime){
         super(robot, team, autoStrategy, waitTime);
 
-        if (team == Auto.Team.BLUE){
-            blueTeamPoses();
-        }
+//        if (team == Auto.Team.BLUE){
+//            blueTeamPoses();
+//        }
+
+        startPose = Auto.convertAlliancePose(startPose, team);
+        intakeHumanPlayerPose = Auto.convertAlliancePose(intakeHumanPlayerPose, team);
+        intakeRow3Pose = Auto.convertAlliancePose(intakeRow3Pose, team);
+        shootingPose = Auto.convertAlliancePose(shootingPose, team);
+        intakeGateBallsPath1 = Auto.convertAlliancePose(intakeGateBallsPath1, team);
+        intakeGateBallsPath2 = Auto.convertAlliancePose(intakeGateBallsPath2, team);
+        intakeGateBallsPath3 = Auto.convertAlliancePose(intakeGateBallsPath3, team);
+        parkPose = Auto.convertAlliancePose(parkPose, team);
+
         robot.follower.setPose(startPose);
         robot.shooter.setPitchDegrees(41.0);
         robot.shooter.setTurretDegrees(0.0);

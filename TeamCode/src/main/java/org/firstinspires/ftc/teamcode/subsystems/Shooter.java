@@ -99,7 +99,7 @@ public class Shooter {
 
         //Turret Params
         public static final double TURRET_KP = .013, TURRET_KI = (.001), TURRET_KD = (0), TURRET_KF = (0.0001), TURRET_I_ZONE = (5);
-        public static final double TURRET_GEAR_RATIO = 0.506;
+        public static final double TURRET_GEAR_RATIO = 0.5;
         public static final double MIN_TURRET_DEGREES = -90;
         public static final double CROSSOVER_THRESHOLD = 0.5;
         public static final double MAX_TURRET_DEGREES = 90;
@@ -108,6 +108,8 @@ public class Shooter {
         public static final double TURRET_DEGREES_PER_REV = -360 * TURRET_GEAR_RATIO;
         public static final double TURRET_TOLERANCE = 360;
     }
+
+
 
     private final DcMotorEx bottomShooterMotor;
     private final DcMotorEx topShooterMotor;

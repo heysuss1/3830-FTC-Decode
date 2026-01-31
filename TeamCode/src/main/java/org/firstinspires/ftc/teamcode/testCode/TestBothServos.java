@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.zArchive.testCode;
+package org.firstinspires.ftc.teamcode.testCode;
 
 import com.acmerobotics.dashboard.config.Config;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
@@ -41,7 +41,6 @@ public class TestBothServos extends LinearOpMode {
             }else {
                 robot.shooter.getPrimaryTurretServo().setPower(0);
                 robot.shooter.getSecondaryTurretServo().setPower(0);
-
 
 
             }

@@ -25,22 +25,40 @@ public class CmdCloseZoneAuto extends AutoCommands {
     PathChain driveToShootPreloads, driveToShootGroup1, driveToGroup1, driveToGroup2, driveToShootGroup2,driveToShootGate,
             driveToGroup3, driveToShootGroup3, intakeGroup1, intakeGroup2, intakeGroup3, driveToPark, driveToGate;
 
-    Pose startingPose = (new Pose(114, 123, Math.toRadians(42)));
-    Pose shootingPose = (new Pose(84 * autoScale, 85 * autoScale, Math.toRadians(37)));
-    Pose group2startPose = (new Pose(99 * autoScale, 59 * autoScale, 0));
-    Pose group2endPose = (new Pose(124 * autoScale, 51 * autoScale, 0));
-    Pose group2ControlPose = new Pose(78 * autoScale, 59 * autoScale);
-    Pose group1endPose = (new Pose(125 * autoScale, 85 * autoScale, 0));
-    Pose group1StartPose = (new Pose(100 * autoScale, 85 * autoScale, 0));
-    Pose group1ControlPose = new Pose(78 * autoScale, 81 * autoScale);
+//    Pose startingPose = (new Pose(114, 123, Math.toRadians(42)));
+//    Pose shootingPose = (new Pose(84 * autoScale, 85 * autoScale, Math.toRadians(37)));
+//    Pose group2startPose = (new Pose(99 * autoScale, 59 * autoScale, 0));
+//    Pose group2endPose = (new Pose(124 * autoScale, 51 * autoScale, 0));
+//    Pose group2ControlPose = new Pose(78 * autoScale, 59 * autoScale);
+//    Pose group1endPose = (new Pose(125 * autoScale, 85 * autoScale, 0));
+//    Pose group1StartPose = (new Pose(100 * autoScale, 85 * autoScale, 0));
+//    Pose group1ControlPose = new Pose(78 * autoScale, 81 * autoScale);
+//
+//    Pose gatePose = (new Pose(126.4 * autoScale, (55.3) * autoScale, Math.toRadians(34.77854-11.57375)));
+//    Pose group3startPose = (new Pose(94 * autoScale, 35 * autoScale, 0));
+//    Pose group3endPose = (new Pose(131 * autoScale, 32 * autoScale, 0));
+//    Pose group3ControlPose = new Pose(60 * autoScale, 25 * autoScale);
+//    Pose parkPose = (new Pose(115 * autoScale, 65 * autoScale, 0));
+//    Pose gateControlPose =  new Pose(105 * autoScale, 42 * autoScale);
+//    Pose returnGroup3ControlPose = new Pose(52 * autoScale, 67 * autoScale);
 
-    Pose gatePose = (new Pose(126.4 * autoScale, (55.3) * autoScale, Math.toRadians(34.77854-11.57375)));
-    Pose group3startPose = (new Pose(94 * autoScale, 35 * autoScale, 0));
-    Pose group3endPose = (new Pose(131 * autoScale, 32 * autoScale, 0));
-    Pose group3ControlPose = new Pose(60 * autoScale, 25 * autoScale);
-    Pose parkPose = (new Pose(115 * autoScale, 65 * autoScale, 0));
-    Pose gateControlPose =  new Pose(105 * autoScale, 42 * autoScale);
-    Pose returnGroup3ControlPose = new Pose(52 * autoScale, 67 * autoScale);
+    Pose startingPose = (new Pose(119, 132, Math.toRadians(42)));
+    Pose shootingPose = (new Pose(84 , 85 , Math.toRadians(37)));
+    Pose group2startPose = (new Pose(99, 59 , 0));
+    Pose group2endPose = (new Pose(124, 55, 0));
+    Pose group2ControlPose = new Pose(78, 59 );
+    Pose group1endPose = (new Pose(125 , 85, 0));
+    Pose group1StartPose = (new Pose(100, 85, 0));
+    Pose group1ControlPose = new Pose(78, 81);
+
+    Pose gatePose = (new Pose(126.4, (55.3) , Math.toRadians(34.77854-11.57375)));
+    Pose group3startPose = (new Pose(94 , 35 , 0));
+    Pose group3endPose = (new Pose(131, 32 , 0));
+    Pose group3ControlPose = new Pose(60, 25);
+    Pose parkPose = (new Pose(115 , 65, 0));
+    Pose gateControlPose =  new Pose(105, 42 );
+    Pose returnGroup3ControlPose = new Pose(52, 67);
+
 
 
     public CmdCloseZoneAuto(Robot robot, Auto.Team team, Auto.AutoStrategy autoStrategy, double waitTime) {
