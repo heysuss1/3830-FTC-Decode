@@ -195,6 +195,7 @@ public class TeleOp extends LinearOpMode {
             telemetry.addData("Manual RPM", manualRPM);
             telemetry.addData("Turret Target", aimInfo.getAngleToGoal());
             telemetry.addData("Always set velocity?", Shooter.alwaysSetVelocity);
+            telemetry.addData("Raw turret pos", robot.shooter.getTurretRawPose());
             telemetry.addData("Always set turret?", Shooter.alwaysAimTurret);
             telemetry.addData("Is Flywheel on target: ", robot.shooter.isFlywheelOnTarget(Shooter.Params.SHOOTER_TOLERANCE_RPM) + ", Is pitch on target: " + robot.shooter.isPitchOnTarget(Shooter.Params.PITCH_TOLERANCE) + ", Is turret on target: ", robot.shooter.isTurretOnTarget(Shooter.Params.TURRET_TOLERANCE));
             telemetry.addData("Shooter empty", robot.intakeUptake.isUptakeEmpty());

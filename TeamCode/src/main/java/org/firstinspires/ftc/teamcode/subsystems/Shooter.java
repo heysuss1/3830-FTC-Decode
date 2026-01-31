@@ -104,7 +104,7 @@ public class Shooter {
         public static final double CROSSOVER_THRESHOLD = 0.5;
         public static final double MAX_TURRET_DEGREES = 90;
         public static final double TURRET_ENCODER_ZERO_OFFSET = 0;
-        public static double TURRET_POSITION_OFFSET = -1;
+        public static double TURRET_POSITION_OFFSET = 77;
         public static final double TURRET_DEGREES_PER_REV = -360 * TURRET_GEAR_RATIO;
         public static final double TURRET_TOLERANCE = 360;
     }
