@@ -23,6 +23,7 @@ public class CmdFarZoneAuto extends AutoCommands {
     Pose intakeHumanPlayerPose = new Pose(137.5, 16, 0);
     Pose shootIntakeRowPose = new Pose(87, 22, Math.toRadians(63));
     Pose intakeRow3Pose = new Pose(137.5, 42, Math.toRadians(0));
+//    Pose shootingPose = new Pose(87, 22, Math.toRadians(61.5));  heading is zeroed;
     Pose shootingPose = new Pose(87, 22, Math.toRadians(61.5));
     Pose intakeRow3ControlPose = new Pose(63, 45);
     Pose intakeGateBallsPath1 = new Pose (126, 12, Math.toRadians(30));

@@ -62,7 +62,7 @@ public class Robot {
     public static final class fieldParams {
         public static double Y_GOAL = 141.5;
         public static double X_GOAL_RED = 141.5;
-        public final static double FIELD_LENGTH = 141.5;
+        public static double FIELD_LENGTH = 141.5;
         public final static double X_GOAL_BLUE = 0;
         public final static double FIELD_CENTER_X = 72;
         public static double BLUE_REV_LINE_Y_INT = 118;
@@ -128,6 +128,7 @@ public class Robot {
         double robotY = follower.getPose().getY(); //+ 3.5*Math.sin(follower.getHeading());
 
         double x_goal;
+
 
         if (Robot.getTeam() == Auto.Team.BLUE) {
             x_goal = fieldParams.X_GOAL_BLUE;

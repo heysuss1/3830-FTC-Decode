@@ -152,6 +152,7 @@ public class Auto extends LinearOpMode {
             telemetry.addData("Current Shooter State: ", robot.shooterTask.getShooterState());
             telemetry.addData("Current shot count: ", autoCommand.shotCount);
             telemetry.addData("isFirstTimePath: ", autoCommand.isFirstTimePath);
+            telemetry.addData("robot pose", robot.follower.getPose());
             telemetry.addData("Is follower busy? ", robot.follower.isBusy());
             telemetry.addData("Shooter velocity / current Target: ", robot.shooter.getVelocityRPM() + " / " + robot.shooter.getVelocityTarget());
             telemetry.addData("Pitch angle / current Target: ", robot.shooter.getPitchDegrees() + " / " + robot.shooter.getPitchTarget());
@@ -170,15 +171,18 @@ public class Auto extends LinearOpMode {
     public static Pose convertAlliancePose(Pose pos, Team team) {
         double x = pos.getX();
         double y = pos.getY();
-        double heading = pos.getHeading();
+        double heading = Math.toDegrees(pos.getHeading());
+
+        if (Robot.getAutoType() == Auto.AutoType.FAR_ZONE){
+            Robot.fieldParams.FIELD_LENGTH = 144;
+        }
 
         if (team == Team.BLUE) {
             x = Robot.fieldParams.FIELD_LENGTH - x;
-            heading = Math.floorMod((int)(180 - heading),360);
+            heading = Math.floorMod((int)(180 - heading),(360));
             //heading = ((180 - heading) % 360 + 360) % 360;
             //This is the same as the mod: heading = (180 - heading) >= 0 ? (180 - heading) : 360 + (180 - heading);
         }
-
-        return new Pose(x, y, heading);
+        return new Pose(x, y, Math.toRadians(heading));
     }
 }
